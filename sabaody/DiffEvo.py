@@ -616,7 +616,6 @@ class DifferentialEvolutionSolver(object):
 
 
         for nmig in xrange(1,self.number_of_migrations+1):
-
             if nmig != 1:
                 # Get the host node
                 host = int(self.island_marker[-1])
@@ -656,7 +655,6 @@ class DifferentialEvolutionSolver(object):
                 for pop_index in range(1, total_computed_neighbors+1):
                     self.population[pop_index] = energies[pop_index-1][0]
                     self.population_energies[pop_index] = energies[pop_index-1][1]
-
 
 
             # do the optimisation.
