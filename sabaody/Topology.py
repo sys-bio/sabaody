@@ -21,7 +21,6 @@ class Topology(object):
         return archipelago
 
 
-
     @staticmethod
     def create_chain(number_of_islands = 4):
         archipelago = nx.DiGraph()
@@ -29,6 +28,7 @@ class Topology(object):
         for each_island in range(1, number_of_islands):
             archipelago.add_edge(each_island, (each_island + 1))
         return archipelago
+
 
     @staticmethod
     def create_ring(number_of_islands=4):
@@ -70,6 +70,7 @@ class Topology(object):
                 archipelago.add_edge(each_island, to_edge)
 
         return archipelago
+
 
     @staticmethod
     def create_fully_connected(number_of_islands=4):
