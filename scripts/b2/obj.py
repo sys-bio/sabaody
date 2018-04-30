@@ -2,6 +2,7 @@ from __future__ import print_function, division, absolute_import
 
 from numpy import array
 from typing import SupportsFloat
+from sabaody.utils import expect
 
 import tellurium as te
 from roadrunner import RoadRunner
@@ -27,7 +28,7 @@ class B2Model(Evaluator):
     and calculates the residuals for b4.'''
 
     def __init__(self):
-        self.r = RoadRunner('../SBML/b2.xml')
+        self.r = RoadRunner('./b2.xml')
         self.residuals = []
         print(self.r.getFloatingSpeciesIds())
 
@@ -83,7 +84,7 @@ class B2Model(Evaluator):
     def MSE(self):
         ''' Calc the MSE for all residuals.
         Call this after calculating all residuals.'''
-        r = numpy.array(self.residuals)
+        r = array(self.residuals)
         return (r**2).mean()
 
     def simulateToNextTime(self):
@@ -109,9 +110,10 @@ class B2Model(Evaluator):
 
     def setParameterVector(self, x):
         # type: (array) -> None
-        expect(len(x) == len(self.parameter_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(self.parameter_list), len(x)))
+        from params import param_list
+        expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
         for i,v in enumerate(x):
-            self.r[parameter_list[i]] = v
+            self.r[param_list[i]] = v
 
     def evaluate(self, x):
         # type: (array) -> SupportsFloat
@@ -137,8 +139,8 @@ class B2Model(Evaluator):
             total_used+=used
         print('*** Total usage: {}/{} ({:.1f}%)'.format(total_used,total,100.*total_used/total))
 
-b2 = B2Model()
-print(b2.timepoints)
-print(b2.timepoints.shape[0])
-b2.buildResidualList()
-b2.printDatapointUsage()
+#b2 = B2Model()
+#print(b2.timepoints)
+#print(b2.timepoints.shape[0])
+#b2.buildResidualList()
+#b2.printDatapointUsage()

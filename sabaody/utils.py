@@ -1,6 +1,6 @@
 from __future__ import print_function, division, absolute_import
 
-import numoy as np
+import numpy as np
 
 def expect(predicate, message):
     """

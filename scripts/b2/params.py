@@ -1,6 +1,6 @@
 from __future__ import print_function, division, absolute_import
 
-from .utils import expect, check_vector
+from sabaody.utils import expect
 
 from collections import OrderedDict
 from numpy import array
@@ -147,7 +147,7 @@ d = {
 
 # sort by name and make ordered dict
 params = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
-param_array = array(map(lambda t: t[0], params))
+param_array = array(list(v for v in params.values()))
 
 param_list = list(params.keys())
 

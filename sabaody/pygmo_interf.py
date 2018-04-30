@@ -39,7 +39,7 @@ class Problem:
         """
         check_vector(lb)
         check_vector(ub)
-        expect(len(lb) != len(ub), 'Bounds mismatch')
+        expect(len(lb) == len(ub), 'Bounds mismatch')
         self.evaluator = evaluator
         self.lb = lb
         self.ub = ub
