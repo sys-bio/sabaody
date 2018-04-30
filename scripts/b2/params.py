@@ -106,8 +106,8 @@ d = {
   'nG1PATfdp': 1.2,
   'nPDH': 3.68,
   'npepCxylasefdp': 4.21,
-  'nPFK': 11.1,
-  'nPK': 4,
+  'nPFK': 11.1, # Hill param
+  'nPK': 4, # Hill param
   'nPTSg6p': 3.66,
   'rmaxALDO': 17.41464425,
   'rmaxDAHPS': 0.1079531227,
@@ -139,10 +139,10 @@ d = {
   'rmaxTKa': 9.473384783,
   'rmaxTKb': 86.55855855,
   'rmaxTrpSynth': 0.001037,
-  'VALDOblf': 2,
-  'cfeed': 110.96,
-  'Dil': 2.78e-05,
-  'mu': 2.78e-05,
+  #'VALDOblf': 2, # TODO: aldolase parameter, needs more investigation
+  #'cfeed': 110.96, # carbon influx, don't fit
+  #'Dil': 2.78e-05, # dilution, don't fit
+  #'mu': 2.78e-05, # not a parameter, possibly volume factor
 }
 
 # sort by name and make ordered dict
@@ -164,3 +164,15 @@ def applyParamVec(r, p):
 def getDefaultParamValues():
     # type: () -> array
     return param_array
+
+def getUpperBound():
+    '''
+    1/10 original value.
+    '''
+    return 0.1*getDefaultParamValues()
+
+def getLowerBound():
+    '''
+    10x original value.
+    '''
+    return 10.*getDefaultParamValues()
