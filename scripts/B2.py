@@ -11,16 +11,16 @@ conf = SparkConf().setAppName("GEN-DIFF-EVOL").setMaster("local[4]")
 sc = SparkContext(conf=conf)
 
 def beale_function(x):
-    b4 = B4Model()
-    b4.r.cpep = x[0]
-    b4.r.cg6p = x[1]
-    b4.r.cpyr = x[2]
-    b4.r.cf6p = x[3]
-    b4.r.cglcex = x[4]
-    b4.r.cg1p = x[5]
-    b4.r.cpg = x[6]
-    b4.r.cfdp = x[7]
-    mse = b4.calcObjective()
+    b2 = B2Model()
+    b2.r.cpep = x[0]
+    b2.r.cg6p = x[1]
+    b2.r.cpyr = x[2]
+    b2.r.cf6p = x[3]
+    b2.r.cglcex = x[4]
+    b2.r.cg1p = x[5]
+    b2.r.cpg = x[6]
+    b2.r.cfdp = x[7]
+    mse = b2.evaluate()
     return mse
 
 
