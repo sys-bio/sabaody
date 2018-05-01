@@ -1,12 +1,12 @@
 from __future__ import print_function, division, absolute_import
 
 from collections import OrderedDict
-from numpy import array
+from numpy import array, hstack, argwhere, unique
 from typing import SupportsFloat
 from builtins import super
 
+import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
-from sabaody import TimecourseModel
 from sabaody.utils import expect
 
 from .pygmo_interf import Evaluator
@@ -17,11 +17,11 @@ class MissingValue(Exception):
 def valueAtTime(a,t):
     ''' Find a value in a matching the measurement time t. '''
     try:
-        return float(a[np.argwhere(a[:,0] == t)[0],1])
+        return float(a[argwhere(a[:,0] == t)[0],1])
     except IndexError:
         raise MissingValue
     except TypeError:
-        print(np.argwhere(a[:,0] == t))
+        print(argwhere(a[:,0] == t))
         raise MissingValue
 
 class TimecourseModel(Evaluator):
@@ -36,9 +36,9 @@ class TimecourseModel(Evaluator):
         '''
         self.r = RoadRunner(model_path)
         self.residuals = []
-        print(self.r.getFloatingSpeciesIds())
+        #print(self.r.getFloatingSpeciesIds())
 
-        self.timepoints = np.unique(np.hstack(a[:,0] for a in data_quantities))
+        self.timepoints = unique(hstack(a[:,0] for a in data_quantities))
         self.reset()
 
         self.measurement_map = measurement_map
