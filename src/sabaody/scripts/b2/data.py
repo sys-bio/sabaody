@@ -1,6 +1,8 @@
 import numpy as np
 
 def reshape(a):
+    if a.shape[0] % 2 != 0:
+        raise RuntimeError('Expected a multiple of 2 but got an array of length {}'.format(a.shape[0]))
     n = int(a.shape[0]/2)
     return np.reshape(a, (n,2))
 

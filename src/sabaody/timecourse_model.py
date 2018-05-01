@@ -1,14 +1,15 @@
 from __future__ import print_function, division, absolute_import
 
+from collections import OrderedDict
 from numpy import array
 from typing import SupportsFloat
+from builtins import super
+
+from roadrunner import RoadRunner
+from sabaody import TimecourseModel
 from sabaody.utils import expect
 
-import tellurium as te
-from roadrunner import RoadRunner
-from sabaody import Evaluator
-
-from data import *
+from .pygmo_interf import Evaluator
 
 class MissingValue(Exception):
     pass
@@ -23,32 +24,28 @@ def valueAtTime(a,t):
         print(np.argwhere(a[:,0] == t))
         raise MissingValue
 
-class B2Model(Evaluator):
+class TimecourseModel(Evaluator):
     ''' Class that performs a timecourse simulation
     and calculates the residuals for b4.'''
 
-    def __init__(self):
-        self.r = RoadRunner('./b2.xml')
+    def __init__(self, model_path, data_quantities, measurement_map):
+        '''
+        Constructor.
+
+        :param measurement_map: A dictionary that maps the names of quantities to measurements to their respective (numpy) arrays.
+        '''
+        self.r = RoadRunner(model_path)
         self.residuals = []
         print(self.r.getFloatingSpeciesIds())
 
         self.timepoints = np.unique(np.hstack(a[:,0] for a in data_quantities))
         self.reset()
 
-        self.measurement_map = {
-          'PEP': PEP,
-          'G6P': G6P,
-          'PYR': PYR,
-          'F6P': F6P,
-          'GLCex': GLCex,
-          'G1P': G1P,
-          '6PG': x6PG,
-          'FDP': FDP,
-        }
+        self.measurement_map = measurement_map
 
         # keep track of the number of times a measurement is used
         # (check correct number of residuals)
-        self.measurement_count = dict((quantity,0) for quantity in self.measurement_map)
+        self.measurement_count = OrderedDict((quantity,0) for quantity in self.measurement_map)
 
     def calcResiduals(self,t):
         ''' Try to calculate residuals at the current time t
@@ -56,14 +53,8 @@ class B2Model(Evaluator):
         If they do not exist for certain datasets at time t,
         just pass over the dataset.'''
         self.usage_map = dict((q,False) for q in self.measurement_map)
-        self.tryAddResidual(t, self.r.cpep, 'PEP')
-        self.tryAddResidual(t, self.r.cg6p, 'G6P')
-        self.tryAddResidual(t, self.r.cpyr, 'PYR')
-        self.tryAddResidual(t, self.r.cf6p, 'F6P')
-        self.tryAddResidual(t, self.r.cglcex, 'GLCex')
-        self.tryAddResidual(t, self.r.cg1p, 'G1P')
-        self.tryAddResidual(t, self.r.cpg, '6PG')
-        self.tryAddResidual(t, self.r.cfdp, 'FDP')
+        for quantity in self.measurement_map.keys():
+            self.tryAddResidual(t, self.r[quantity], quantity)
 
     def tryAddResidual(self,t,predicted_value,identifier):
         ''' Append a residual to the list of residuals.
@@ -138,9 +129,3 @@ class B2Model(Evaluator):
             total+=n
             total_used+=used
         print('*** Total usage: {}/{} ({:.1f}%)'.format(total_used,total,100.*total_used/total))
-
-#b2 = B2Model()
-#print(b2.timepoints)
-#print(b2.timepoints.shape[0])
-#b2.buildResidualList()
-#b2.printDatapointUsage()
