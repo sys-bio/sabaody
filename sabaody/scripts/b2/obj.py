@@ -2,6 +2,7 @@ from __future__ import print_function, division, absolute_import
 
 from sabaody import TimecourseModel
 
+from .params import param_list
 from .data import *
 
 class B2Model(TimecourseModel):
@@ -19,3 +20,7 @@ class B2Model(TimecourseModel):
           'cpg': x6PG,
           'cfdp': FDP,
         })
+
+    def setParameterVector(self, x):
+        # type: (array) -> None
+        super().setParameterVector(x, param_list)

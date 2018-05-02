@@ -99,9 +99,8 @@ class TimecourseModel(Evaluator):
             self.calcResiduals(self.t)
             self.next_ti += 1
 
-    def setParameterVector(self, x):
-        # type: (array) -> None
-        from params import param_list
+    def setParameterVector(self, x, param_list):
+        # type: (array, List) -> None
         expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
         for i,v in enumerate(x):
             self.r[param_list[i]] = v
@@ -116,16 +115,32 @@ class TimecourseModel(Evaluator):
         self.buildResidualList()
         return self.MSE()
 
-    def printDatapointUsage(self):
-        ''' For debugging. Make sure every data point is
-        used.'''
+    def getUsageByQuantity(self):
+        '''
+        Calculates the number of times a given quantity is used.
+        Should be equal to the number of datap oints for that quantity
+        if all goes well.
+        '''
         total = 0
         total_used = 0
+        usage_for_quantity = OrderedDict()
+
         for q in self.measurement_count:
             a = self.measurement_map[q]
             used = self.measurement_count[q]
+            usage_for_quantity[q] = used
             n = a.shape[0]
-            print('Usage for {}: {}/{}'.format(q,used,n))
             total+=n
             total_used+=used
+
+        return (total,total_used,usage_for_quantity)
+
+    def printDatapointUsage(self):
+        ''' For debugging. Make sure every data point is
+        used.'''
+        total,total_used,usage_for_quantity = self.getUsageByQuantity()
+        for q,used in usage_for_quantity.keys():
+            a = self.measurement_map[q]
+            n = a.shape[0]
+            print('Usage for {}: {}/{}'.format(q,used,n))
         print('*** Total usage: {}/{} ({:.1f}%)'.format(total_used,total,100.*total_used/total))
