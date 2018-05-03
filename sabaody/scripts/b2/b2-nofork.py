@@ -1,4 +1,5 @@
 # B2 non-forking version
+from __future__ import print_function, division, absolute_import
 
 from pyspark import SparkContext, SparkConf
 conf = SparkConf().setAppName("b2-single")
