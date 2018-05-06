@@ -5,7 +5,7 @@ from sabaody import TimecourseModel
 from params import param_list
 from data import *
 
-class B2Model(TimecourseModel):
+class B2Problem(TimecourseModel):
     ''' Class that performs a timecourse simulation
     and calculates the residuals for b4.'''
 

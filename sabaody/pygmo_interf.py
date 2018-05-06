@@ -7,6 +7,7 @@ from pymemcache.client.base import Client
 from abc import ABC, abstractmethod
 from numpy import array
 from typing import SupportsFloat
+from uuid import uuid4
 
 
 class Evaluator(ABC):
@@ -44,12 +45,20 @@ class Problem:
     def get_bounds(self):
         return (lb,ub)
 
-
+class Island:
+    def __init__(self, id, problem):
+        self.id = id
+        self.problem = problem
 
 class Archipelago:
-    def __init__(self, num_islands, topology, mc_host, mc_port=11211):
+    def __init__(self, num_islands, problem, topology, mc_host, mc_port=11211):
         self.num_islands = num_islands
+        self.problem = problem
         self.topology = topology
         self.mc_host = mc_host
         self.mc_port = mc_port
         self.mc_client = Client((mc_host,mc_port))
+        uuids = (uuid4() for x in range(self.num_islands))
+        self.islands = sc.parallelize(uuids).map(lamda u: Island(u, self.problem))
+        print(self.islands.map(lambda i: i.id).collect())
+

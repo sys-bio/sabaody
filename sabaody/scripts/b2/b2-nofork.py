@@ -13,12 +13,14 @@ from sabaody import Archipelago
 from obj import B2Model
 from params import getDefaultParamValues, getLowerBound, getUpperBound
 
+from uuid import uuid4
+
 # some refs:
 #https://developerzen.com/best-practices-writing-production-grade-pyspark-jobs-cb688ac4d20f
 #https://medium.com/@mrpowers/creating-a-pyspark-project-with-pytest-pyenv-and-egg-files-d2709eb1604c
 
 def worker_function():
-    archi = Archipelago
+    archi = Archipelago()
 
 run = int(client.get('com.how2cell.sabaody.B2.run'))
 if run is None:
@@ -27,8 +29,11 @@ else:
     run += 1
 client.set('com.how2cell.sabaody.B2.run', run, 604800)
 
-print('Starting run {} of B2 problem...'.format(run))
+run_id = str(uuid4())
+client.set('com.how2cell.sabaody.B2.runId', run_id, 604800)
+
+print('Starting run {} of B2 problem with id {}...'.format(run, run_id))
 
 # show initial score
-e = B2Model()
+p = B2Problem()
 print('Initial score: {}'.format(e.evaluate(getDefaultParamValues())))
