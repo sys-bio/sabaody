@@ -10,7 +10,7 @@ conf = SparkConf().setAppName("b2-single")
 sc = SparkContext(conf=conf)
 
 from sabaody import Archipelago
-from obj import B2Model
+from b2problem import B2Problem
 from params import getDefaultParamValues, getLowerBound, getUpperBound
 
 from uuid import uuid4
