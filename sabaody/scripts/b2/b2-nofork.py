@@ -19,9 +19,6 @@ from uuid import uuid4
 #https://developerzen.com/best-practices-writing-production-grade-pyspark-jobs-cb688ac4d20f
 #https://medium.com/@mrpowers/creating-a-pyspark-project-with-pytest-pyenv-and-egg-files-d2709eb1604c
 
-def worker_function():
-    archi = Archipelago()
-
 run = int(client.get('com.how2cell.sabaody.B2.run'))
 if run is None:
     run = 1
@@ -34,6 +31,11 @@ client.set('com.how2cell.sabaody.B2.runId', run_id, 604800)
 
 print('Starting run {} of B2 problem with id {}...'.format(run, run_id))
 
+with open('../../../sbml/b2.xml') as f:
+    sbml = f.read()
+
 # show initial score
-p = B2Problem()
-print('Initial score: {}'.format(e.evaluate(getDefaultParamValues())))
+p = B2Problem(sbml)
+print('Initial score: {}'.format(p.evaluate(getDefaultParamValues())))
+
+archi = Archipelago(sc, 4, lambda: B2Problem(sbml), None, mc_host, mc_port)

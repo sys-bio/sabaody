@@ -29,14 +29,14 @@ class TimecourseModel(Evaluator):
     ''' Class that performs a timecourse simulation
     and calculates the residuals for b4.'''
 
-    def __init__(self, model_path, data_quantities, measurement_map):
+    def __init__(self, sbml, data_quantities, measurement_map):
         '''
         Constructor.
 
         :param measurement_map: A dictionary that maps the names of quantities to measurements to their respective (numpy) arrays.
         '''
-        self.model_path = os.path.abspath(model_path)
-        self.r = RoadRunner(model_path)
+        self.sbml = sbml
+        self.r = RoadRunner(sbml)
         self.residuals = []
         #print(self.r.getFloatingSpeciesIds())
 
@@ -85,7 +85,7 @@ class TimecourseModel(Evaluator):
         import tellurium as te
         te.plot(data[:,0], data[:,1], scatter=True, name=identifier+' data', show=False, error_y_pos=maximum(array(self.quantity_residuals[identifier]),0), error_y_neg=-minimum(array(self.quantity_residuals[identifier]),0))
         # simulate and plot the model
-        r = RoadRunner(self.model_path)
+        r = RoadRunner(self.sbml)
         s = r.simulate(0,self.timepoints[-1],1000,['time',identifier])
         te.plot(s[:,0], s[:,1], name=identifier+' sim')
 

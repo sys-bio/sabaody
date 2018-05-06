@@ -46,12 +46,13 @@ class Problem:
         return (lb,ub)
 
 class Island:
-    def __init__(self, id, problem):
+    def __init__(self, id, problem_factory):
         self.id = id
-        self.problem = problem
+        #self.problem_factory = problem_factory
+        self.problem = problem_factory()
 
 class Archipelago:
-    def __init__(self, num_islands, problem, topology, mc_host, mc_port=11211):
+    def __init__(self, sc, num_islands, problem, topology, mc_host, mc_port=11211):
         self.num_islands = num_islands
         self.problem = problem
         self.topology = topology
@@ -59,6 +60,9 @@ class Archipelago:
         self.mc_port = mc_port
         self.mc_client = Client((mc_host,mc_port))
         uuids = (uuid4() for x in range(self.num_islands))
-        self.islands = sc.parallelize(uuids).map(lamda u: Island(u, self.problem))
+        #self.abc = sc.parallelize([1, 2, 3])
+        #print(self.abc.collect())
+        self.islands = sc.parallelize(uuids).map(lambda u: Island(u, problem))
+        #self.islands.cache()
         print(self.islands.map(lambda i: i.id).collect())
 
