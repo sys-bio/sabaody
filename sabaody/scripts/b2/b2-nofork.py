@@ -9,7 +9,7 @@ client = Client((mc_host,mc_port))
 conf = SparkConf().setAppName("b2-single")
 sc = SparkContext(conf=conf)
 
-from sabaody import Archipelago
+from sabaody import Archipelago, getQualifiedName
 from b2problem import B2Problem
 from params import getDefaultParamValues, getLowerBound, getUpperBound
 
@@ -39,5 +39,7 @@ p = B2Problem(sbml)
 initial_score = p.evaluate(getDefaultParamValues())
 print('Initial score: {}'.format(initial_score))
 
-a = Archipelago(4, lambda: B2Problem(sbml), None, mc_host, mc_port)
+from toolz import partial
+
+a = Archipelago(4, lambda: B2Problem(sbml), None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
 a.run(sc, initial_score)

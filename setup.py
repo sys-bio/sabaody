@@ -11,5 +11,6 @@ setup(name='sabaody',
         'tellurium',
         'networkx>=2.1',
         'pymemcache>=1.4.4',
+        'toolz>=0.9.0',
         ],
       )

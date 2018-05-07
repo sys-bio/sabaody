@@ -29,3 +29,10 @@ def check_vector(v):
             raise RuntimeError('Array of dimensions {} is not a vector'.format(v.shape))
     else:
         raise RuntimeError('Array of dimension {} is not a vector'.format(v.ndim))
+
+def getQualifiedName(*args):
+    '''
+    Gets a qualified RDNS name for this app.
+    '''
+    root = 'com.how2cell.sabaody'
+    return '.'.join((root, *args))
