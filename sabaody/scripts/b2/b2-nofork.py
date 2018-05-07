@@ -36,6 +36,8 @@ with open('../../../sbml/b2.xml') as f:
 
 # show initial score
 p = B2Problem(sbml)
-print('Initial score: {}'.format(p.evaluate(getDefaultParamValues())))
+initial_score = p.evaluate(getDefaultParamValues())
+print('Initial score: {}'.format(initial_score))
 
-archi = Archipelago(sc, 4, lambda: B2Problem(sbml), None, mc_host, mc_port)
+a = Archipelago(4, lambda: B2Problem(sbml), None, mc_host, mc_port)
+a.run(sc, initial_score)
