@@ -41,5 +41,5 @@ print('Initial score: {}'.format(initial_score))
 
 from toolz import partial
 
-a = Archipelago(4, lambda: B2Problem(sbml), None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
+a = Archipelago(4, lambda: B2Problem(sbml), initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
 a.run(sc, initial_score)
