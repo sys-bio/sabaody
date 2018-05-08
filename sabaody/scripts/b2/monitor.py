@@ -13,12 +13,20 @@ client = Client((mc_host,mc_port))
 from time import sleep
 from json import dumps, loads
 from pprint import PrettyPrinter
+from time import time
 
 def app(screen):
     while True:
         run = int(client.get('com.how2cell.sabaody.B2.run'))
         run_id = client.get('com.how2cell.sabaody.B2.runId').decode('utf8')
-        active = bool(client.get('com.how2cell.sabaody.B2.active') or False)
+        status = client.get('com.how2cell.sabaody.B2.run.status').decode('utf8').lower()
+        started = float((client.get('com.how2cell.sabaody.B2.run.startTime') or b'0').decode('utf8'))
+        stopped = float((client.get('com.how2cell.sabaody.B2.run.endTime') or b'0').decode('utf8'))
+        active = bool(status == 'active')
+        if active:
+            runtime = time()-started
+        else:
+            runtime = stopped-started
         if run_id:
             domain_qualifier = partial(getQualifiedName, 'B2', str(run_id))
             def get(*args):
@@ -28,13 +36,17 @@ def app(screen):
             pp = PrettyPrinter(indent=2)
 
             v = int(screen.height/2)-10
-            screen.print_at('Run {}   /   {}'.format(run, run_id),
+            screen.print_at('Run {}   /   {}    '.format(run, run_id),
                             int(screen.width/2)-65, v,
                             Screen.COLOUR_WHITE)
             v += 1
-            screen.print_at('Status: {}'.format('ACTIVE' if active else 'INACTIVE'),
+            screen.print_at('Status: {}    '.format(status.upper()),
                             int(screen.width/2)-65, v,
-                            Screen.COLOUR_GREEN if active else Screen.COLOUR_RED)
+                            Screen.COLOUR_GREEN if status == 'active' else Screen.COLOUR_WHITE if status == 'finished' else Screen.COLOUR_RED)
+            v += 1
+            screen.print_at('Run time: {:.0f} s    '.format(runtime),
+                            int(screen.width/2)-65, v,
+                            Screen.COLOUR_GREEN if status == 'active' else Screen.COLOUR_WHITE if status == 'finished' else Screen.COLOUR_RED)
             v += 1
             screen.print_at('Islands ({}):'.format(len(island_ids)),
                             int(screen.width/2)-65, v,
