@@ -28,6 +28,7 @@ client.set('com.how2cell.sabaody.B2.run', run, 604800)
 
 run_id = str(uuid4())
 client.set('com.how2cell.sabaody.B2.runId', run_id, 604800)
+client.set('com.how2cell.sabaody.B2.run.active', 'True', 604800)
 
 print('Starting run {} of B2 problem with id {}...'.format(run, run_id))
 
@@ -43,3 +44,5 @@ from toolz import partial
 
 a = Archipelago(4, lambda: B2Problem(sbml), initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
 a.run(sc, initial_score)
+
+client.set('com.how2cell.sabaody.B2.run.active', 'False', 604800)
