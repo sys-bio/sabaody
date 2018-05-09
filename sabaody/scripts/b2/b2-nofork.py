@@ -9,9 +9,9 @@ client = Client((mc_host,mc_port))
 conf = SparkConf().setAppName("b2-single")
 sc = SparkContext(conf=conf)
 
-from sabaody import Archipelago, getQualifiedName
-from b2problem import B2Problem
-from params import getDefaultParamValues, getLowerBound, getUpperBound
+from sabaody import Archipelago, Problem, getQualifiedName
+#from b2problem import B2Problem
+#from params import getDefaultParamValues, getLowerBound, getUpperBound
 
 from uuid import uuid4
 from time import time
@@ -32,23 +32,22 @@ client.set('com.how2cell.sabaody.B2.runId', run_id, 604800)
 client.set('com.how2cell.sabaody.B2.run.startTime', str(time()), 604800)
 client.set('com.how2cell.sabaody.B2.run.status', 'active', 604800)
 
-try:
-    print('Starting run {} of B2 problem with id {}...'.format(run, run_id))
+print('Starting run {} of B2 problem with id {}...'.format(run, run_id))
 
-    with open('../../../sbml/b2.xml') as f:
-        sbml = f.read()
+with open('../../../sbml/b2.xml') as f:
+    sbml = f.read()
 
-    # show initial score
-    p = B2Problem(sbml)
-    initial_score = p.evaluate(getDefaultParamValues())
-    print('Initial score: {}'.format(initial_score))
+# show initial score
+#p = B2Problem(sbml)
+#initial_score = p.evaluate(getDefaultParamValues())
+initial_score = 0.
+#print('Initial score: {}'.format(initial_score))
 
-    from toolz import partial
+from toolz import partial
 
-    a = Archipelago(4, lambda: B2Problem(sbml), initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
-    a.run(sc, initial_score)
-except:
-    client.set('com.how2cell.sabaody.B2.run.status', 'error', 604800)
+#a = Archipelago(4, lambda: Problem(B2Problem(sbml), getLowerBound(), getUpperBound()), initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
+a = Archipelago(4, sbml, initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
+a.run(sc, initial_score)
 
 client.set('com.how2cell.sabaody.B2.run.status', 'finished', 604800)
 client.set('com.how2cell.sabaody.B2.run.endTime', str(time()), 604800)
