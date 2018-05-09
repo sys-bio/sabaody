@@ -55,24 +55,26 @@ class Island:
         self.problem_factory = problem_factory
         self.domain_qualifier = domain_qualifier
 
-    def run(self):
-        import pygmo as pg
-        from multiprocessing import cpu_count
-        mc_client = Client((self.mc_host,self.mc_port))
-        udp = self.problem_factory()
+def run_island(i):
+    import pygmo as pg
+    from multiprocessing import cpu_count
+    from pymemcache.client.base import Client
+    mc_client = Client((i.mc_host,i.mc_port))
+    #udp = i.problem_factory()
 
-        algorithm = pg.algorithm(pg.de())
-        problem = pg.problem(udp)
-        # TODO: configure pop size
-        a = pg.archipelago(n=cpu_count,algo=algorithm, prob=problem, pop_size=100)
+    algorithm = pg.algorithm(pg.de())
+    #problem = pg.problem(udp)
+    problem = pg.problem(pg.rosenbrock(5))
+    # TODO: configure pop size
+    a = pg.archipelago(n=cpu_count(),algo=algorithm, prob=problem, pop_size=100)
 
-        mc_client.set(self.domain_qualifier('island', str(self.id), 'status'), 'Running', 10000)
-        mc_client.set(self.domain_qualifier('island', str(self.id), 'n_cores'), str(cpu_count()), 10000)
-        print('Starting island {} with {} cpus'.format(str(self.id), str(cpu_count())))
+    #mc_client.set(self.domain_qualifier('island', str(i.id), 'status'), 'Running', 10000)
+    #mc_client.set(self.domain_qualifier('island', str(i.id), 'n_cores'), str(cpu_count()), 10000)
+    #print('Starting island {} with {} cpus'.format(str(i.id), str(cpu_count())))
 
-        a.evolve(100)
+    a.evolve(100)
 
-        return 0
+    return 0
 
 class Archipelago:
     def __init__(self, num_islands, problem_factory, initial_score, topology, domain_qualifier, mc_host, mc_port=11211):
@@ -94,7 +96,7 @@ class Archipelago:
         islands = [Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port) for u in self.island_ids]
         #print(islands.map(lambda i: i.id).collect())
         #print(islands.map(lambda i: i.run()).collect())
-        from .worker import run_island
+        #from .worker import run_island
         print(sc.parallelize(islands).map(run_island).collect())
         return
 

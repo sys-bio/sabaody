@@ -12,5 +12,13 @@ def spark_work(something):
         a.evolve(10)
         return 0
 
-myresult = sc.parallelize(range(500),50).map(spark_work)
-print(myresult.collect())
+from uuid import uuid4
+from sabaody import Island, run_island
+run_id = str(uuid4())
+num_islands = 4
+
+island_ids = [str(uuid4()) for x in range(num_islands)]
+islands = [Island(u, None, None, 'luna', 11211) for u in island_ids]
+print(sc.parallelize(islands).map(run_island).collect())
+#myresult = sc.parallelize(range(500),50).map(spark_work)
+#print(myresult.collect())
