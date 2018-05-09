@@ -64,7 +64,7 @@ def run_island(i):
 
     algorithm = pg.algorithm(pg.de())
     #problem = pg.problem(udp)
-    problem = pg.problem(pg.rosenbrock(5))
+    problem = pg.problem(i.problem_factory())
     # TODO: configure pop size
     a = pg.archipelago(n=cpu_count(),algo=algorithm, prob=problem, pop_size=100)
 
@@ -75,6 +75,10 @@ def run_island(i):
     a.evolve(100)
 
     return 0
+
+def problem_constructor():
+    import pygmo as pg
+    return pg.rosenbrock(5)
 
 class Archipelago:
     def __init__(self, num_islands, problem_factory, initial_score, topology, domain_qualifier, mc_host, mc_port=11211):
