@@ -68,8 +68,8 @@ def run_island(i):
     # TODO: configure pop size
     a = pg.archipelago(n=cpu_count(),algo=algorithm, prob=problem, pop_size=100)
 
-    #mc_client.set(self.domain_qualifier('island', str(i.id), 'status'), 'Running', 10000)
-    #mc_client.set(self.domain_qualifier('island', str(i.id), 'n_cores'), str(cpu_count()), 10000)
+    mc_client.set(i.domain_qualifier('island', str(i.id), 'status'), 'Running', 10000)
+    mc_client.set(i.domain_qualifier('island', str(i.id), 'n_cores'), str(cpu_count()), 10000)
     #print('Starting island {} with {} cpus'.format(str(i.id), str(cpu_count())))
 
     a.evolve(100)
