@@ -13,7 +13,7 @@ def get_fitness(x):
     from b2problem import B2Problem
     return (B2Problem('b2.xml').evaluate(x),)
 
-def run_island(i):
+def run_island(id):
     class B2_UDP:
         def __init__(self, lb, ub):
             # type: (Evaluator, array, array) -> None
@@ -56,23 +56,18 @@ def run_island(i):
             self.evaluator = B2Problem('b2.xml')
 
     import pygmo as pg
-    from multiprocessing import cpu_count
     from pymemcache.client.base import Client
     mc_client = Client(('luna',11211))
 
-    algorithm = pg.algorithm(pg.de())
+    algorithm = pg.algorithm(pg.de(gen=1000))
     from params import getLowerBound, getUpperBound
     problem = pg.problem(B2_UDP(getLowerBound(),getUpperBound()))
-    a = pg.archipelago(n=cpu_count(),algo=algorithm, prob=problem, pop_size=100)
+    i = pg.island(algo=algorithm, prob=problem, size=20)
 
-    #mc_client.set(i.domain_qualifier('island', str(i), 'status'), 'Running', 10000)
-    #mc_client.set(i.domain_qualifier('island', str(i), 'n_cores'), str(cpu_count()), 10000)
+    mc_client.set(id.domain_qualifier('island', str(id), 'status'), 'Running', 10000)
 
-    #a.evolve(100)
-
-    #from roadrunner import RoadRunner
-
-    #r = RoadRunner()
+    i.evolve()
+    i.wait()
 
     import socket
     hostname = socket.gethostname()
