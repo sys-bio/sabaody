@@ -1,5 +1,7 @@
 from __future__ import print_function, division, absolute_import
 
+from .utils import check_vector, expect
+
 from abc import ABC, abstractmethod
 from numpy import array
 from typing import SupportsFloat
@@ -39,7 +41,7 @@ class Problem:
         return evaluator.evaluate(x)
 
     def get_bounds(self):
-        return (lb,ub)
+        return (self.lb,self.ub)
 
     def get_name(self):
         return 'Sabaody udp'
