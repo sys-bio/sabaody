@@ -12,7 +12,7 @@ try:
     nexecutors = int(sc._conf.get('spark.executor.instances'))
     print('Using {} executors'.format(nexecutors))
 except:
-    nexecutors = 40
+    nexecutors = 4
     print('Cannot determine number of executors, using default value {}'.format(nexecutors))
 
 print('\n')

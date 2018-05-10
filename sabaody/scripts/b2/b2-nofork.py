@@ -6,7 +6,7 @@ from pyspark import SparkContext, SparkConf
 mc_host = 'luna'
 mc_port = 11211
 client = Client((mc_host,mc_port))
-conf = SparkConf().setAppName("b2-single")
+conf = SparkConf().setAppName("b2-nofork")
 sc = SparkContext(conf=conf)
 
 from sabaody import Archipelago, getQualifiedName, problem_constructor
