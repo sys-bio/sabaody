@@ -38,7 +38,7 @@ class Problem:
         self.ub = ub
 
     def fitness(self, x):
-        return evaluator.evaluate(x)
+        return self.evaluator.evaluate(123)
 
     def get_bounds(self):
         return (self.lb,self.ub)

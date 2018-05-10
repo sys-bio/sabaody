@@ -167,12 +167,12 @@ def getDefaultParamValues():
 
 def getUpperBound():
     '''
-    1/10 original value.
-    '''
-    return 0.1*getDefaultParamValues()
-
-def getLowerBound():
-    '''
     10x original value.
     '''
     return 10.*getDefaultParamValues()
+
+def getLowerBound():
+    '''
+    1/10 original value.
+    '''
+    return 0.1*getDefaultParamValues()
