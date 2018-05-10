@@ -12,6 +12,8 @@ from sabaody.utils import expect
 
 from .pygmo_interf import Evaluator
 
+#raise RuntimeError('improt tc')
+
 class MissingValue(Exception):
     pass
 
@@ -140,7 +142,11 @@ class TimecourseModel(Evaluator):
         """
         self.reset()
         self.setParameterVector(x)
-        self.buildResidualList()
+        try:
+            self.buildResidualList()
+        except RuntimeError:
+            # if convergence fails, use a penalty score
+            return 1e9
         return self.MSE()
 
     def getUsageByQuantity(self):

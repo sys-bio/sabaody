@@ -21,43 +21,45 @@ class Evaluator(ABC):
         pass
 
 
-class Problem:
-    def __init__(self, evaluator, lb, ub):
-        # type: (Evaluator, array, array) -> None
-        '''
-        Inits the problem with an objective evaluator
-        (implementing the method evaluate), the parameter
-        vector lower bound (a numpy array) and upper bound.
-        Both bounds must have the same dimension.
-        '''
-        check_vector(lb)
-        check_vector(ub)
-        expect(len(lb) == len(ub), 'Bounds mismatch')
-        self.evaluator = evaluator
-        self.lb = lb
-        self.ub = ub
-
-    def fitness(self, x):
-        return self.evaluator.evaluate(123)
-
-    def get_bounds(self):
-        return (self.lb,self.ub)
-
-    def get_name(self):
-        return 'Sabaody udp'
-
-    def get_extra_info(self):
-        return 'Sabaody extra info'
-
 class Island:
-    def __init__(self, id, problem_factory, domain_qualifier, mc_host, mc_port=11211):
+    def __init__(self, id, problem_factory, domain_qualifier, lb, ub, mc_host, mc_port=11211):
         self.id = id
         self.mc_host = mc_host
         self.mc_port = mc_port
         self.problem_factory = problem_factory
         self.domain_qualifier = domain_qualifier
+        self.lb = lb
+        self.ub = ub
 
 def run_island(i):
+    class Problem:
+        def __init__(self, evaluator, lb, ub):
+            # type: (Evaluator, array, array) -> None
+            '''
+            Inits the problem with an objective evaluator
+            (implementing the method evaluate), the parameter
+            vector lower bound (a numpy array) and upper bound.
+            Both bounds must have the same dimension.
+            '''
+            from b2problem import B2Problem
+            check_vector(lb)
+            check_vector(ub)
+            expect(len(lb) == len(ub), 'Bounds mismatch')
+            self.evaluator = B2Problem('b2.xml')
+            self.lb = lb
+            self.ub = ub
+
+        def fitness(self, x):
+            return self.evaluator.evaluate(123)
+
+        def get_bounds(self):
+            return (self.lb,self.ub)
+
+        def get_name(self):
+            return 'Sabaody udp'
+
+        def get_extra_info(self):
+            return 'Sabaody extra info'
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
@@ -66,7 +68,7 @@ def run_island(i):
 
     algorithm = pg.algorithm(pg.de())
     #problem = pg.problem(udp)
-    problem = pg.problem(i.problem_factory())
+    problem = pg.problem(Problem(None,i.lb,i.ub))
     # TODO: configure pop size
     a = pg.archipelago(n=cpu_count(),algo=algorithm, prob=problem, pop_size=100)
 
@@ -97,9 +99,9 @@ class Archipelago:
         self.island_ids = [str(uuid4()) for x in range(self.num_islands)]
         mc_client.set(self.domain_qualifier('islandIds'), dumps(self.island_ids), 10000)
 
-    def run(self, sc, initial_score):
+    def run(self, sc, initial_score, lb, ub):
         #islands = sc.parallelize(self.island_ids).map(lambda u: Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port))
-        islands = [Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port) for u in self.island_ids]
+        islands = [Island(u, problem_factory=self.problem_factory, domain_qualifier=self.domain_qualifier, lb=lb, ub=ub, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
         #print(islands.map(lambda i: i.id).collect())
         #print(islands.map(lambda i: i.run()).collect())
         #from .worker import run_island
