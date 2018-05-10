@@ -34,7 +34,7 @@ class b2_ctor_class():
 
     def __call__(self):
         import pygmo as pg
-        return pg.problem(self.prob_class(self.model_class, self.lb, self.ub))
+        return pg.problem(self.prob_class(self.model_class(), self.lb, self.ub))
 
 def b2_constructor():
     import pygmo as pg
