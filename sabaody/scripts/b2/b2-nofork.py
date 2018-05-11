@@ -44,17 +44,11 @@ initial_score = 0.
 #print('Initial score: {}'.format(initial_score))
 
 from toolz import partial
+from b2problem import make_problem
 
-#a = Archipelago(4, lambda: Problem(B2Problem(sbml), getLowerBound(), getUpperBound()), initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
+a = Archipelago(4, make_problem, initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
 
-#from b2problem import b2_constructor, b2_ctor_class
-#a = Archipelago(4, b2_ctor_class(Problem, B2Problem, getLowerBound(), getUpperBound()), initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
-a = Archipelago(4, None, initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
-
-#from b2problem import problem_constructor2
-#a = Archipelago(4, partial(problem_constructor2,5), initial_score, None, partial(getQualifiedName, 'B2', str(run_id)), mc_host, mc_port)
-
-a.run(sc, initial_score, getLowerBound(), getUpperBound())
+a.run(sc)
 
 client.set('com.how2cell.sabaody.B2.run.status', 'finished', 604800)
 client.set('com.how2cell.sabaody.B2.run.endTime', str(time()), 604800)

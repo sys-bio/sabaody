@@ -64,7 +64,7 @@ def run_island(id):
     problem = pg.problem(B2_UDP(getLowerBound(),getUpperBound()))
     i = pg.island(algo=algorithm, prob=problem, size=20)
 
-    mc_client.set(id.domain_qualifier('island', str(id), 'status'), 'Running', 10000)
+    #mc_client.set(id.domain_qualifier('island', str(id), 'status'), 'Running', 10000)
 
     i.evolve()
     i.wait()

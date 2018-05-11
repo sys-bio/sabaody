@@ -22,63 +22,37 @@ class Evaluator(ABC):
 
 
 class Island:
-    def __init__(self, id, problem_factory, domain_qualifier, lb, ub, mc_host, mc_port=11211):
+    def __init__(self, id, problem_factory, domain_qualifier, mc_host, mc_port=11211):
         self.id = id
         self.mc_host = mc_host
         self.mc_port = mc_port
         self.problem_factory = problem_factory
         self.domain_qualifier = domain_qualifier
-        self.lb = lb
-        self.ub = ub
 
-def run_island(i):
-    class Problem:
-        def __init__(self, evaluator, lb, ub):
-            # type: (Evaluator, array, array) -> None
-            '''
-            Inits the problem with an objective evaluator
-            (implementing the method evaluate), the parameter
-            vector lower bound (a numpy array) and upper bound.
-            Both bounds must have the same dimension.
-            '''
-            from b2problem import B2Problem
-            check_vector(lb)
-            check_vector(ub)
-            expect(len(lb) == len(ub), 'Bounds mismatch')
-            self.evaluator = B2Problem('b2.xml')
-            self.lb = lb
-            self.ub = ub
-
-        def fitness(self, x):
-            return self.evaluator.evaluate(123)
-
-        def get_bounds(self):
-            return (self.lb,self.ub)
-
-        def get_name(self):
-            return 'Sabaody udp'
-
-        def get_extra_info(self):
-            return 'Sabaody extra info'
+def run_island(island):
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
-    mc_client = Client((i.mc_host,i.mc_port))
-    #udp = i.problem_factory()
+    mc_client = Client((island.mc_host,island.mc_port))
+    #udp = island.problem_factory()
 
     algorithm = pg.algorithm(pg.de())
     #problem = pg.problem(udp)
-    problem = pg.problem(Problem(None,i.lb,i.ub))
+    problem = island.problem_factory()
     # TODO: configure pop size
-    a = pg.archipelago(n=cpu_count(),algo=algorithm, prob=problem, pop_size=100)
+    i = pg.island(algo=algorithm, prob=problem, size=20)
 
-    mc_client.set(i.domain_qualifier('island', str(i.id), 'status'), 'Running', 10000)
-    mc_client.set(i.domain_qualifier('island', str(i.id), 'n_cores'), str(cpu_count()), 10000)
+    mc_client.set(island.domain_qualifier('island', str(island.id), 'status'), 'Running', 10000)
+    mc_client.set(island.domain_qualifier('island', str(island.id), 'n_cores'), str(cpu_count()), 10000)
     #print('Starting island {} with {} cpus'.format(str(i.id), str(cpu_count())))
 
-    a.evolve(100)
+    i.evolve()
+    i.wait()
 
-    return 0
+    import socket
+    hostname = socket.gethostname()
+    ip = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
+    return (ip, hostname, i.get_population().problem.get_fevals())
 
 def problem_constructor():
     import pygmo as pg
@@ -99,9 +73,9 @@ class Archipelago:
         self.island_ids = [str(uuid4()) for x in range(self.num_islands)]
         mc_client.set(self.domain_qualifier('islandIds'), dumps(self.island_ids), 10000)
 
-    def run(self, sc, initial_score, lb, ub):
+    def run(self, sc):
         #islands = sc.parallelize(self.island_ids).map(lambda u: Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port))
-        islands = [Island(u, problem_factory=self.problem_factory, domain_qualifier=self.domain_qualifier, lb=lb, ub=ub, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
+        islands = [Island(u, problem_factory=self.problem_factory, domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
         #print(islands.map(lambda i: i.id).collect())
         #print(islands.map(lambda i: i.run()).collect())
         #from .worker import run_island
