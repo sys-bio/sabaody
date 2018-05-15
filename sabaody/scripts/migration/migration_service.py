@@ -18,6 +18,7 @@ def garbage_collect():
 
 class VersionHandler(RequestHandler):
     def get(self):
+        print('VersionHandler')
         response = { 'version': '3.5.1',
                      'last_build':  date.today().isoformat() }
         self.write(response)

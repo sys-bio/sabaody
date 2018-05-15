@@ -16,5 +16,6 @@ setup(name='sabaody',
         'arrow>=0.12.1',
         'tornado>=5.0.2',
         'APScheduler>=3.5.1',
+        'requests>=2.18.0',
         ],
       )
