@@ -18,8 +18,9 @@ def garbage_collect():
     print('le gc')
 
 class DefineIsland(RequestHandler):
-    def post(self):
+    def post(self, id):
         print('DefineIsland')
+        print(self.request.body)
         data = json_decode(self.request.body)
         print(data)
         response = { 'version': '3.5.1',

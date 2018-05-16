@@ -20,4 +20,4 @@ def define_island(root_url, id, param_vector_size):
     '''
     Sends an island definition to the server.
     '''
-    r = post(URL(root_url) / 'define-island' / str(id), data={'param_vector_size': param_vector_size})
+    r = post(URL(root_url) / 'define-island' / str(id), json={'param_vector_size': param_vector_size})
