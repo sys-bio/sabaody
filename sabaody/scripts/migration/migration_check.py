@@ -2,7 +2,8 @@
 # Copyright 2018 J Kyle Medley
 from __future__ import print_function, division, absolute_import
 
-import requests, json
+from sabaody import define_island
+from numpy import array
+from uuid import uuid4
 
-r = requests.get('http://luna:10100/version')
-print(r.json())
+define_island('http://luna:10100', uuid4(), 4)

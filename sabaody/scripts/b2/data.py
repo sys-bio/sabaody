@@ -130,6 +130,7 @@ FDP = reshape(np.fromstring('''
 300    0.02
 ''', dtype=np.dtype('d'), sep=' '))
 
+# FIXME: why duplicate?
 FDP = reshape(np.fromstring('''
   4.5  0.28
  11    0.32

@@ -8,6 +8,7 @@ from datetime import date
 import tornado.escape
 from tornado.web import Application, RequestHandler
 from tornado.ioloop import IOLoop
+from tornado.escape import json_decode
 from apscheduler.schedulers.tornado import TornadoScheduler
 
 
@@ -16,23 +17,17 @@ from apscheduler.schedulers.tornado import TornadoScheduler
 def garbage_collect():
     print('le gc')
 
-class VersionHandler(RequestHandler):
-    def get(self):
-        print('VersionHandler')
+class DefineIsland(RequestHandler):
+    def post(self):
+        print('DefineIsland')
+        data = json_decode(self.request.body)
+        print(data)
         response = { 'version': '3.5.1',
                      'last_build':  date.today().isoformat() }
         self.write(response)
 
-class GetGameByIdHandler(RequestHandler):
-    def get(self, id):
-        response = { 'id': int(id),
-                     'name': 'Crazy Game',
-                     'release_date': date.today().isoformat() }
-        self.write(response)
-
 app = Application([
-    (r"/getgamebyid/([0-9]+)", GetGameByIdHandler),
-    (r"/version", VersionHandler)
+    (r"/define-island/([a-z0-9-]+)/?", DefineIsland),
 ])
 
 if __name__ == "__main__":

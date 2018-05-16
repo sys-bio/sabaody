@@ -17,5 +17,6 @@ setup(name='sabaody',
         'tornado>=5.0.2',
         'APScheduler>=3.5.1',
         'requests>=2.18.0',
+        'yarl>=1.2.4',
         ],
       )
