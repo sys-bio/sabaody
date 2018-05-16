@@ -2,8 +2,12 @@ from __future__ import print_function, division, absolute_import
 
 from sabaody.timecourse_model import TimecourseModel
 
-from params import param_list, getUpperBound, getLowerBound
-from data import *
+try:
+    from params import param_list, getUpperBound, getLowerBound
+    from data import *
+except ImportError:
+    from .params import param_list, getUpperBound, getLowerBound
+    from .data import *
 
 class B2Problem(TimecourseModel):
     ''' Class that performs a timecourse simulation

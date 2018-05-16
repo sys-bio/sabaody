@@ -18,5 +18,6 @@ setup(name='sabaody',
         'APScheduler>=3.5.1',
         'requests>=2.18.0',
         'yarl>=1.2.4',
+        'attrs>=18.1.0',
         ],
       )

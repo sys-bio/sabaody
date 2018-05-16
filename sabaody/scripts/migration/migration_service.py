@@ -19,13 +19,15 @@ def garbage_collect():
 
 class DefineIsland(RequestHandler):
     def post(self, id):
-        print('DefineIsland')
-        print(self.request.body)
-        data = json_decode(self.request.body)
-        print(data)
-        response = { 'version': '3.5.1',
-                     'last_build':  date.today().isoformat() }
-        self.write(response)
+        try:
+            param_vector_size = json_decode(self.request.body)['param_vector_size']
+            self.set_status(201)
+        except Exception as e:
+            self.clear()
+            self.set_status(400)
+            self.write({
+              'error': str(e),
+              })
 
 app = Application([
     (r"/define-island/([a-z0-9-]+)/?", DefineIsland),

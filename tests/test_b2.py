@@ -1,11 +1,13 @@
 from __future__ import print_function, division, absolute_import
 
 import sabaody
-from sabaody.scripts.b2.obj import B2Model
+from sabaody.scripts.b2.b2problem import B2Problem
 from sabaody.scripts.b2.params import getDefaultParamValues
 
+import os
+
 def test_datapoint_usage():
-    b2 = B2Model()
+    b2 = B2Problem(os.path.join(os.path.dirname(__file__),'..','sbml','b2.xml'))
     # call evaluate to trigger residual calc
     b2.evaluate(getDefaultParamValues())
     # get data point usage info

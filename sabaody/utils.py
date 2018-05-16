@@ -30,6 +30,10 @@ def check_vector(v):
     else:
         raise RuntimeError('Array of dimension {} is not a vector'.format(v.ndim))
 
+def vector_length(v):
+    check_vector(v)
+    return v.size
+
 def getQualifiedName(*args):
     '''
     Gets a qualified RDNS name for this app.
