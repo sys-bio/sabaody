@@ -83,7 +83,7 @@ class LocalMigrantPool:
     Contains one migration buffer. There should be
     exactly one LocalMigrantPool per island.
     '''
-    expiration_time = attr.ib()
+    expiration_time = attr.ib(type=arrow.Arrow)
     _buffer = attr.ib()
     @_buffer.validator
     def check_buffer(self, attribute, value):
