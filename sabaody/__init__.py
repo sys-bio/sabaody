@@ -7,4 +7,3 @@ __version__ = '0.1.0'
 from .pygmo_interf import Evaluator, Archipelago, Island, run_island, problem_constructor
 #from .timecourse_model import TimecourseModel
 from .utils import getQualifiedName
-from .migration_central import define_island

@@ -7,8 +7,10 @@ from yarl import URL
 import attr
 from numpy import array
 from tornado.web import Application, RequestHandler
+import arrow
 
 from collections import deque
+from abc import ABC, abstractmethod
 
 # ** Client Logic **
 def purge_all():
@@ -19,7 +21,7 @@ def purge_all():
     '''
     pass
 
-def define_island(root_url, id, param_vector_size, buffer_type='FIFO'):
+def define_migrant_pool(root_url, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
     # type: (str, array) -> None
     '''
     Sends an island definition to the server.
@@ -32,15 +34,24 @@ def define_island(root_url, id, param_vector_size, buffer_type='FIFO'):
     r.raise_for_status()
 
 # ** Server Logic **
+class MigrationBuffer(ABC):
+    @abstractmethod
+    def push(self, param_vec):
+        pass
+
+    @abstractmethod
+    def pop(self, n=1):
+        pass
+
 @attr.s(frozen=True)
-class FIFOMigrationBuffer:
+class FIFOMigrationBuffer(MigrationBuffer):
     '''
     Per-island buffer that stores incoming migrants from
     other islands.
     '''
     buffer_size = attr.ib(default=10)
     # if zero, determined by first push
-    vector_length = attr.ib(default=0)
+    param_vector_size = attr.ib(default=0)
     _buf = attr.ib()
     @_buf.default
     def init_buf(self):
@@ -52,10 +63,10 @@ class FIFOMigrationBuffer:
         Pushes a new migrant parameter vector
         to the buffer.
         '''
-        if self.vector_length == 0:
-            self.vector_length = param_vec.size
-        elif param_vec.size != self.vector_length:
-            raise RuntimeError('Wrong length for parameter vector: expected {} but got {}'.format(self.vector_length, param_vec.size))
+        if self.param_vector_size == 0:
+            self.param_vector_size = param_vec.size
+        elif param_vec.size != self.param_vector_size:
+            raise RuntimeError('Wrong length for parameter vector: expected {} but got {}'.format(self.param_vector_size, param_vec.size))
         self._buf.append(param_vec)
 
     def pop(self, n=1):
@@ -72,18 +83,19 @@ class LocalMigrantPool:
     Contains one migration buffer. There should be
     exactly one LocalMigrantPool per island.
     '''
+    expiration_time = attr.ib()
     _buffer = attr.ib()
     @_buffer.validator
     def check_buffer(self, attribute, value):
-        if not isinstance(buffer, MigrationBuffer):
+        if not isinstance(value, MigrationBuffer):
             raise RuntimeError('Expected migration buffer subclass')
 
     @classmethod
-    def FIFO(cls):
+    def FIFO(cls, param_vector_size, expiration_time):
         '''
         Constructs a LocalMigrantPool from a FIFO buffer.
         '''
-        return cls(buffer=FIFOMigrationBuffer())
+        return cls(buffer=FIFOMigrationBuffer(param_vector_size=param_vector_size), expiration_time=expiration_time)
 
 class InvalidMigrantBufferType(KeyError):
     pass
@@ -93,20 +105,30 @@ class MigrationServiceHost:
     '''
     Contains all logic for the migration server.
     '''
-    _migrant_pools = attr.ib(default=attr.Factory(list))
+    _migrant_pools = attr.ib(default=attr.Factory(dict))
     _migrant_pool_ctors = attr.ib(default={
       'FIFO': LocalMigrantPool.FIFO
       })
     param_vector_size = attr.ib(default=0)
 
-    def defineIsland(self, id, param_vector_size, buffer_type):
+    def defineMigrantPool(self, id, param_vector_size, buffer_type, expiration_time):
+        '''
+        Defines a new island to be stored in the migration service.
+        '''
         if self.param_vector_size == 0:
             self.param_vector_size = param_vector_size
         elif param_vector_size != self.param_vector_size:
             raise RuntimeError('Wrong length for parameter vector: expected {} but got {}'.format(self.param_vector_size, param_vector_size))
         if not buffer_type in self._migrant_pool_ctors:
             raise InvalidMigrantBufferType()
-        self._migrant_pools.append(self._migrant_pool_ctors[buffer_type])
+        self._migrant_pools[str(id)] = self._migrant_pool_ctors[buffer_type](param_vector_size=param_vector_size, expiration_time=expiration_time)
+
+    def garbageCollect(self):
+        '''
+        Purges migrant pools that are past their expiration time.
+        '''
+        time_now = arrow.utcnow()
+        self._migrant_pools = {(id,p) for id,p in self._migrant_pools.items() if time_now <= p.expiration_time}
 
 # ** Service **
 class DefineIslandHandler(RequestHandler):
