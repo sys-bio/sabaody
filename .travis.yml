@@ -16,4 +16,4 @@ script:
   - pwd
   - ls
   - ls ..
-  - pytest distrib-dyn-modeling/sabaody
+  - pytest
