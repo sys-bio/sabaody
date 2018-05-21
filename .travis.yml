@@ -14,5 +14,7 @@ install:
   - pip install -r requirements.txt
 
 script:
+  - which python3
+  - which python
   - python3 setup.py develop
   - pytest
