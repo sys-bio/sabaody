@@ -6,6 +6,7 @@ import arrow
 
 from uuid import uuid4
 from time import sleep
+import sys
 
 def test_migration_client(mocker):
     '''
@@ -19,10 +20,12 @@ def test_migration_client(mocker):
     island_id = uuid4()
     define_migrant_pool(island_id, 4)
     from requests import post
-    post.assert_called_once()
+    if sys.version_info >= (3,6):
+        post.assert_called_once()
     post.reset_mock()
     push_migrant(island_id, array([1., 2., 3., 4.]))
-    post.assert_called_once()
+    if sys.version_info >= (3,6):
+        post.assert_called_once()
     post.reset_mock()
 
 def test_migration_buffer():
