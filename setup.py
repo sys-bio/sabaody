@@ -19,5 +19,6 @@ setup(name='sabaody',
         'requests>=2.18.0',
         'yarl>=1.2.4',
         'attrs>=18.1.0',
+        'pytest-mock>=1.10.0',
         ],
       )
