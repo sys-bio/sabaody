@@ -23,7 +23,7 @@ def purge_all():
     pass
 
 def define_migrant_pool(root_url, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
-    # type: (str, array) -> None
+    # type: (str, str, array, str, arrow.Arrow) -> None
     '''
     Sends an island definition to the server.
 
@@ -42,7 +42,7 @@ def define_migrant_pool(root_url, id, param_vector_size, buffer_type='FIFO', exp
     r.raise_for_status()
 
 def push_migrant(root_url, island_id, migrant_vector, expiration_time=arrow.utcnow().shift(days=+1)):
-    # type: (str, array) -> None
+    # type: (str, str, array, arrow.Arrow) -> None
     '''
     Sends an island definition to the server.
 
@@ -54,6 +54,18 @@ def push_migrant(root_url, island_id, migrant_vector, expiration_time=arrow.utcn
                'expiration_time': arrow.get(expiration_time).isoformat(),
                })
     r.raise_for_status()
+
+def pop_migrants(root_url, island_id, n=1):
+    # type: (str, array, int) -> None
+    '''
+    Pops n migrants from the pool
+    '''
+    r = post(URL(root_url) / str(island_id) / 'pop-migrants',
+             json={
+               'n': n,
+               })
+    r.raise_for_status()
+    return [array(m) for m in r.json()['migrants']]
 
 # ** Server Logic **
 class MigrationBuffer(ABC):
@@ -139,6 +151,10 @@ class MigrationServiceHost:
       })
     param_vector_size = attr.ib(default=0)
 
+    def purgeAll(self):
+        self._migrant_pools = {}
+        self.param_vector_size = 0
+
     def defineMigrantPool(self, id, param_vector_size, buffer_type, expiration_time):
         '''
         Defines a new island to be stored in the migration service.
@@ -162,6 +178,12 @@ class MigrationServiceHost:
             raise RuntimeError('Expected migrant vector of length {} but received length {}'.format(self.param_vector_size, migrant_vector.size))
         self._migrant_pools[str(id)].push(migrant_vector)
 
+    def popMigrants(self, id, n):
+        '''
+        Pops n migrants from the pool.
+        '''
+        return self._migrant_pools[str(id)].pop(n)
+
     def garbageCollect(self):
         '''
         Purges migrant pools that are past their expiration time.
@@ -169,7 +191,22 @@ class MigrationServiceHost:
         time_now = arrow.utcnow()
         self._migrant_pools = {(id,p) for id,p in self._migrant_pools.items() if time_now <= p.expiration_time}
 
-# ** Service **
+# ** Request Handlers **
+class PurgeAllHandler(RequestHandler):
+    def initialize(self, migration_host):
+        self.migration_host = migration_host
+
+    def post(self):
+        try:
+            self.migration_host.purgeAll()
+        except Exception as e:
+            print('Misc. error "{}"'.format(e))
+            self.clear()
+            self.set_status(400)
+            self.write({
+              'error': str(e),
+              })
+
 class DefineMigrantPoolHandler(RequestHandler):
     def initialize(self, migration_host):
         self.migration_host = migration_host
@@ -199,11 +236,25 @@ class PushMigrantHandler(RequestHandler):
         args = json_decode(self.request.body)
         try:
             self.migration_host.pushMigrant(id, **args)
-        except InvalidMigrantBufferType:
-            print('Invalid migrant buffer type "{}"'.format(args['buffer_type']))
+        except Exception as e:
+            print('Misc. error "{}"'.format(e))
             self.clear()
             self.set_status(400)
-            self.finish('No such migrant buffer type "{}"'.format(args['buffer_type']))
+            self.write({
+              'error': str(e),
+              })
+
+class PopMigrantsHandler(RequestHandler):
+    def initialize(self, migration_host):
+        self.migration_host = migration_host
+
+    def post(self, id):
+        args = json_decode(self.request.body)
+        try:
+            migrants = self.migration_host.popMigrants(id, **args)
+            self.write({
+              'migrants': [m.tolist() for m in migrants],
+              })
         except Exception as e:
             print('Misc. error "{}"'.format(e))
             self.clear()
@@ -215,6 +266,8 @@ class PushMigrantHandler(RequestHandler):
 def create_central_migration_service():
     migration_host = MigrationServiceHost()
     return Application([
+        (r"/purge-all/?", PurgeAllHandler, {'migration_host': migration_host}),
         (r"/define-island/([a-z0-9-]+)/?", DefineMigrantPoolHandler, {'migration_host': migration_host}),
         (r"/([a-z0-9-]+)/push-migrant/?", PushMigrantHandler, {'migration_host': migration_host}),
+        (r"/([a-z0-9-]+)/pop-migrants/?", PopMigrantsHandler, {'migration_host': migration_host}),
     ])
