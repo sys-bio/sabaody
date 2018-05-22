@@ -56,10 +56,6 @@ def run_island(island):
     ip = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
     return (ip, hostname, i.get_population().problem.get_fevals())
 
-def problem_constructor():
-    import pygmo as pg
-    return pg.rosenbrock(5)
-
 class Archipelago:
     def __init__(self, num_islands, problem_factory, initial_score, topology, domain_qualifier, mc_host, mc_port=11211):
         from pymemcache.client.base import Client
