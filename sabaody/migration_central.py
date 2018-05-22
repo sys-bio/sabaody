@@ -5,13 +5,14 @@ from __future__ import print_function, division, absolute_import
 from requests import post
 from yarl import URL
 import attr
-from numpy import array
+from numpy import array, ndarray
 from tornado.web import Application, RequestHandler
 from tornado.escape import json_decode
 import arrow
 
 from collections import deque
 from abc import ABC, abstractmethod
+import typing
 
 # ** Client Logic **
 def purge_all():
@@ -33,7 +34,7 @@ def define_migrant_pool(root_url, id, param_vector_size, buffer_type='FIFO', exp
     :param buffer_type: Type of migration buffer to use. Can be 'FIFO'.
     :param expiration_time: The time when the pool should expire and be garbage collected. Should be longer than expected run time of fitting task.
     '''
-    r = post(URL(root_url) / 'define-island' / str(id),
+    r = post(str(URL(root_url) / 'define-island' / str(id)),
              json={
                'param_vector_size': param_vector_size,
                'buffer_type': buffer_type,
@@ -48,7 +49,7 @@ def push_migrant(root_url, island_id, migrant_vector, expiration_time=arrow.utcn
 
     :param expiration_time: If set, updates the expiration time of the pool.
     '''
-    r = post(URL(root_url) / str(island_id) / 'push-migrant',
+    r = post(str(URL(root_url) / str(island_id) / 'push-migrant'),
              json={
                'migrant_vector': migrant_vector.tolist(),
                'expiration_time': arrow.get(expiration_time).isoformat(),
@@ -56,11 +57,11 @@ def push_migrant(root_url, island_id, migrant_vector, expiration_time=arrow.utcn
     r.raise_for_status()
 
 def pop_migrants(root_url, island_id, n=1):
-    # type: (str, array, int) -> None
+    # type: (str, array, int) -> typing.List[ndarray]
     '''
     Pops n migrants from the pool
     '''
-    r = post(URL(root_url) / str(island_id) / 'pop-migrants',
+    r = post(str(URL(root_url) / str(island_id) / 'pop-migrants'),
              json={
                'n': n,
                })

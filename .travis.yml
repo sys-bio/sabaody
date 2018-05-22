@@ -12,7 +12,9 @@ python:
 
 install:
   - pip install -r requirements.txt
+  - pip install mypy
 
 script:
   - python setup.py develop
+  - mypy ./tests/test_migration_central.py --ignore-missing-imports
   - pytest
