@@ -78,7 +78,7 @@ class MigrationBuffer(ABC):
     def pop(self, n=1):
         pass
 
-@attr.s(frozen=True)
+@attr.s
 class FIFOMigrationBuffer(MigrationBuffer):
     '''
     Per-island buffer that stores incoming migrants from
