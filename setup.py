@@ -8,6 +8,7 @@ setup(name='sabaody',
       author='Shaik Asifullah, J. Kyle Medley',
       packages=['sabaody'],
       install_requires=[
+        'numpy>=1.14.2',
         'tellurium>=2.0.12',
         'networkx>=2.1',
         'pygmo>=2.7',
