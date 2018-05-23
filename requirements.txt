@@ -1,5 +1,6 @@
 tellurium>=2.0.12
 networkx>=2.1
+pygmo>=2.7
 pymemcache>=1.4.4
 toolz>=0.9.0
 marshmallow>=2.15.2

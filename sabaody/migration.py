@@ -30,6 +30,13 @@ class TopCandidateSelectionPolicy(SelectionPolicyBase):
         self.pop_fraction = pop_fraction
 
     def select(self, population):
+        '''
+        Selects the top pop_fraction*population_size
+        individuals and returns them as a 2D array
+        (different vectors are in different rows).
+        Cannot be used with multiple objectives - partial
+        order is requred.
+        '''
         indices = argsort(population.get_f(), axis=0)
         n_migrants = int(indices.size*self.pop_fraction)
         # WARNING: single objective only
