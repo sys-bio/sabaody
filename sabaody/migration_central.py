@@ -164,8 +164,6 @@ class MigrationServiceHost:
             self.param_vector_size = param_vector_size
         elif param_vector_size != self.param_vector_size:
             raise RuntimeError('Wrong length for parameter vector: expected {} but got {}'.format(self.param_vector_size, param_vector_size))
-        print('buffer type: {}'.format(buffer_type))
-        print('ctors: {}'.format(self._migrant_pool_ctors))
         if not buffer_type in self._migrant_pool_ctors:
             raise InvalidMigrantBufferType()
         self._migrant_pools[str(id)] = self._migrant_pool_ctors[buffer_type](param_vector_size=param_vector_size, expiration_time=arrow.get(expiration_time))
