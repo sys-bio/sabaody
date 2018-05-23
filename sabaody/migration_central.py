@@ -5,7 +5,7 @@ from __future__ import print_function, division, absolute_import
 from requests import post
 from yarl import URL
 import attr
-from numpy import array, ndarray
+from numpy import array, ndarray, argsort
 from tornado.web import Application, RequestHandler
 from tornado.escape import json_decode
 import arrow
@@ -21,7 +21,7 @@ def purge_all():
     Wipe the island definitions and all migrants.
     Return to state at service startup.
     '''
-    pass
+    pass # TODO
 
 def define_migrant_pool(root_url, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
     # type: (str, str, array, str, arrow.Arrow) -> None
