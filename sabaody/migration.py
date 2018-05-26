@@ -22,9 +22,10 @@ class ReplacementPolicyBase(ABC):
         pass
 
 # ** Policies **
-class TopCandidateSelectionPolicy(SelectionPolicyBase):
+class FairSPolicy(SelectionPolicyBase):
     '''
-    Selection policy based on the top N individuals in the population.
+    Selection policy.
+    Selects the best N individuals from a population.
     '''
     def __init__(self, pop_fraction):
         self.pop_fraction = pop_fraction
