@@ -42,8 +42,8 @@ def define_migrant_pool(root_url, id, param_vector_size, buffer_type='FIFO', exp
                })
     r.raise_for_status()
 
-def push_migrant(root_url, island_id, migrant_vector, expiration_time=arrow.utcnow().shift(days=+1)):
-    # type: (str, str, ndarray, arrow.Arrow) -> None
+def push_migrant(root_url, island_id, migrant_vector, fitness, expiration_time=arrow.utcnow().shift(days=+1)):
+    # type: (str, str, ndarray, float, arrow.Arrow) -> None
     '''
     Sends an island definition to the server.
 
@@ -56,7 +56,7 @@ def push_migrant(root_url, island_id, migrant_vector, expiration_time=arrow.utcn
                })
     r.raise_for_status()
 
-def pop_migrants(root_url, island_id, n=1):
+def pull_migrants(root_url, island_id, n=1):
     # type: (str, array, int) -> typing.List[ndarray]
     '''
     Pops n migrants from the pool
@@ -262,6 +262,7 @@ class PopMigrantsHandler(RequestHandler):
               'error': str(e),
               })
 
+# TODO: test with https://github.com/eugeniy/pytest-tornado
 def create_central_migration_service():
     migration_host = MigrationServiceHost()
     return Application([

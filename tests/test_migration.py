@@ -8,7 +8,7 @@ def test_migration_policies():
     '''
     from sabaody.migration import BestSPolicy, FairRPolicy, sort_by_fitness
     from pygmo import population, rosenbrock
-    # rosenbrock with dim 3 is just suppress errors from pagmo, never evaluated
+    # rosenbrock with dim 3 is just to suppress errors from pagmo, never evaluated
     p = population(prob=rosenbrock(3), size=0, seed=0)
     # create a fake population
     p.push_back(array([10.,11., 12.]), array([4.]))
@@ -25,6 +25,7 @@ def test_migration_policies():
       [4., 5., 6.]]))
     # test rate vs fraction
     s2 = BestSPolicy(pop_fraction=0.5)
+    # shoud be same number of candidates either way
     assert s2.select(p)[0].shape[0] == candidates.shape[0] == 2
 
     # test replacement

@@ -18,6 +18,7 @@ setup(name='sabaody',
         'marshmallow>=2.15.2',
         'arrow>=0.12.1',
         'tornado>=5.0.2',
+        'pytest-tornado>=0.5.0', # only for testing
         'APScheduler>=3.5.1',
         'requests>=2.18.0',
         'yarl>=1.2.4',

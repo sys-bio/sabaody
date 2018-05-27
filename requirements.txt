@@ -8,6 +8,7 @@ toolz>=0.9.0
 marshmallow>=2.15.2
 arrow>=0.12.1
 tornado>=5.0.2
+pytest-tornado>=0.5.0
 APScheduler>=3.5.1
 requests>=2.18.0
 yarl>=1.2.4

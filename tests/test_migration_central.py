@@ -11,6 +11,7 @@ import sys
 def test_migration_client(mocker):
     '''
     Test the client methods, including define_migrant_pool and push_migrant.
+    requests.post is patched so post requests are never actually sent.
     '''
     mocker.patch('requests.post')
     from sabaody.migration_central import define_migrant_pool, push_migrant
@@ -23,7 +24,7 @@ def test_migration_client(mocker):
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()
-    push_migrant(island_id, array([1., 2., 3., 4.]))
+    push_migrant(island_id, array([1., 2., 3., 4.]), 1.)
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()
