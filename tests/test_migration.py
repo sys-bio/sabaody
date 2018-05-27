@@ -1,12 +1,12 @@
 from __future__ import print_function, division, absolute_import
 
-from numpy import array, array_equal
+from numpy import array, array_equal, sort
 
 def test_migration_policies():
     '''
     Test the client methods, including define_migrant_pool and push_migrant.
     '''
-    from sabaody.migration import BestSPolicy, FairRPolicy
+    from sabaody.migration import BestSPolicy, FairRPolicy, sort_by_fitness
     from pygmo import population, rosenbrock
     p = population(prob=rosenbrock(3), size=0, seed=0)
     p.push_back(array([10.,11., 12.]), array([4.]))
@@ -35,3 +35,8 @@ def test_migration_policies():
     print(candidate_f)
     # should replace worst two
     r.replace(p2,candidates,candidate_f)
+    assert array_equal(sort_by_fitness(p2)[0], array([
+        [1.,2.,3.],
+        [4.,5.,6.],
+        [9.,9.,9.],
+        [8.,9.,9.]]))

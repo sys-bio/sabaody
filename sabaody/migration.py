@@ -21,6 +21,11 @@ class ReplacementPolicyBase(ABC):
     def replace(self, population, candidates, candidate_f):
         pass
 
+def sort_by_fitness(population):
+    indices = argsort(population.get_f(), axis=0)
+    return (population.get_x()[indices[:,0]],
+            population.get_f()[indices[:,0]])
+
 # ** Selection Policies **
 class BestSPolicy(SelectionPolicyBase):
     '''
