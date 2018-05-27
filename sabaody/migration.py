@@ -37,7 +37,12 @@ class BestSPolicy(SelectionPolicyBase):
     Selection policy.
     Selects the best N individuals from a population.
     '''
-    def __init__(self, pop_fraction):
+    def __init__(self, migration_rate=None, pop_fraction=None):
+        if migration_rate is None and pop_fraction is None:
+            raise RuntimeError('Must specify migration as a rate or fraction.')
+        elif migration_rate is not None and pop_fraction is not None:
+            raise RuntimeError('Cannot specify both migration rate and fraction.')
+        self.migration_rate = migration_rate
         self.pop_fraction = pop_fraction
 
     def select(self, population):
@@ -52,7 +57,7 @@ class BestSPolicy(SelectionPolicyBase):
         according to best fitness value.
         '''
         indices = argsort(population.get_f(), axis=0)
-        n_migrants = int(indices.size*self.pop_fraction)
+        n_migrants = self.migration_rate or int(indices.size*self.pop_fraction)
         # WARNING: single objective only
         return (population.get_x()[indices[:n_migrants,0]],
                 population.get_f()[indices[:n_migrants,0]])

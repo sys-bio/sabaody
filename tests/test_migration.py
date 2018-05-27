@@ -17,11 +17,15 @@ def test_migration_policies():
     p.push_back(array([4.,  5.,  6.]), array([2.]))
 
     # test selection
-    s = BestSPolicy(0.5)
+    s = BestSPolicy(2)
     candidates,candidate_f = s.select(p)
+    # test that selected candidates are top two
     assert array_equal(candidates, array([
       [1., 2., 3.],
       [4., 5., 6.]]))
+    # test rate vs fraction
+    s2 = BestSPolicy(pop_fraction=0.5)
+    assert s2.select(p)[0].shape[0] == candidates.shape[0] == 2
 
     # test replacement
     p2 = population(prob=rosenbrock(3), size=0, seed=0)
