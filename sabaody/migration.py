@@ -22,6 +22,11 @@ class ReplacementPolicyBase(ABC):
         pass
 
 def sort_by_fitness(population):
+    '''
+    Returns a tuple of the decision vectors and corresponding
+    fitness values, both sorted according to fitness (best
+    first).
+    '''
     indices = argsort(population.get_f(), axis=0)
     return (population.get_x()[indices[:,0]],
             population.get_f()[indices[:,0]])

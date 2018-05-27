@@ -4,11 +4,13 @@ from numpy import array, array_equal, sort
 
 def test_migration_policies():
     '''
-    Test the client methods, including define_migrant_pool and push_migrant.
+    Test the replacement and selection policies.
     '''
     from sabaody.migration import BestSPolicy, FairRPolicy, sort_by_fitness
     from pygmo import population, rosenbrock
+    # rosenbrock with dim 3 is just suppress errors from pagmo, never evaluated
     p = population(prob=rosenbrock(3), size=0, seed=0)
+    # create a fake population
     p.push_back(array([10.,11., 12.]), array([4.]))
     p.push_back(array([1.,  2.,  3.]), array([1.]))
     p.push_back(array([7.,  8.,  9.]), array([3.]))
@@ -29,11 +31,7 @@ def test_migration_policies():
     p2.push_back(array([6.,9.,9.]), array([8.]))
 
     r = FairRPolicy()
-    print('candidates')
-    print(candidates)
-    print('candidate_f')
-    print(candidate_f)
-    # should replace worst two
+    # should replace worst two dicision vectors
     r.replace(p2,candidates,candidate_f)
     assert array_equal(sort_by_fitness(p2)[0], array([
         [1.,2.,3.],
