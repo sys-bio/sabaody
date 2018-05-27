@@ -31,7 +31,7 @@ def test_migration_policies():
     p2.push_back(array([6.,9.,9.]), array([8.]))
 
     r = FairRPolicy()
-    # should replace worst two dicision vectors
+    # should replace worst two decision vectors
     r.replace(p2,candidates,candidate_f)
     assert array_equal(sort_by_fitness(p2)[0], array([
         [1.,2.,3.],
