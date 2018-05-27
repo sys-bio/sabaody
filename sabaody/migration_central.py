@@ -2,6 +2,8 @@
 # Copyright 2018 J Kyle Medley
 from __future__ import print_function, division, absolute_import
 
+from .migration import Migrator
+
 from requests import post
 from yarl import URL
 import attr
@@ -15,58 +17,70 @@ from abc import ABC, abstractmethod
 import typing
 
 # ** Client Logic **
-def purge_all():
-    # type: () -> None
-    '''
-    Wipe the island definitions and all migrants.
-    Return to state at service startup.
-    '''
-    pass # TODO
+class CentralMigrator(Migrator):
+    def __init__(self, root_url):
+        self.root_url = URL(root_url)
 
-def define_migrant_pool(root_url, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
-    # type: (str, str, array, str, arrow.Arrow) -> None
-    '''
-    Sends an island definition to the server.
+    def purge_all(self):
+        # type: () -> None
+        '''
+        Wipe the island definitions and all migrants.
+        Return to state at service startup.
+        '''
+        pass # TODO
 
-    :param root_url: The url of the server, e.g. http://localhost:10100.
-    :param id: The id of the island/pool to be created (one pool per island).
-    :param param_vector_size: The size of the parameter vector for the island/pool. Will be used to check pushed migrant vectors.
-    :param buffer_type: Type of migration buffer to use. Can be 'FIFO'.
-    :param expiration_time: The time when the pool should expire and be garbage collected. Should be longer than expected run time of fitting task.
-    '''
-    r = post(str(URL(root_url) / 'define-island' / str(id)),
-             json={
-               'param_vector_size': param_vector_size,
-               'buffer_type': buffer_type,
-               'expiration_time': arrow.get(expiration_time).isoformat(),
-               })
-    r.raise_for_status()
+    def define_migrant_pool(self, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
+        # type: (str, array, str, arrow.Arrow) -> None
+        '''
+        Sends an island definition to the server.
 
-def push_migrant(root_url, island_id, migrant_vector, fitness, expiration_time=arrow.utcnow().shift(days=+1)):
-    # type: (str, str, ndarray, float, arrow.Arrow) -> None
-    '''
-    Sends an island definition to the server.
+        :param self.root_url: The url of the server, e.g. http://localhost:10100.
+        :param id: The id of the island/pool to be created (one pool per island).
+        :param param_vector_size: The size of the parameter vector for the island/pool. Will be used to check pushed migrant vectors.
+        :param buffer_type: Type of migration buffer to use. Can be 'FIFO'.
+        :param expiration_time: The time when the pool should expire and be garbage collected. Should be longer than expected run time of fitting task.
+        '''
+        r = post(str(self.root_url / 'define-island' / str(id)),
+                json={
+                  'param_vector_size': param_vector_size,
+                  'buffer_type': buffer_type,
+                  'expiration_time': arrow.get(expiration_time).isoformat(),
+                  })
+        r.raise_for_status()
 
-    :param expiration_time: If set, updates the expiration time of the pool.
-    '''
-    r = post(str(URL(root_url) / str(island_id) / 'push-migrant'),
-             json={
-               'migrant_vector': migrant_vector.tolist(),
-               'expiration_time': arrow.get(expiration_time).isoformat(),
-               })
-    r.raise_for_status()
+    def push_migrant(self, island_id, migrant_vector, fitness, expiration_time=arrow.utcnow().shift(days=+1)):
+        # type: (str, ndarray, float, arrow.Arrow) -> None
+        '''
+        Sends an island definition to the server.
 
-def pull_migrants(root_url, island_id, n=1):
-    # type: (str, array, int) -> typing.List[ndarray]
-    '''
-    Pops n migrants from the pool
-    '''
-    r = post(str(URL(root_url) / str(island_id) / 'pop-migrants'),
-             json={
-               'n': n,
-               })
-    r.raise_for_status()
-    return [array(m) for m in r.json()['migrants']]
+        :param expiration_time: If set, updates the expiration time of the pool.
+        '''
+        r = post(str(self.root_url / str(island_id) / 'push-migrant'),
+                json={
+                  'migrant_vector': migrant_vector.tolist(),
+                  'expiration_time': arrow.get(expiration_time).isoformat(),
+                  })
+        r.raise_for_status()
+
+    def pull_migrants(self, island_id, n=0):
+        # type: (array, int) -> typing.List[ndarray]
+        '''
+        Gets n migrants from the pool and returns them.
+        If n is zero, return all migrants.
+        '''
+        r = post(str(self.root_url / str(island_id) / 'pop-migrants'),
+                json={
+                  'n': n,
+                  })
+        r.raise_for_status()
+        return [array(m) for m in r.json()['migrants']]
+
+    def replace(self, island_id, population, policy):
+        '''
+        Replace migrants in the specified population with candidates
+        in the pool according to the specified policy.
+        '''
+        pass
 
 # ** Server Logic **
 class MigrationBuffer(ABC):

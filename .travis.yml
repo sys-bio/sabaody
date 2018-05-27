@@ -16,6 +16,5 @@ install:
 
 script:
   - python setup.py develop
-  - python -c 'import pygmo'
   - mypy ./tests/test_migration_central.py --ignore-missing-imports
   - pytest

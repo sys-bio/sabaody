@@ -3,10 +3,20 @@ from __future__ import print_function, division, absolute_import
 from toolz import partial
 from numpy import array, array_equal
 import arrow
+from pytest import fixture
 
 from uuid import uuid4
 from time import sleep
 import sys
+
+# Tornado fixtures
+
+@fixture
+def app():
+    from sabaody.migration_central import create_central_migration_service
+    return create_central_migration_service()
+
+# Unit tests
 
 def test_migration_client(mocker):
     '''
@@ -14,17 +24,17 @@ def test_migration_client(mocker):
     requests.post is patched so post requests are never actually sent.
     '''
     mocker.patch('requests.post')
-    from sabaody.migration_central import define_migrant_pool, push_migrant
-    define_migrant_pool = partial(define_migrant_pool, 'http://www.schneierfacts.com:10100')
-    push_migrant        = partial(push_migrant,        'http://www.schneierfacts.com:10100')
+    from sabaody.migration_central import CentralMigrator
+    # url doesn't matter, requests never sent
+    m = CentralMigrator('http://www.schneierfacts.com:10100')
 
     island_id = uuid4()
-    define_migrant_pool(island_id, 4)
+    m.define_migrant_pool(island_id, 4)
     from requests import post
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()
-    push_migrant(island_id, array([1., 2., 3., 4.]), 1.)
+    m.push_migrant(island_id, array([1., 2., 3., 4.]), 1.)
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()
@@ -54,3 +64,11 @@ def test_migration_host():
     sleep(1) # make sure island expires
     m.garbageCollect()
     assert len(m._migrant_pools) == 0
+
+
+def test_migration_replacement_policy_integration(base_url):
+    '''
+    Test migration replacement policy.
+    '''
+    from sabaody.migration_central import CentralMigrator
+    m = CentralMigrator(base_url)

@@ -31,7 +31,7 @@ class Island:
         self.problem_factory = problem_factory
         self.domain_qualifier = domain_qualifier
 
-def run_island(island):
+def run_island(island, migrator):
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
@@ -71,7 +71,7 @@ class Archipelago:
         self.island_ids = [str(uuid4()) for x in range(self.num_islands)]
         mc_client.set(self.domain_qualifier('islandIds'), dumps(self.island_ids), 10000)
 
-    def run(self, sc):
+    def run(self, sc, migrator):
         #islands = sc.parallelize(self.island_ids).map(lambda u: Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port))
         islands = [Island(u, problem_factory=self.problem_factory, domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
         #print(islands.map(lambda i: i.id).collect())

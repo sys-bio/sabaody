@@ -83,3 +83,7 @@ class FairRPolicy(ReplacementPolicyBase):
         for i,k,f in zip(indices[:,0],range(len(candidate_f)),candidate_f):
             if f < pop_f[i,0]:
                 population.set_xf(int(i),candidates[k,:],f)
+
+# ** Migration Policies **
+class Migrator:
+    pass
