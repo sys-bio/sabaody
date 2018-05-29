@@ -4,7 +4,7 @@ from __future__ import print_function, division, absolute_import
 
 from .migration import Migrator
 
-from requests import post
+#from requests import post
 from yarl import URL
 import attr
 from numpy import array, ndarray, argsort, transpose
@@ -40,6 +40,7 @@ class CentralMigrator(Migrator):
         :param buffer_type: Type of migration buffer to use. Can be 'FIFO'.
         :param expiration_time: The time when the pool should expire and be garbage collected. Should be longer than expected run time of fitting task.
         '''
+        from requests import post
         r = post(str(self.root_url / 'define-island' / str(id)),
                 json={
                   'param_vector_size': param_vector_size,
@@ -55,6 +56,7 @@ class CentralMigrator(Migrator):
 
         :param expiration_time: If set, updates the expiration time of the pool.
         '''
+        from requests import post
         r = post(str(self.root_url / str(island_id) / 'push-migrant'),
                 json={
                   'migrant_vector': migrant_vector.tolist(),
@@ -69,6 +71,7 @@ class CentralMigrator(Migrator):
         Gets n migrants from the pool and returns them.
         If n is zero, return all migrants.
         '''
+        from requests import post
         r = post(str(self.root_url / str(island_id) / 'pop-migrants'),
                 json={
                   'n': n,
