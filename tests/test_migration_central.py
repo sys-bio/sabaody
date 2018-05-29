@@ -21,6 +21,7 @@ def test_migration_replacement_policy_integration():
     Test migration replacement policy.
     '''
     from sabaody.migration_central import CentralMigrator, start_migration_service
+    from sabaody.migration import BestSPolicy, FairRPolicy, sort_by_fitness
     from sabaody.utils import arrays_equal
     from pygmo import population, rosenbrock
     try:
@@ -47,15 +48,26 @@ def test_migration_replacement_policy_integration():
         m.push_migrant(island2, array([4.,4.,4.]), 4.)
         # population for island 2
         p2 = population(prob=rosenbrock(3), size=0, seed=0)
-        p2.push_back(array([9.,0.,1.]), array([3.]))
-        p2.push_back(array([9.,0.,2.]), array([4.]))
+        p2.push_back(array([9.,9.,1.]), array([3.5]))
+        p2.push_back(array([9.,9.,2.]), array([4.5]))
 
-        migrants = m.pull_migrants(island1)
-        assert len(migrants) == 2
-        assert arrays_equal(migrants, (
-          array([2.,2.,2.]),
-          array([1.,1.,1.]),
-          ))
+        migrants,fitness = m.pull_migrants(island1)
+        assert array_equal(migrants, array([
+          [2.,2.,2.],
+          [1.,1.,1.],
+          ]))
+        assert array_equal(fitness, array([
+          [2.],
+          [1.]]))
+
+        # re-push the migrants
+        m.push_migrant(island1, array([1.,1.,1.]), 1.)
+        m.push_migrant(island1, array([2.,2.,2.]), 2.)
+
+        m.replace(island1, p1, FairRPolicy())
+        assert array_equal(sort_by_fitness(p1)[0], array([
+                           [1.,1.,1.],
+                           [2.,2.,2.]]))
 
     finally:
         process.terminate()
@@ -90,12 +102,13 @@ def test_migration_buffer():
     '''
     from sabaody.migration_central import FIFOMigrationBuffer
     b = FIFOMigrationBuffer(buffer_size=3, param_vector_size=3)
-    b.push(array([1., 2., 3.]))
-    b.push(array([4., 5., 6.]))
-    b.push(array([7., 8., 9.]))
+    b.push(array([1., 2., 3.]), 1.)
+    b.push(array([4., 5., 6.]), 1.)
+    b.push(array([7., 8., 9.]), 1.)
     migrants = b.pop(3)
     assert len(migrants) == 3
-    assert array_equal(migrants[0], array([7., 8., 9.]))
+    assert array_equal(migrants[0][0], array([7., 8., 9.]))
+    assert migrants[0][1] == 1.
 
 def test_migration_host():
     '''

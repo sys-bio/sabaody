@@ -7,7 +7,7 @@ from .migration import Migrator
 from requests import post
 from yarl import URL
 import attr
-from numpy import array, ndarray, argsort
+from numpy import array, ndarray, argsort, transpose
 from tornado.web import Application, RequestHandler
 from tornado.escape import json_decode
 import arrow
@@ -58,6 +58,7 @@ class CentralMigrator(Migrator):
         r = post(str(self.root_url / str(island_id) / 'push-migrant'),
                 json={
                   'migrant_vector': migrant_vector.tolist(),
+                  'fitness': float(fitness),
                   'expiration_time': arrow.get(expiration_time).isoformat(),
                   })
         r.raise_for_status()
@@ -73,14 +74,16 @@ class CentralMigrator(Migrator):
                   'n': n,
                   })
         r.raise_for_status()
-        return [array(m) for m in r.json()['migrants']]
+        return (array(r.json()['migrants']),
+                array([[f] for f in r.json()['fitness']]))
 
     def replace(self, island_id, population, policy):
         '''
         Replace migrants in the specified population with candidates
         in the pool according to the specified policy.
         '''
-        pass
+        candidates,candidate_f = self.pull_migrants(island_id)
+        policy.replace(population,candidates,candidate_f)
 
 # ** Server Logic **
 class MigrationBuffer(ABC):
@@ -106,7 +109,7 @@ class FIFOMigrationBuffer(MigrationBuffer):
     def init_buf(self):
         return deque(maxlen=self.buffer_size)
 
-    def push(self, param_vec):
+    def push(self, param_vec, fitness):
         # type: (array) -> None
         '''
         Pushes a new migrant parameter vector
@@ -116,7 +119,7 @@ class FIFOMigrationBuffer(MigrationBuffer):
             self.param_vector_size = param_vec.size
         elif param_vec.size != self.param_vector_size:
             raise RuntimeError('Wrong length for parameter vector: expected {} but got {}'.format(self.param_vector_size, param_vec.size))
-        self._buf.append(param_vec)
+        self._buf.append((param_vec,fitness))
 
     def pop(self, n=0):
         '''
@@ -142,8 +145,8 @@ class LocalMigrantPool:
         if not isinstance(value, MigrationBuffer):
             raise RuntimeError('Expected migration buffer subclass')
 
-    def push(self, param_vec):
-        return self._buffer.push(param_vec)
+    def push(self, param_vec, fitness):
+        return self._buffer.push(param_vec, fitness)
 
     def pop(self, n=0):
         return self._buffer.pop(n)
@@ -185,14 +188,14 @@ class MigrationServiceHost:
             raise InvalidMigrantBufferType()
         self._migrant_pools[str(id)] = self._migrant_pool_ctors[buffer_type](param_vector_size=param_vector_size, expiration_time=arrow.get(expiration_time))
 
-    def pushMigrant(self, id, migrant_vector, expiration_time):
+    def pushMigrant(self, id, migrant_vector, fitness, expiration_time):
         '''
         Pushes a migrant vector to a pool.
         '''
         migrant_vector = array(migrant_vector)
         if migrant_vector.size != self.param_vector_size:
             raise RuntimeError('Expected migrant vector of length {} but received length {}'.format(self.param_vector_size, migrant_vector.size))
-        self._migrant_pools[str(id)].push(migrant_vector)
+        self._migrant_pools[str(id)].push(migrant_vector, fitness)
 
     def popMigrants(self, id, n):
         '''
@@ -269,7 +272,8 @@ class PopMigrantsHandler(RequestHandler):
         try:
             migrants = self.migration_host.popMigrants(id, **args)
             self.write({
-              'migrants': [m.tolist() for m in migrants],
+              'migrants': [v.tolist() for v,fitness in migrants],
+              'fitness': [float(fitness) for v,fitness in migrants],
               })
         except Exception as e:
             print('Misc. error "{}"'.format(e))
