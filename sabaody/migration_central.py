@@ -118,12 +118,15 @@ class FIFOMigrationBuffer(MigrationBuffer):
             raise RuntimeError('Wrong length for parameter vector: expected {} but got {}'.format(self.param_vector_size, param_vec.size))
         self._buf.append(param_vec)
 
-    def pop(self, n=1):
+    def pop(self, n=0):
         '''
         Remove n migrants from the buffer and return them
         as a sequence.
         '''
-        return tuple(self._buf.pop() for x in range(n))
+        if n > 0:
+            return tuple(self._buf.pop() for x in range(n))
+        else:
+            return tuple(self._buf.pop() for x in range(len(self._buf)))
 
 @attr.s(frozen=True)
 class LocalMigrantPool:
@@ -142,7 +145,7 @@ class LocalMigrantPool:
     def push(self, param_vec):
         return self._buffer.push(param_vec)
 
-    def pop(self, n=1):
+    def pop(self, n=0):
         return self._buffer.pop(n)
 
     @classmethod
@@ -285,3 +288,12 @@ def create_central_migration_service():
         (r"/([a-z0-9-]+)/push-migrant/?", PushMigrantHandler, {'migration_host': migration_host}),
         (r"/([a-z0-9-]+)/pop-migrants/?", PopMigrantsHandler, {'migration_host': migration_host}),
     ])
+
+def start_migration_service():
+    '''
+    Starts the migration service in a separate process.
+    '''
+    from subprocess import Popen
+    from os.path import join, dirname
+    import sys
+    return Popen((sys.executable, join(dirname(__file__),'scripts','migration','migration_service.py'),))

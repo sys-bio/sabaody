@@ -79,7 +79,6 @@ class FairRPolicy(ReplacementPolicyBase):
         '''
         indices = flipud(argsort(population.get_f(), axis=0))
         pop_f = population.get_f()
-        print('len candidate_f: {}'.format(len(candidate_f)))
         for i,k,f in zip(indices[:,0],range(len(candidate_f)),candidate_f):
             if f < pop_f[i,0]:
                 population.set_xf(int(i),candidates[k,:],f)

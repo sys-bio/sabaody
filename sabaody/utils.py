@@ -40,3 +40,13 @@ def getQualifiedName(*args):
     '''
     root = 'com.how2cell.sabaody'
     return '.'.join((root, *args))
+
+def arrays_equal(u,v):
+    '''
+    Allpies array_equal to sequences.
+    '''
+    from numpy import array_equal
+    for x,y in zip(u,v):
+        if not array_equal(x,y):
+            return False
+    return True
