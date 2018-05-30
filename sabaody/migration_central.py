@@ -49,19 +49,23 @@ class CentralMigrator(Migrator):
                   })
         r.raise_for_status()
 
-    def push_migrant(self, island_id, migrant_vector, fitness, expiration_time=arrow.utcnow().shift(days=+1)):
+    def push_migrant(self, dest_island_id, migrant_vector, fitness, src_island_id = None, expiration_time=arrow.utcnow().shift(days=+1)):
         # type: (str, ndarray, float, arrow.Arrow) -> None
         '''
         Sends an island definition to the server.
 
         :param expiration_time: If set, updates the expiration time of the pool.
         '''
+        extra_args = dict()
+        if src_island_id is not None:
+            extra_args[src_island_id] = src_island_id
         from requests import post
-        r = post(str(self.root_url / str(island_id) / 'push-migrant'),
+        r = post(str(self.root_url / str(dest_island_id) / 'push-migrant'),
                 json={
                   'migrant_vector': migrant_vector.tolist(),
                   'fitness': float(fitness),
                   'expiration_time': arrow.get(expiration_time).isoformat(),
+                  **extra_args
                   })
         r.raise_for_status()
 
@@ -78,15 +82,16 @@ class CentralMigrator(Migrator):
                   })
         r.raise_for_status()
         return (array(r.json()['migrants']),
-                array([[f] for f in r.json()['fitness']]))
+                array([[f] for f in r.json()['fitness']]),
+                r.json()['src_island_id'])
 
     def replace(self, island_id, population, policy):
         '''
         Replace migrants in the specified population with candidates
         in the pool according to the specified policy.
         '''
-        candidates,candidate_f = self.pull_migrants(island_id)
-        policy.replace(population,candidates,candidate_f)
+        candidates,candidate_f,src_ids = self.pull_migrants(island_id)
+        return (policy.replace(population,candidates,candidate_f),src_ids)
 
 # ** Server Logic **
 class MigrationBuffer(ABC):
@@ -112,7 +117,7 @@ class FIFOMigrationBuffer(MigrationBuffer):
     def init_buf(self):
         return deque(maxlen=self.buffer_size)
 
-    def push(self, param_vec, fitness):
+    def push(self, param_vec, fitness, src_island_id=None):
         # type: (array) -> None
         '''
         Pushes a new migrant parameter vector
@@ -122,7 +127,7 @@ class FIFOMigrationBuffer(MigrationBuffer):
             self.param_vector_size = param_vec.size
         elif param_vec.size != self.param_vector_size:
             raise RuntimeError('Wrong length for parameter vector: expected {} but got {}'.format(self.param_vector_size, param_vec.size))
-        self._buf.append((param_vec,fitness))
+        self._buf.append((param_vec,fitness,src_island_id))
 
     def pop(self, n=0):
         '''
@@ -275,8 +280,9 @@ class PopMigrantsHandler(RequestHandler):
         try:
             migrants = self.migration_host.popMigrants(id, **args)
             self.write({
-              'migrants': [v.tolist() for v,fitness in migrants],
-              'fitness': [float(fitness) for v,fitness in migrants],
+              'migrants': [v.tolist() for v,fitness,src_id in migrants],
+              'fitness': [float(fitness) for v,fitness,src_id in migrants],
+              'src_island_id': [str(src_id) for v,fitness,src_id in migrants],
               })
         except Exception as e:
             print('Misc. error "{}"'.format(e))

@@ -40,7 +40,7 @@ def test_migration_replacement_policy_integration():
         p2.push_back(array([9.,9.,1.]), array([3.5]))
         p2.push_back(array([9.,9.,2.]), array([4.5]))
 
-        migrants,fitness = m.pull_migrants(island1)
+        migrants,fitness,src_island_id = m.pull_migrants(island1)
         assert array_equal(migrants, array([
           [2.,2.,2.],
           [1.,1.,1.],
@@ -49,7 +49,7 @@ def test_migration_replacement_policy_integration():
           [2.],
           [1.]]))
         # some parts of the code use loops like this
-        # make sure it works
+        # (zip-type looping with 2d arrays), so make sure it works
         for candidate,f in zip(migrants,fitness):
             assert float(f) in (1.,2.)
             assert array_equal(candidate, array([2.,2.,2.])) or array_equal(candidate, array([1.,1.,1.]))
@@ -58,10 +58,11 @@ def test_migration_replacement_policy_integration():
         m.push_migrant(island1, array([1.,1.,1.]), 1.)
         m.push_migrant(island1, array([2.,2.,2.]), 2.)
 
-        m.replace(island1, p1, FairRPolicy())
+        deltas,src_ids = m.replace(island1, p1, FairRPolicy())
         assert array_equal(sort_by_fitness(p1)[0], array([
                            [1.,1.,1.],
                            [2.,2.,2.]]))
+        assert deltas == [-2.,-2.]
 
     finally:
         process.terminate()

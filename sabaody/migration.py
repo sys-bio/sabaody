@@ -75,13 +75,17 @@ class FairRPolicy(ReplacementPolicyBase):
         Replaces the worst N individuals in the population if the
         candidates are better.
 
+        :return: The deltas of the replacements made
         :param candidates: Numpy 2D array with candidates in rows.
         '''
         indices = flipud(argsort(population.get_f(), axis=0))
         pop_f = population.get_f()
+        deltas = []
         for i,k,f in zip(indices[:,0],range(len(candidate_f)),candidate_f):
             if f < pop_f[i,0]:
                 population.set_xf(int(i),candidates[k,:],f)
+                deltas.append(float(f - pop_f[i,0]))
+        return deltas
 
 # ** Migration Policies **
 class Migrator:
