@@ -50,7 +50,7 @@ class CentralMigrator(Migrator):
         r.raise_for_status()
 
     def push_migrant(self, dest_island_id, migrant_vector, fitness, src_island_id = None, expiration_time=arrow.utcnow().shift(days=+1)):
-        # type: (str, ndarray, float, arrow.Arrow) -> None
+        # type: (str, ndarray, float, str, arrow.Arrow) -> None
         '''
         Sends an island definition to the server.
 
@@ -118,7 +118,7 @@ class FIFOMigrationBuffer(MigrationBuffer):
         return deque(maxlen=self.buffer_size)
 
     def push(self, param_vec, fitness, src_island_id=None):
-        # type: (array) -> None
+        # type: (ndarray, float, str) -> None
         '''
         Pushes a new migrant parameter vector
         to the buffer.
