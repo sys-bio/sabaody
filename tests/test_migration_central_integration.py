@@ -48,6 +48,11 @@ def test_migration_replacement_policy_integration():
         assert array_equal(fitness, array([
           [2.],
           [1.]]))
+        # some parts of the code use loops like this
+        # make sure it works
+        for candidate,f in zip(migrants,fitness):
+            assert float(f) in (1.,2.)
+            assert array_equal(candidate, array([2.,2.,2.])) or array_equal(candidate, array([1.,1.,1.]))
 
         # re-push the migrants
         m.push_migrant(island1, array([1.,1.,1.]), 1.)

@@ -24,18 +24,21 @@ class Evaluator(ABC):
 
 
 class Island:
-    def __init__(self, id, problem_factory, domain_qualifier, mc_host, mc_port=11211):
+    def __init__(self, id, problem_factory, migrator, island_ids, domain_qualifier, mc_host, mc_port=11211):
         self.id = id
         self.mc_host = mc_host
         self.mc_port = mc_port
         self.problem_factory = problem_factory
         self.domain_qualifier = domain_qualifier
+        self.migrator = migrator
+        self.island_ids = island_ids
 
-def run_island(island, migrator):
+def run_island(island):
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
     mc_client = Client((island.mc_host,island.mc_port))
+
     #udp = island.problem_factory()
 
     algorithm = pg.algorithm(pg.de())
@@ -50,6 +53,19 @@ def run_island(island, migrator):
 
     i.evolve()
     i.wait()
+
+    # perform migration
+    # send migrants
+    selection_policy = BestSPolicy(migration_rate=10)
+    pop = island.get_population()
+    candidates,candidate_f = selection.select(pop)
+    for connected_island in island.island_ids:
+        if connected_island != island.id:
+            for candidate,f in zip(candidates,candidate_f):
+                migrator.push_migrant(connected_island.id, candidate, f)
+    # receive migrants
+    migrator.replace(island.id, pop, FairRPolicy())
+    island.set_population(pop)
 
     import socket
     hostname = socket.gethostname()
@@ -73,7 +89,7 @@ class Archipelago:
 
     def run(self, sc, migrator):
         #islands = sc.parallelize(self.island_ids).map(lambda u: Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port))
-        islands = [Island(u, problem_factory=self.problem_factory, domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
+        islands = [Island(u, problem_factory=self.problem_factory, migrator=CentralMigrator('http://luna:10100'), domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
         #print(islands.map(lambda i: i.id).collect())
         #print(islands.map(lambda i: i.run()).collect())
         #from .worker import run_island
