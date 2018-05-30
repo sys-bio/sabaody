@@ -44,7 +44,7 @@ def run_island(island):
 
     #udp = island.problem_factory()
 
-    algorithm = pg.algorithm(pg.de())
+    algorithm = pg.de(gen=10)
     #problem = pg.problem(udp)
     problem = island.problem_factory()
     # TODO: configure pop size
@@ -54,7 +54,6 @@ def run_island(island):
     mc_client.set(island.domain_qualifier('island', str(island.id), 'n_cores'), str(cpu_count()), 10000)
     #print('Starting island {} with {} cpus'.format(str(i.id), str(cpu_count())))
 
-    evolve_steps = 10
     rounds = 10
     migration_log = []
     for x in range(rounds):
