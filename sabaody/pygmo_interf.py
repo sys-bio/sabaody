@@ -73,7 +73,7 @@ def run_island(island):
         # receive migrants
         deltas,src_ids = migrator.replace(island.id, pop, FairRPolicy())
         i.set_population(pop)
-        migration_log.append((deltas,src_ids))
+        migration_log.append((float(pop.champion_f[0]),deltas,src_ids))
 
     import socket
     hostname = socket.gethostname()
@@ -105,11 +105,7 @@ class Archipelago:
         #print(islands.map(lambda i: i.id).collect())
         #print(islands.map(lambda i: i.run()).collect())
         #from .worker import run_island
-        result = sc.parallelize(islands).map(run_island).collect()
-        import pprint
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(result)
-        return
+        return sc.parallelize(islands).map(run_island).collect()
 
 
 
