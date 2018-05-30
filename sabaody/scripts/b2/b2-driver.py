@@ -2,7 +2,7 @@
 from __future__ import print_function, division, absolute_import
 
 from pyspark import SparkContext, SparkConf
-conf = SparkConf().setAppName("b2-nofork")
+conf = SparkConf().setAppName("b2-driver")
 sc = SparkContext(conf=conf)
 
 from sabaody import Archipelago

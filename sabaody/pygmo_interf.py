@@ -51,26 +51,31 @@ def run_island(island):
     mc_client.set(island.domain_qualifier('island', str(island.id), 'n_cores'), str(cpu_count()), 10000)
     #print('Starting island {} with {} cpus'.format(str(i.id), str(cpu_count())))
 
-    i.evolve()
-    i.wait()
+    evolve_steps = 10
+    rounds = 10
+    migration_log = []
+    for x in range(rounds):
+        i.evolve(evolve_steps)
+        i.wait()
 
-    # perform migration
-    # send migrants
-    selection_policy = BestSPolicy(migration_rate=10)
-    pop = island.get_population()
-    candidates,candidate_f = selection.select(pop)
-    for connected_island in island.island_ids:
-        if connected_island != island.id:
-            for candidate,f in zip(candidates,candidate_f):
-                migrator.push_migrant(connected_island.id, candidate, f)
-    # receive migrants
-    migrator.replace(island.id, pop, FairRPolicy())
-    island.set_population(pop)
+        # perform migration
+        # send migrants
+        selection_policy = BestSPolicy(migration_rate=10)
+        pop = island.get_population()
+        candidates,candidate_f = selection.select(pop)
+        for connected_island in island.island_ids:
+            if connected_island != island.id:
+                for candidate,f in zip(candidates,candidate_f):
+                    migrator.push_migrant(connected_island.id, candidate, f)
+        # receive migrants
+        deltas,src_ids = migrator.replace(island.id, pop, FairRPolicy())
+        island.set_population(pop)
+        migration_log.append((deltas,src_ids))
 
     import socket
     hostname = socket.gethostname()
     ip = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
-    return (ip, hostname, i.get_population().problem.get_fevals())
+    return (ip, hostname, migration_log, i.get_population().problem.get_fevals())
 
 class Archipelago:
     def __init__(self, num_islands, problem_factory, initial_score, topology, domain_qualifier, mc_host, mc_port=11211):

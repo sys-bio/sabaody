@@ -15,13 +15,16 @@ from json import dumps, loads
 from pprint import PrettyPrinter
 from time import time
 
+def domainJoin(s):
+    return '.'.join('com.how2cell.sabaody.B2',s)
+
 def app(screen):
     while True:
-        run = int(client.get('com.how2cell.sabaody.B2.run'))
-        run_id = client.get('com.how2cell.sabaody.B2.runId').decode('utf8')
-        status = client.get('com.how2cell.sabaody.B2.run.status').decode('utf8').lower()
-        started = float((client.get('com.how2cell.sabaody.B2.run.startTime') or b'0').decode('utf8'))
-        stopped = float((client.get('com.how2cell.sabaody.B2.run.endTime') or b'0').decode('utf8'))
+        run = int(client.get(domainJoin('run')))
+        run_id = client.get(domainJoin('runId')).decode('utf8')
+        status = client.get(domainJoin('run.status')).decode('utf8').lower()
+        started = float((client.get(domainJoin('run.startTime')) or b'0').decode('utf8'))
+        stopped = float((client.get(domainJoin('run.endTime')) or b'0').decode('utf8'))
         active = bool(status == 'active')
         if active:
             runtime = time()-started
