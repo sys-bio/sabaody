@@ -31,6 +31,11 @@ def sort_by_fitness(population):
     return (population.get_x()[indices[:,0]],
             population.get_f()[indices[:,0]])
 
+def sort_candidates_by_fitness(candidates,candidate_f):
+    indices = argsort(candidates, axis=0)
+    return (candidates[indices[:,0]],
+            candidate_f[indices[:,0]])
+
 # ** Selection Policies **
 class BestSPolicy(SelectionPolicyBase):
     '''
@@ -78,6 +83,8 @@ class FairRPolicy(ReplacementPolicyBase):
         :return: The deltas of the replacements made
         :param candidates: Numpy 2D array with candidates in rows.
         '''
+        # sort candidates
+        candidates,candidate_f = sort_candidates_by_fitness(candidates,candidate_f)
         indices = flipud(argsort(population.get_f(), axis=0))
         pop_f = population.get_f()
         deltas = []
@@ -85,6 +92,9 @@ class FairRPolicy(ReplacementPolicyBase):
             if f < pop_f[i,0]:
                 population.set_xf(int(i),candidates[k,:],f)
                 deltas.append(float(f - pop_f[i,0]))
+            else:
+                pass
+                # break
         return deltas
 
 # ** Migration Policies **

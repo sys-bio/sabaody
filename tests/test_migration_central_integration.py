@@ -33,12 +33,12 @@ def test_migration_replacement_policy_integration():
         p1.push_back(array([9.,0.,2.]), array([4.]))
 
         # migrants to island 2
-        m.push_migrant(island2, array([3.,3.,3.]), 3., 'manual2')
-        m.push_migrant(island2, array([4.,4.,4.]), 4., 'manual2')
+        m.push_migrant(island2, array([3.,3.,3.]), 3.5, 'manual2')
+        m.push_migrant(island2, array([4.,4.,4.]), 4.5, 'manual2')
         # population for island 2
         p2 = population(prob=rosenbrock(3), size=0, seed=0)
-        p2.push_back(array([9.,9.,1.]), array([3.5]))
-        p2.push_back(array([9.,9.,2.]), array([4.5]))
+        p2.push_back(array([9.,9.,1.]), array([3.]))
+        p2.push_back(array([9.,9.,2.]), array([4.]))
 
         migrants,fitness,src_island_id = m.pull_migrants(island1)
         assert array_equal(migrants, array([
@@ -63,7 +63,13 @@ def test_migration_replacement_policy_integration():
         assert array_equal(sort_by_fitness(p1)[0], array([
                            [1.,1.,1.],
                            [2.,2.,2.]]))
-        assert deltas == [-2.,-2.]
+        assert deltas == [-3.,-1.]
+
+        # test island 2
+        deltas,src_ids = m.replace(island2, p2, FairRPolicy())
+        assert array_equal(sort_by_fitness(p2)[0], array([
+                           [9.,9.,1.],
+                           [3.,3.,3.]]))
 
     finally:
         process.terminate()

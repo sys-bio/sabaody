@@ -57,7 +57,7 @@ def run_island(island):
     rounds = 10
     migration_log = []
     for x in range(rounds):
-        i.evolve(evolve_steps)
+        i.evolve()
         i.wait()
 
         # perform migration
@@ -72,6 +72,7 @@ def run_island(island):
         # receive migrants
         deltas,src_ids = migrator.replace(island.id, pop, FairRPolicy())
         i.set_population(pop)
+        #deltas,src_ids = ([],[])
         migration_log.append((float(pop.champion_f[0]),deltas,src_ids))
 
     import socket

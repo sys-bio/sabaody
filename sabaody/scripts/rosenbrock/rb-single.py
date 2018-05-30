@@ -17,7 +17,7 @@ from os.path import join
 import json
 
 single_champions = []
-N = 1
+N = 100
 for i in range(N):
     with RBRun('luna', 11211) as run:
         print('Started run {} of {}'.format(i+1,N))

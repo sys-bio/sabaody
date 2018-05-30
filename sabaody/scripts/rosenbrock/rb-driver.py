@@ -38,9 +38,9 @@ for i in range(N):
 champions_stack = vstack(champions)
 champions_mean = mean(champions_stack, axis=0)
 champions_std = std(champions_stack, axis=0)
-savez('/tmp/champions.npz', champions_mean=champions_mean, champions_std=champions_std)
+savez('/tmp/rb-spark-champions.npz', champions_mean=champions_mean, champions_std=champions_std)
 
 stage_deltas_stack = vstack(stage_deltas)
 stage_deltas_mean = mean(stage_deltas_stack, axis=0)
 stage_deltas_std = std(stage_deltas_stack, axis=0)
-savez('/tmp/stage_deltas.npz', stage_deltas_mean=stage_deltas_mean, stage_deltas_std=stage_deltas_std)
+savez('/tmp/rb-spark-stage_deltas.npz', stage_deltas_mean=stage_deltas_mean, stage_deltas_std=stage_deltas_std)
