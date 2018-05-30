@@ -58,7 +58,7 @@ class CentralMigrator(Migrator):
         '''
         extra_args = dict()
         if src_island_id is not None:
-            extra_args[src_island_id] = src_island_id
+            extra_args['src_island_id'] = src_island_id
         from requests import post
         r = post(str(self.root_url / str(dest_island_id) / 'push-migrant'),
                 json={
@@ -70,7 +70,7 @@ class CentralMigrator(Migrator):
         r.raise_for_status()
 
     def pull_migrants(self, island_id, n=0):
-        # type: (array, int) -> typing.List[ndarray]
+        # type: (array, int) -> typing.Tuple[ndarray,ndarray,typing.List[str]]
         '''
         Gets n migrants from the pool and returns them.
         If n is zero, return all migrants.
@@ -96,7 +96,7 @@ class CentralMigrator(Migrator):
 # ** Server Logic **
 class MigrationBuffer(ABC):
     @abstractmethod
-    def push(self, param_vec):
+    def push(self, param_vec, fitness, src_island_id=None):
         pass
 
     @abstractmethod
@@ -153,8 +153,8 @@ class LocalMigrantPool:
         if not isinstance(value, MigrationBuffer):
             raise RuntimeError('Expected migration buffer subclass')
 
-    def push(self, param_vec, fitness):
-        return self._buffer.push(param_vec, fitness)
+    def push(self, param_vec, fitness, src_island_id=None):
+        return self._buffer.push(param_vec, fitness, src_island_id)
 
     def pop(self, n=0):
         return self._buffer.pop(n)
@@ -196,14 +196,14 @@ class MigrationServiceHost:
             raise InvalidMigrantBufferType()
         self._migrant_pools[str(id)] = self._migrant_pool_ctors[buffer_type](param_vector_size=param_vector_size, expiration_time=arrow.get(expiration_time))
 
-    def pushMigrant(self, id, migrant_vector, fitness, expiration_time):
+    def pushMigrant(self, id, migrant_vector, fitness, src_island_id=None, expiration_time=arrow.utcnow().shift(days=+1)):
         '''
         Pushes a migrant vector to a pool.
         '''
         migrant_vector = array(migrant_vector)
         if migrant_vector.size != self.param_vector_size:
             raise RuntimeError('Expected migrant vector of length {} but received length {}'.format(self.param_vector_size, migrant_vector.size))
-        self._migrant_pools[str(id)].push(migrant_vector, fitness)
+        self._migrant_pools[str(id)].push(migrant_vector, fitness, src_island_id)
 
     def popMigrants(self, id, n):
         '''

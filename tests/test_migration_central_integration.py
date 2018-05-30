@@ -25,16 +25,16 @@ def test_migration_replacement_policy_integration():
         m.define_migrant_pool(island2, 3)
 
         # migrants to island 1
-        m.push_migrant(island1, array([1.,1.,1.]), 1.)
-        m.push_migrant(island1, array([2.,2.,2.]), 2.)
+        m.push_migrant(island1, array([1.,1.,1.]), 1., 'manual1')
+        m.push_migrant(island1, array([2.,2.,2.]), 2., 'manual1')
         # population for island 1
         p1 = population(prob=rosenbrock(3), size=0, seed=0)
         p1.push_back(array([9.,0.,1.]), array([3.]))
         p1.push_back(array([9.,0.,2.]), array([4.]))
 
         # migrants to island 2
-        m.push_migrant(island2, array([3.,3.,3.]), 3.)
-        m.push_migrant(island2, array([4.,4.,4.]), 4.)
+        m.push_migrant(island2, array([3.,3.,3.]), 3., 'manual2')
+        m.push_migrant(island2, array([4.,4.,4.]), 4., 'manual2')
         # population for island 2
         p2 = population(prob=rosenbrock(3), size=0, seed=0)
         p2.push_back(array([9.,9.,1.]), array([3.5]))
@@ -48,6 +48,7 @@ def test_migration_replacement_policy_integration():
         assert array_equal(fitness, array([
           [2.],
           [1.]]))
+        assert src_island_id == ['manual1', 'manual1']
         # some parts of the code use loops like this
         # (zip-type looping with 2d arrays), so make sure it works
         for candidate,f in zip(migrants,fitness):

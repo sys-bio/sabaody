@@ -69,7 +69,7 @@ def run_island(island):
         for connected_island in island.island_ids:
             if connected_island != island.id:
                 for candidate,f in zip(candidates,candidate_f):
-                    migrator.push_migrant(connected_island, candidate, f)
+                    migrator.push_migrant(connected_island, candidate, f, src_island_id=island.id)
         # receive migrants
         deltas,src_ids = migrator.replace(island.id, pop, FairRPolicy())
         i.set_population(pop)
@@ -78,7 +78,7 @@ def run_island(island):
     import socket
     hostname = socket.gethostname()
     ip = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
-    return (ip, hostname, migration_log, i.get_population().problem.get_fevals())
+    return (ip, hostname, island.id, migration_log, i.get_population().problem.get_fevals())
 
 class Archipelago:
     def __init__(self, num_islands, problem_factory, initial_score, topology, domain_qualifier, mc_host, mc_port=11211):
@@ -99,7 +99,7 @@ class Archipelago:
         from sabaody.migration_central import CentralMigrator
         migrator = CentralMigrator('http://luna:10100')
         for island_id in self.island_ids:
-            migrator.define_migrant_pool(island_id, 5)
+            migrator.define_migrant_pool(island_id, 5) # FIXME: hardcoded
         #islands = sc.parallelize(self.island_ids).map(lambda u: Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port))
         islands = [Island(u, problem_factory=self.problem_factory, migrator=None, island_ids=self.island_ids, domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
         #print(islands.map(lambda i: i.id).collect())
