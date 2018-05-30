@@ -1,3 +1,12 @@
+from __future__ import print_function, division, absolute_import
+
+from sabaody import getQualifiedName
+
+from pymemcache.client.base import Client
+
+from uuid import uuid4
+from time import time
+
 class ProblemSetup:
     '''
     Abstracts some of the logic of setting up a parameter fitting problem.
@@ -15,21 +24,21 @@ class ProblemSetup:
         return self
 
     def domainAppend(self,s):
-        return '.'.join(self.getDomain(),s)
+        return '.'.join((self.getDomain(),s))
 
     def __exit__(self, exception_type, exception_val, trace):
-        self.client.set(domainAppend('run.status'), 'finished', 604800)
-        self.client.set(domainAppend(domainAppend('run.endTime'), str(time()), 604800)
+        self.client.set(self.domainAppend('run.status'), 'finished', 604800)
+        self.client.set(self.domainAppend('run.endTime'), str(time()), 604800)
 
     def setupMonitoringVariables(self):
-        self.run = int(self.client.get(domainAppend('run')) or 0)
+        self.run = int(self.client.get(self.domainAppend('run')) or 0)
         self.run += 1
-        self.client.set(domainAppend('run'), self.run, 604800)
+        self.client.set(self.domainAppend('run'), self.run, 604800)
 
         self.run_id = str(uuid4())
-        self.client.set(domainAppend('runId'), self.run_id, 604800)
-        self.client.set(domainAppend('run.startTime'), str(time()), 604800)
-        self.client.set(domainAppend('run.status'), 'active', 604800)
+        self.client.set(self.domainAppend('runId'), self.run_id, 604800)
+        self.client.set(self.domainAppend('run.startTime'), str(time()), 604800)
+        self.client.set(self.domainAppend('run.status'), 'active', 604800)
 
         print('Starting run {} of {} problem with id {}...'.format(self.run, self.getName(), self.run_id))
 

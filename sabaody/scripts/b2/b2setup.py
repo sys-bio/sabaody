@@ -2,13 +2,7 @@ from __future__ import print_function, division, absolute_import
 
 from params import getDefaultParamValues
 
-from sabaody import getQualifiedName
 from sabaody.problem_setup import ProblemSetup
-
-from pymemcache.client.base import Client
-
-from uuid import uuid4
-from time import time
 
 # some refs:
 #https://developerzen.com/best-practices-writing-production-grade-pyspark-jobs-cb688ac4d20f

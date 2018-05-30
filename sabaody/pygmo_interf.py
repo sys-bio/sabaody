@@ -37,7 +37,10 @@ def run_island(island):
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
+    from sabaody.migration import BestSPolicy, FairRPolicy
+    from sabaody.migration_central import CentralMigrator
     mc_client = Client((island.mc_host,island.mc_port))
+    migrator = CentralMigrator('http://luna:10100')
 
     #udp = island.problem_factory()
 
@@ -61,15 +64,15 @@ def run_island(island):
         # perform migration
         # send migrants
         selection_policy = BestSPolicy(migration_rate=10)
-        pop = island.get_population()
-        candidates,candidate_f = selection.select(pop)
+        pop = i.get_population()
+        candidates,candidate_f = selection_policy.select(pop)
         for connected_island in island.island_ids:
             if connected_island != island.id:
                 for candidate,f in zip(candidates,candidate_f):
-                    migrator.push_migrant(connected_island.id, candidate, f)
+                    migrator.push_migrant(connected_island, candidate, f)
         # receive migrants
         deltas,src_ids = migrator.replace(island.id, pop, FairRPolicy())
-        island.set_population(pop)
+        i.set_population(pop)
         migration_log.append((deltas,src_ids))
 
     import socket
@@ -92,13 +95,20 @@ class Archipelago:
         self.island_ids = [str(uuid4()) for x in range(self.num_islands)]
         mc_client.set(self.domain_qualifier('islandIds'), dumps(self.island_ids), 10000)
 
-    def run(self, sc, migrator):
+    def run(self, sc):
+        from sabaody.migration_central import CentralMigrator
+        migrator = CentralMigrator('http://luna:10100')
+        for island_id in self.island_ids:
+            migrator.define_migrant_pool(island_id, 5)
         #islands = sc.parallelize(self.island_ids).map(lambda u: Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port))
-        islands = [Island(u, problem_factory=self.problem_factory, migrator=CentralMigrator('http://luna:10100'), domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
+        islands = [Island(u, problem_factory=self.problem_factory, migrator=None, island_ids=self.island_ids, domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
         #print(islands.map(lambda i: i.id).collect())
         #print(islands.map(lambda i: i.run()).collect())
         #from .worker import run_island
-        print(sc.parallelize(islands).map(run_island).collect())
+        result = sc.parallelize(islands).map(run_island).collect()
+        import pprint
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(result)
         return
 
 
