@@ -10,14 +10,17 @@ from sabaody import Archipelago
 from rbsetup import RBRun
 
 from numpy import array, save, savez, mean, std, nan_to_num, vstack
+import arrow
 
 from tempfile import gettempdir
 from os.path import join
 import json
 
+start = arrow.utcnow()
+
 champions = []
 stage_deltas = []
-N = 10
+N = 2
 for i in range(N):
     with RBRun('luna', 11211) as run:
         print('Started run {} of {}'.format(i+1,N))
@@ -34,6 +37,9 @@ for i in range(N):
             ip,host,island_id,raw_deltas = json.load(f)[0][:4]
             champions.append(array([c for c,d,ids in raw_deltas]))
             stage_deltas.append(array([float(nan_to_num(mean(d))) for c,d,ids in raw_deltas]))
+
+end = arrow.utcnow()
+print('Total time:  {}'.format((end-start)))
 
 champions_stack = vstack(champions)
 champions_mean = mean(champions_stack, axis=0)
