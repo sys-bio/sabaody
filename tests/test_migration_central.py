@@ -20,7 +20,7 @@ import sys
 
 def test_migration_client(mocker):
     '''
-    Test the client methods, including define_migrant_pool and push_migrant.
+    Test the client methods, including defineMigrantPool and pushMigrant.
     requests.post is patched so post requests are never actually sent.
     '''
     mocker.patch('requests.post')
@@ -29,12 +29,12 @@ def test_migration_client(mocker):
     m = CentralMigrator('http://www.schneierfacts.com:10100')
 
     island_id = uuid4()
-    m.define_migrant_pool(island_id, 4)
+    m.defineMigrantPool(island_id, 4)
     from requests import post
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()
-    m.push_migrant(island_id, array([1., 2., 3., 4.]), 1.)
+    m.pushMigrant(island_id, array([1., 2., 3., 4.]), 1.)
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()

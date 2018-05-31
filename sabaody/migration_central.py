@@ -21,7 +21,7 @@ class CentralMigrator(Migrator):
     def __init__(self, root_url):
         self.root_url = URL(root_url)
 
-    def purge_all(self):
+    def purgeAll(self):
         # type: () -> None
         '''
         Wipe the island definitions and all migrants.
@@ -29,7 +29,7 @@ class CentralMigrator(Migrator):
         '''
         pass # TODO
 
-    def define_migrant_pool(self, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
+    def defineMigrantPool(self, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
         # type: (str, array, str, arrow.Arrow) -> None
         '''
         Sends an island definition to the server.
@@ -49,7 +49,7 @@ class CentralMigrator(Migrator):
                   })
         r.raise_for_status()
 
-    def push_migrant(self, dest_island_id, migrant_vector, fitness, src_island_id = None, expiration_time=arrow.utcnow().shift(days=+1)):
+    def pushMigrant(self, dest_island_id, migrant_vector, fitness, src_island_id = None, expiration_time=arrow.utcnow().shift(days=+1)):
         # type: (str, ndarray, float, str, arrow.Arrow) -> None
         '''
         Sends an island definition to the server.
@@ -69,7 +69,7 @@ class CentralMigrator(Migrator):
                   })
         r.raise_for_status()
 
-    def pull_migrants(self, island_id, n=0):
+    def pullMigrants(self, island_id, n=0):
         # type: (array, int) -> typing.Tuple[ndarray,ndarray,typing.List[str]]
         '''
         Gets n migrants from the pool and returns them.
@@ -90,7 +90,7 @@ class CentralMigrator(Migrator):
         Replace migrants in the specified population with candidates
         in the pool according to the specified policy.
         '''
-        candidates,candidate_f,src_ids = self.pull_migrants(island_id)
+        candidates,candidate_f,src_ids = self.pullMigrants(island_id)
         return (policy.replace(population,candidates,candidate_f),src_ids)
 
 # ** Server Logic **
