@@ -32,6 +32,9 @@ def sort_by_fitness(population):
             population.get_f()[indices[:,0]])
 
 def sort_candidates_by_fitness(candidates,candidate_f):
+    if candidates.size == 0:
+        assert candidate_f.size == 0
+        return (candidates,candidate_f)
     indices = argsort(candidate_f, axis=0)
     return (candidates[indices[:,0]],
             candidate_f[indices[:,0]])
