@@ -6,8 +6,22 @@ from .pygmo_interf import Island
 
 import networkx as nx
 
-import itertools
+from itertools import chain
 from uuid import uuid4
+
+class Topology(nx.Graph):
+    def neighbor_ids(self, id):
+        return tuple(chain(self.successors(id),self.predecessors(id)))
+
+    def neighbor_islands(self, id):
+        return tuple(self.nodes[n]['island'] for n in chain(self.successors(id),self.predecessors(id)))
+
+class DiTopology(nx.DiGraph,Topology):
+    def outgoing_ids(self, id):
+        return tuple(self.successors(id))
+
+    def outgoing_islands(self, id):
+        return tuple(self.nodes[n]['island'] for n in self.successors(id))
 
 class TopologyFactory:
     def __init__(self, problem_constructor, domain_qualifier, mc_host, mc_port=11211):
@@ -17,15 +31,17 @@ class TopologyFactory:
         self.mc_port = mc_port
 
     def _addExtraAttributes(self,g):
-        g.island_ids = frozenset(n.id for n in g.nodes)
+        g.island_ids = frozenset(id for id in g.nodes)
 
     def createOneWayRing(self, number_of_islands = 10):
         # type: (int) -> nx.Graph
-        raw = nx.wheel_graph(number_of_islands)
+        raw = nx.cycle_graph(number_of_islands, create_using=nx.DiGraph())
         m = dict((k,Island(str(uuid4()), self.problem_constructor, self.domain_qualifier, self.mc_host, self.mc_port)) for k in raw.nodes)
-        g = nx.Graph()
-        g.add_nodes_from(m.values())
-        g.add_edges_from((m[u], m[v])
+        g = DiTopology()
+        g.add_nodes_from(island.id for island in m.values())
+        for k,i in m.items():
+            g.nodes[m[k].id]['island'] = m[k]
+        g.add_edges_from((m[u].id, m[v].id)
                          for u, nbrs in raw._adj.items()
                          for v, data in nbrs.items())
         self._addExtraAttributes(g)
