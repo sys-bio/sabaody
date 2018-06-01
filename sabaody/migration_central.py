@@ -3,6 +3,7 @@
 from __future__ import print_function, division, absolute_import
 
 from .migration import Migrator
+from .topology import Topology, DiTopology
 
 #from requests import post
 from yarl import URL
@@ -30,7 +31,7 @@ class CentralMigrator(Migrator):
         pass # TODO
 
     def defineMigrantPool(self, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
-        # type: (str, array, str, arrow.Arrow) -> None
+        # type: (str, int, str, arrow.Arrow) -> None
         '''
         Sends an island definition to the server.
 
@@ -48,6 +49,14 @@ class CentralMigrator(Migrator):
                   'expiration_time': arrow.get(expiration_time).isoformat(),
                   })
         r.raise_for_status()
+
+    def defineMigrantPools(self, topology, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
+        # type: (typing.Union[Topology,DiTopology], int, str, arrow.Arrow) -> None
+        '''
+        Defines migrant pools for every island in the topology.
+        '''
+        for id in topology.island_ids:
+            self.defineMigrantPool(id, param_vector_size=param_vector_size, buffer_type=buffer_type, expiration_time=expiration_time)
 
     def pushMigrant(self, dest_island_id, migrant_vector, fitness, src_island_id = None, expiration_time=arrow.utcnow().shift(days=+1)):
         # type: (str, ndarray, float, str, arrow.Arrow) -> None
