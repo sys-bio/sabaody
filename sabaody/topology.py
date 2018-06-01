@@ -33,7 +33,7 @@ class TopologyFactory:
     def _addExtraAttributes(self,g):
         g.island_ids = frozenset(id for id in g.nodes)
 
-    def createOneWayRing(self, number_of_islands = 10):
+    def createOneWayRing(self, number_of_islands = 100):
         # type: (int) -> nx.Graph
         raw = nx.cycle_graph(number_of_islands, create_using=nx.DiGraph())
         m = dict((k,Island(str(uuid4()), self.problem_constructor, self.domain_qualifier, self.mc_host, self.mc_port)) for k in raw.nodes)
