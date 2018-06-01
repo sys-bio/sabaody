@@ -5,9 +5,19 @@ from __future__ import print_function, division, absolute_import
 from .pygmo_interf import Island
 
 import networkx as nx
+import pygmo as pg
 
 from itertools import chain
+from abc import ABC, abstractmethod
 from uuid import uuid4
+import collections
+from random import choice
+from typing import Union, Callable
+
+class AlgorithmCtorFactory(ABC):
+    @abstractmethod
+    def __call__(self,island,topology):
+        pass
 
 class Topology(nx.Graph):
     def neighbor_ids(self, id):
@@ -30,13 +40,38 @@ class TopologyFactory:
         self.mc_host = mc_host
         self.mc_port = mc_port
 
-    def _addExtraAttributes(self,g):
-        g.island_ids = frozenset(id for id in g.nodes)
+    def _getAlgorithmConstructor(self, algorithm_factory, node, graph):
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, Union[nx.Graph,nx.DiGraph]) -> Callable[[],pg.algorithm]
+        '''
+        If algorithm_factory is a factory, call it with the node and graph.
+        If instead it is a list of constructors, choose one at random.
+        If it is simply a direct constructor for a pagmo algorithm,
+        just return it.
+        '''
+        if isinstance(algorithm_factory, AlgorithmCtorFactory):
+            return algorithm_factory(node, graph)
+        elif isinstance(algorithm_factory, collections.abc.Sequence):
+            return choice(algorithm_factory)
+        else:
+            return algorithm_factory
 
-    def createOneWayRing(self, number_of_islands = 100):
-        # type: (int) -> nx.Graph
+    def _addExtraAttributes(self,g):
+        g.island_ids = tuple(id for id in g.nodes)
+        g.islands = tuple(g.nodes[i]['island'] for i in g.nodes)
+
+    def createOneWayRing(self, algorithm_factory, number_of_islands = 100, island_size = 20):
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> nx.Graph
+        '''
+        Creates a one way ring topology.
+        '''
         raw = nx.cycle_graph(number_of_islands, create_using=nx.DiGraph())
-        m = dict((k,Island(str(uuid4()), self.problem_constructor, self.domain_qualifier, self.mc_host, self.mc_port)) for k in raw.nodes)
+        m = dict((k,Island(str(uuid4()),
+                           self.problem_constructor,
+                           self._getAlgorithmConstructor(algorithm_factory,k,raw),
+                           island_size,
+                           self.domain_qualifier,
+                           self.mc_host,
+                           self.mc_port)) for k in raw.nodes)
         g = DiTopology()
         g.add_nodes_from(island.id for island in m.values())
         for k,i in m.items():

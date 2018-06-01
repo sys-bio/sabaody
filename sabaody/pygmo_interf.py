@@ -24,11 +24,13 @@ class Evaluator(ABC):
 
 
 class Island:
-    def __init__(self, id, problem_factory, domain_qualifier, mc_host, mc_port=11211):
+    def __init__(self, id, problem_constructor, algorithm_constructor, size, domain_qualifier, mc_host, mc_port=11211):
         self.id = id
         self.mc_host = mc_host
         self.mc_port = mc_port
-        self.problem_factory = problem_factory
+        self.problem_constructor = problem_constructor
+        self.algorithm_constructor = algorithm_constructor
+        self.size = size
         self.domain_qualifier = domain_qualifier
 
 def run_island(island, topology):
@@ -41,7 +43,7 @@ def run_island(island, topology):
     migrator = CentralMigrator('http://luna:10100')
 
     algorithm = pg.de(gen=10)
-    problem = island.problem_factory()
+    problem = island.problem_constructor()
     # TODO: configure pop size
     i = pg.island(algo=algorithm, prob=problem, size=20)
 
@@ -65,16 +67,13 @@ def run_island(island, topology):
     return (ip, hostname, island.id, migration_log, i.get_population().problem.get_fevals())
 
 class Archipelago:
-    def __init__(self, islands, topology, domain_qualifier, mc_host, mc_port=11211, initial_score=None):
+    def __init__(self, islands, topology, initial_score=None):
         from pymemcache.client.base import Client
-        self.num_islands = num_islands
-        self.problem_factory = problem_factory
         if initial_score is None:
             self.initial_score = ...
         else:
             self.initial_score = initial_score
         self.topology = topology
-        self.domain_qualifier = domain_qualifier
         self.mc_host = mc_host
         self.mc_port = mc_port
         mc_client = Client((self.mc_host,self.mc_port))
@@ -90,7 +89,7 @@ class Archipelago:
         #print(islands.map(lambda i: i.id).collect())
         #print(islands.map(lambda i: i.run()).collect())
         #from .worker import run_island
-        return sc.parallelize(islands).map(run_island).collect()
+        return sc.parallelize(topology.islands).map(run_island).collect()
 
 
 
