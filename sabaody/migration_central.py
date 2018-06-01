@@ -19,7 +19,8 @@ import typing
 
 # ** Client Logic **
 class CentralMigrator(Migrator):
-    def __init__(self, root_url):
+    def __init__(self, root_url, selection_policy, migration_policy):
+        super().__init__(selection_policy, migration_policy)
         self.root_url = URL(root_url)
 
     def purgeAll(self):
@@ -93,14 +94,6 @@ class CentralMigrator(Migrator):
         return (array(r.json()['migrants']),
                 array([[f] for f in r.json()['fitness']]),
                 r.json()['src_island_id'])
-
-    def replace(self, island_id, population, policy):
-        '''
-        Replace migrants in the specified population with candidates
-        in the pool according to the specified policy.
-        '''
-        candidates,candidate_f,src_ids = self.pullMigrants(island_id)
-        return (policy.replace(population,candidates,candidate_f),src_ids)
 
 # ** Server Logic **
 class MigrationBuffer(ABC):

@@ -16,7 +16,7 @@ def test_migration_replacement_policy_integration():
     try:
         process = start_migration_service()
         sleep(1)
-        m = CentralMigrator('http://localhost:10100')
+        m = CentralMigrator('http://localhost:10100', None, FairRPolicy())
 
         island1 = uuid4()
         island2 = uuid4()
@@ -59,14 +59,14 @@ def test_migration_replacement_policy_integration():
         m.pushMigrant(island1, array([1.,1.,1.]), 1.)
         m.pushMigrant(island1, array([2.,2.,2.]), 2.)
 
-        deltas,src_ids = m.replace(island1, p1, FairRPolicy())
+        deltas,src_ids = m.replace(island1, p1)
         assert array_equal(sort_by_fitness(p1)[0], array([
                            [1.,1.,1.],
                            [2.,2.,2.]]))
         assert deltas == [-3.,-1.]
 
         # test island 2
-        deltas,src_ids = m.replace(island2, p2, FairRPolicy())
+        deltas,src_ids = m.replace(island2, p2)
         assert array_equal(sort_by_fitness(p2)[0], array([
                            [9.,9.,1.],
                            [3.,3.,3.]]))

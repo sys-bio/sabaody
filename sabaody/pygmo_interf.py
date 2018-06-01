@@ -55,17 +55,8 @@ def run_island(island, topology):
         i.wait()
 
         # perform migration
-        # send migrants
-        selection_policy = BestSPolicy(migration_rate=10)
-        pop = i.get_population()
-        candidates,candidate_f = selection_policy.select(pop)
-        for connected_island in connected_island_ids:
-            if connected_island != island.id:
-                for candidate,f in zip(candidates,candidate_f):
-                    migrator.pushMigrant(connected_island, candidate, f, src_island_id=island.id)
-        # receive migrants
-        deltas,src_ids = migrator.replace(island.id, pop, FairRPolicy())
-        i.set_population(pop)
+        migrator.sendMigrants(island.id, i, topology)
+        deltas,src_ids = migrator.receiveMigrants(island.id, i, topology)
         migration_log.append((float(pop.champion_f[0]),deltas,src_ids))
 
     import socket

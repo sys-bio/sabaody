@@ -26,7 +26,7 @@ def test_migration_client(mocker):
     mocker.patch('requests.post')
     from sabaody.migration_central import CentralMigrator
     # url doesn't matter, requests never sent
-    m = CentralMigrator('http://www.schneierfacts.com:10100')
+    m = CentralMigrator('http://www.schneierfacts.com:10100', None, None)
 
     island_id = uuid4()
     m.defineMigrantPool(island_id, 4)

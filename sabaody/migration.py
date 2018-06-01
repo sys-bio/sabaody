@@ -1,8 +1,13 @@
 from __future__ import print_function, division, absolute_import
 
-from numpy import argsort, flipud
+from .topology import Topology, DiTopology
+
+from numpy import argsort, flipud, ndarray
+import pygmo as pg
+import arrow
 
 from abc import ABC, abstractmethod
+import typing
 
 class SelectionPolicyBase(ABC):
     '''
@@ -101,5 +106,47 @@ class FairRPolicy(ReplacementPolicyBase):
         return deltas
 
 # ** Migration Policies **
-class Migrator:
-    pass
+class Migrator(ABC):
+    def __init__(self, selection_policy, replacement_policy):
+        self.selection_policy = selection_policy
+        self.replacement_policy = replacement_policy
+
+    def sendMigrants(self, island_id, island, topology):
+        # type: (str, pg.island, typing.Union[Topology,DiTopology]) -> None
+        '''
+        Sends migrants from a pagmo island to other connected islands.
+        '''
+        pop = island.get_population()
+        candidates,candidate_f = self.selection_policy.select(pop)
+        for connected_island in topology.outgoing_ids(island_id):
+            for candidate,f in zip(candidates,candidate_f):
+                self.pushMigrant(connected_island, candidate, f, src_island_id=island_id)
+
+    def receiveMigrants(self, island_id, island, topology):
+        # type: (str, pg.island, typing.Union[Topology,DiTopology]) -> typing.Tuple[typing.List,typing.List]
+        '''
+        Receives migrants from other islands.
+        '''
+        pop = island.get_population()
+        deltas,src_ids = self.replace(island_id, pop)
+        island.set_population(pop)
+        return (deltas,src_ids)
+
+    def replace(self, island_id, population):
+        # type: (str, pg.population) -> typing.Tuple[typing.List,typing.List]
+        '''
+        Replace migrants in the specified population with candidates
+        in the pool according to the specified policy.
+        '''
+        candidates,candidate_f,src_ids = self.pullMigrants(island_id)
+        return (self.replacement_policy.replace(population,candidates,candidate_f),src_ids)
+
+    @abstractmethod
+    def pushMigrant(self, dest_island_id, migrant_vector, fitness, src_island_id=None, expiration_time=arrow.utcnow().shift(days=+1)):
+        # type: (str, ndarray, float, str, arrow.Arrow) -> None
+        pass
+
+    @abstractmethod
+    def pullMigrants(self, island_id, n=0):
+        # type: (ndarray, int) -> typing.Tuple[ndarray,ndarray,typing.List[str]]
+        pass
