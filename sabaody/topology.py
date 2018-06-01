@@ -16,7 +16,10 @@ class TopologyFactory:
         self.mc_host = mc_host
         self.mc_port = mc_port
 
-    def create_one_way_ring(self, number_of_islands = 10):
+    def _addExtraAttributes(self,g):
+        g.island_ids = frozenset(n.id for n in g.nodes)
+
+    def createOneWayRing(self, number_of_islands = 10):
         # type: (int) -> nx.Graph
         raw = nx.wheel_graph(number_of_islands)
         m = dict((k,Island(str(uuid4()), self.problem_constructor, self.domain_qualifier, self.mc_host, self.mc_port)) for k in raw.nodes)
@@ -25,6 +28,7 @@ class TopologyFactory:
         g.add_edges_from((m[u], m[v])
                          for u, nbrs in raw._adj.items()
                          for v, data in nbrs.items())
+        self._addExtraAttributes(g)
         return g
 
 

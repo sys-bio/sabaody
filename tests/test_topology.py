@@ -15,4 +15,6 @@ def test_one_way_ring():
     '''
     from sabaody.topology import TopologyFactory
     topology_factory = TopologyFactory(Problem, domain_qual, 'localhost', 11211)
-    t = topology_factory.create_one_way_ring(4)
+
+    t = topology_factory.createOneWayRing(4)
+    assert len(t.island_ids) == 4
