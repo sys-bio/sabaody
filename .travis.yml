@@ -16,5 +16,5 @@ install:
 
 script:
   - python setup.py develop
-  - mypy ./tests/test_migration_central.py --ignore-missing-imports
+  - mypy ./tests/*.py --ignore-missing-imports
   - pytest

@@ -24,16 +24,14 @@ class Evaluator(ABC):
 
 
 class Island:
-    def __init__(self, id, problem_factory, migrator, island_ids, domain_qualifier, mc_host, mc_port=11211):
+    def __init__(self, id, problem_factory, domain_qualifier, mc_host, mc_port=11211):
         self.id = id
         self.mc_host = mc_host
         self.mc_port = mc_port
         self.problem_factory = problem_factory
         self.domain_qualifier = domain_qualifier
-        self.migrator = migrator
-        self.island_ids = island_ids
 
-def run_island(island):
+def run_island(island, topology):
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
@@ -42,17 +40,13 @@ def run_island(island):
     mc_client = Client((island.mc_host,island.mc_port))
     migrator = CentralMigrator('http://luna:10100')
 
-    #udp = island.problem_factory()
-
     algorithm = pg.de(gen=10)
-    #problem = pg.problem(udp)
     problem = island.problem_factory()
     # TODO: configure pop size
     i = pg.island(algo=algorithm, prob=problem, size=20)
 
     mc_client.set(island.domain_qualifier('island', str(island.id), 'status'), 'Running', 10000)
     mc_client.set(island.domain_qualifier('island', str(island.id), 'n_cores'), str(cpu_count()), 10000)
-    #print('Starting island {} with {} cpus'.format(str(i.id), str(cpu_count())))
 
     rounds = 10
     migration_log = []
@@ -65,14 +59,13 @@ def run_island(island):
         selection_policy = BestSPolicy(migration_rate=10)
         pop = i.get_population()
         candidates,candidate_f = selection_policy.select(pop)
-        for connected_island in island.island_ids:
+        for connected_island in connected_island_ids:
             if connected_island != island.id:
                 for candidate,f in zip(candidates,candidate_f):
                     migrator.pushMigrant(connected_island, candidate, f, src_island_id=island.id)
         # receive migrants
         deltas,src_ids = migrator.replace(island.id, pop, FairRPolicy())
         i.set_population(pop)
-        #deltas,src_ids = ([],[])
         migration_log.append((float(pop.champion_f[0]),deltas,src_ids))
 
     import socket
@@ -81,19 +74,20 @@ def run_island(island):
     return (ip, hostname, island.id, migration_log, i.get_population().problem.get_fevals())
 
 class Archipelago:
-    def __init__(self, num_islands, problem_factory, initial_score, topology, domain_qualifier, mc_host, mc_port=11211):
+    def __init__(self, islands, topology, domain_qualifier, mc_host, mc_port=11211, initial_score=None):
         from pymemcache.client.base import Client
         self.num_islands = num_islands
         self.problem_factory = problem_factory
-        self.initial_score = initial_score
+        if initial_score is None:
+            self.initial_score = ...
+        else:
+            self.initial_score = initial_score
         self.topology = topology
         self.domain_qualifier = domain_qualifier
         self.mc_host = mc_host
         self.mc_port = mc_port
         mc_client = Client((self.mc_host,self.mc_port))
-        # construct islands
-        self.island_ids = [str(uuid4()) for x in range(self.num_islands)]
-        mc_client.set(self.domain_qualifier('islandIds'), dumps(self.island_ids), 10000)
+        mc_client.set(self.domain_qualifier('islandIds'), dumps(topology.island_ids), 10000)
 
     def run(self, sc):
         from sabaody.migration_central import CentralMigrator
@@ -101,7 +95,7 @@ class Archipelago:
         for island_id in self.island_ids:
             migrator.defineMigrantPool(island_id, 5) # FIXME: hardcoded
         #islands = sc.parallelize(self.island_ids).map(lambda u: Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port))
-        islands = [Island(u, problem_factory=self.problem_factory, migrator=None, island_ids=self.island_ids, domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
+        islands = [Island(u, problem_factory=self.problem_factory, domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
         #print(islands.map(lambda i: i.id).collect())
         #print(islands.map(lambda i: i.run()).collect())
         #from .worker import run_island
