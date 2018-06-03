@@ -2,6 +2,7 @@ from __future__ import print_function, division, absolute_import
 
 from sabaody import getQualifiedName
 
+from numpy import array
 from toolz import partial
 from time import sleep
 
@@ -55,11 +56,18 @@ def test_one_way_ring_migration():
         sleep(1)
         migrator = CentralMigrator('http://localhost:10100', BestSPolicy(migration_rate=1), FairRPolicy())
 
-        islands = dict((i.id,pg.island(algo=i.algorithm_constructor(),
-                                       prob=i.problem_constructor(),
-                                       size=i.size)) for i in topology.islands)
+        from collections import OrderedDict
+        islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
+                                     prob=i.problem_constructor(),
+                                     size=i.size)) for i in topology.islands)
         for island_id in islands.keys():
             migrator.defineMigrantPool(island_id, 3)
+        # seed solution in one island
+        i = tuple(islands.values())[0]
+        p = i.get_population()
+        p.set_x(0,array([1.,1.,1.]))
+        i.set_population(p)
+        assert i.get_population().champion_f[0] < 0.1*tuple(islands.values())[1].get_population().champion_f[0]
         for x in range(5):
             # perform migration
             for island_id,i in islands.items():
