@@ -6,6 +6,8 @@ from numpy import array
 from toolz import partial
 from time import sleep
 
+from itertools import islice
+
 class NoProblem:
     pass
 
@@ -67,11 +69,15 @@ def test_one_way_ring_migration():
         p = i.get_population()
         p.set_x(0,array([1.,1.,1.]))
         i.set_population(p)
-        assert i.get_population().champion_f[0] < 0.1*tuple(islands.values())[1].get_population().champion_f[0]
-        for x in range(5):
+
+        n=0
+        for i1,i2 in zip(islands.values(),islice(islands.values(),1,None)):
+            assert i1.get_population().champion_f[0] < 0.1*i2.get_population().champion_f[0]
+            n+=1
             # perform migration
             for island_id,i in islands.items():
                 migrator.sendMigrants(island_id, i, topology)
                 deltas,src_ids = migrator.receiveMigrants(island_id, i, topology)
+        assert n==4
     finally:
         process.terminate()
