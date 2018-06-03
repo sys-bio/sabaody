@@ -32,6 +32,13 @@ def test_one_way_ring():
         assert frozenset(t.outgoing_ids(id)) < frozenset(t.neighbor_ids(id))
         assert frozenset(t.outgoing_islands(id)) < frozenset(t.neighbor_islands(id))
 
+def count_hits(islands):
+    '''
+    Counts the number of islands which have hit the
+    global minimum.
+    '''
+    return sum(1 for i in islands if i.get_population().champion_f[0] == 0.)
+
 def test_one_way_ring_migration():
     '''
     Tests the migration on a one way ring.
@@ -70,14 +77,15 @@ def test_one_way_ring_migration():
         p.set_x(0,array([1.,1.,1.]))
         i.set_population(p)
 
-        n=0
+        n=1
         for i1,i2 in zip(islands.values(),islice(islands.values(),1,None)):
             assert i1.get_population().champion_f[0] < 0.1*i2.get_population().champion_f[0]
+            assert count_hits(islands.values()) == n
             n+=1
             # perform migration
             for island_id,i in islands.items():
                 migrator.sendMigrants(island_id, i, topology)
                 deltas,src_ids = migrator.receiveMigrants(island_id, i, topology)
-        assert n==4
+        assert n==5
     finally:
         process.terminate()
