@@ -68,7 +68,7 @@ def test_one_way_ring_migration():
     import pygmo as pg
     try:
         process = start_migration_service()
-        sleep(1)
+        sleep(2)
         migrator = CentralMigrator('http://localhost:10100', BestSPolicy(migration_rate=1), FairRPolicy())
 
         from collections import OrderedDict

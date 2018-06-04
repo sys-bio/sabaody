@@ -15,7 +15,7 @@ def test_migration_replacement_policy_integration():
     from pygmo import population, rosenbrock
     try:
         process = start_migration_service()
-        sleep(1)
+        sleep(2)
         m = CentralMigrator('http://localhost:10100', None, FairRPolicy())
 
         island1 = uuid4()
