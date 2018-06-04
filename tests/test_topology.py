@@ -39,6 +39,12 @@ def count_hits(islands):
     '''
     return sum(1 for i in islands if i.get_population().champion_f[0] == 0.)
 
+def seed_at(islands,index,n):
+    i = tuple(islands.values())[index]
+    p = i.get_population()
+    p.set_x(0,array([1.]*n))
+    i.set_population(p)
+
 def test_one_way_ring_migration():
     '''
     Tests the migration on a one way ring.
@@ -72,10 +78,8 @@ def test_one_way_ring_migration():
         for island_id in islands.keys():
             migrator.defineMigrantPool(island_id, 3)
         # seed solution in one island
-        i = tuple(islands.values())[0]
-        p = i.get_population()
-        p.set_x(0,array([1.,1.,1.]))
-        i.set_population(p)
+        seed_at(islands,0,3)
+        assert count_hits(islands.values()) == 1
 
         n=1
         for i1,i2 in zip(islands.values(),islice(islands.values(),1,None)):
@@ -85,7 +89,70 @@ def test_one_way_ring_migration():
             # perform migration
             for island_id,i in islands.items():
                 migrator.sendMigrants(island_id, i, topology)
+            for island_id,i in islands.items():
                 deltas,src_ids = migrator.receiveMigrants(island_id, i, topology)
         assert n==5
+
+        # reset & differentiate from chain
+        islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
+                                     prob=i.problem_constructor(),
+                                     size=i.size)) for i in topology.islands)
+        seed_at(islands,-1,3)
+        # perform migration
+        for island_id,i in islands.items():
+            migrator.sendMigrants(island_id, i, topology)
+        for island_id,i in islands.items():
+            deltas,src_ids = migrator.receiveMigrants(island_id, i, topology)
+        assert tuple(islands.values())[0].get_population().champion_f[0] == 0.
+        assert count_hits(islands.values()) == 2
     finally:
         process.terminate()
+
+#def test_bidir_chain():
+    #'''
+    #Tests the migration on a one way chain.
+    #'''
+    #from sabaody.topology import TopologyFactory
+
+    #def make_problem():
+        #import pygmo as pg
+        #return pg.problem(pg.rosenbrock(3))
+
+    #def make_algorithm():
+        #return pg.de(gen=10)
+
+    #domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_bidir_chain')
+    #topology_factory = TopologyFactory(make_problem, domain_qual, 'localhost', 11211)
+    #topology = topology_factory.createBidirChain(make_algorithm,5)
+    #assert len(topology.island_ids) == 5
+
+    #from sabaody.migration_central import CentralMigrator, start_migration_service
+    #from sabaody.migration import BestSPolicy, FairRPolicy, sort_by_fitness
+    #import pygmo as pg
+    #try:
+        #process = start_migration_service()
+        #sleep(1)
+        #migrator = CentralMigrator('http://localhost:10100', BestSPolicy(migration_rate=1), FairRPolicy())
+
+        #from collections import OrderedDict
+        #islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
+                                     #prob=i.problem_constructor(),
+                                     #size=i.size)) for i in topology.islands)
+        #for island_id in islands.keys():
+            #migrator.defineMigrantPool(island_id, 3)
+        ## forward migration
+        #seed_at(islands,0,3)
+
+        #n=1
+        #for i1,i2 in zip(islands.values(),islice(islands.values(),1,None)):
+            #assert i1.get_population().champion_f[0] < 0.1*i2.get_population().champion_f[0]
+            #assert count_hits(islands.values()) == n
+            #n+=1
+            ## perform migration
+            #for island_id,i in islands.items():
+                #migrator.sendMigrants(island_id, i, topology)
+            #for island_id,i in islands.items():
+                #deltas,src_ids = migrator.receiveMigrants(island_id, i, topology)
+        #assert n==5
+    #finally:
+        #process.terminate()

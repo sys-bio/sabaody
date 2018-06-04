@@ -60,7 +60,7 @@ class TopologyFactory:
         g.islands = tuple(g.nodes[i]['island'] for i in g.nodes)
 
     def createOneWayRing(self, algorithm_factory, number_of_islands = 100, island_size = 20):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> nx.Graph
+        # type: (Callable, int, int) -> DiTopology (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> nx.Graph
         '''
         Creates a one way ring topology.
         '''
@@ -84,12 +84,28 @@ class TopologyFactory:
 
 
     #@staticmethod
-    #def create_chain(number_of_islands = 4):
-        #archipelago = nx.DiGraph()
-        #archipelago.add_nodes_from(range(1, number_of_islands + 1))
-        #for each_island in range(1, number_of_islands):
-            #archipelago.add_edge(each_island, (each_island + 1))
-        #return archipelago
+    def createBidirChain(self, algorithm_factory, number_of_islands = 100, island_size = 20):
+        # type: (Callable, int, int) -> DiTopology
+        '''
+        Creates a linear chain topology.
+        '''
+        raw = nx.path_graph(number_of_islands, create_using=nx.Graph())
+        m = dict((k,Island(str(uuid4()),
+                           self.problem_constructor,
+                           self._getAlgorithmConstructor(algorithm_factory,k,raw),
+                           island_size,
+                           self.domain_qualifier,
+                           self.mc_host,
+                           self.mc_port)) for k in raw.nodes)
+        g = Topology()
+        g.add_nodes_from(island.id for island in m.values())
+        for k,i in m.items():
+            g.nodes[m[k].id]['island'] = m[k]
+        g.add_edges_from((m[u].id, m[v].id)
+                         for u, nbrs in raw._adj.items()
+                         for v, data in nbrs.items())
+        self._addExtraAttributes(g)
+        return g
 
 
     #@staticmethod
