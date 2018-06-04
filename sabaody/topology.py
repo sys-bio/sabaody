@@ -60,7 +60,7 @@ class TopologyFactory:
         g.islands = tuple(g.nodes[i]['island'] for i in g.nodes)
 
     def createOneWayRing(self, algorithm_factory, number_of_islands = 100, island_size = 20):
-        # type: (Callable, int, int) -> DiTopology (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> nx.Graph
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> DiTopology
         '''
         Creates a one way ring topology.
         '''
