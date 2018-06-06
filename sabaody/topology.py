@@ -21,17 +21,31 @@ class AlgorithmCtorFactory(ABC):
 
 class Topology(nx.Graph):
     def neighbor_ids(self, id):
-        return tuple(chain(self.successors(id),self.predecessors(id)))
+        return self.neighbors(id)
+
+    def outgoing_ids(self, id):
+        '''
+        For an undirected topology, the outgoing ids are just
+        the neighbor ids.
+        '''
+        return self.neighbors(id)
 
     def neighbor_islands(self, id):
         return tuple(self.nodes[n]['island'] for n in chain(self.successors(id),self.predecessors(id)))
 
 class DiTopology(nx.DiGraph,Topology):
     def outgoing_ids(self, id):
+        '''
+        For a directed topology, the outgoing ids can be
+        different from the incomming ids.
+        '''
         return tuple(self.successors(id))
 
     def outgoing_islands(self, id):
         return tuple(self.nodes[n]['island'] for n in self.successors(id))
+
+    def neighbor_ids(self, id):
+        return tuple(chain(self.successors(id),self.predecessors(id)))
 
 class TopologyFactory:
     def __init__(self, problem_constructor, domain_qualifier, mc_host, mc_port=11211):
@@ -105,6 +119,12 @@ class TopologyFactory:
                          for u, nbrs in raw._adj.items()
                          for v, data in nbrs.items())
         self._addExtraAttributes(g)
+        # label head and tail nodes
+        endpoints = set()
+        for n in g.nodes:
+            if len(tuple(g.neighbors(n))) == 1:
+                endpoints.add(n)
+        g.endpoints = tuple(endpoints)
         return g
 
 
