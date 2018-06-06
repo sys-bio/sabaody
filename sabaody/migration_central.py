@@ -29,7 +29,9 @@ class CentralMigrator(Migrator):
         Wipe the island definitions and all migrants.
         Return to state at service startup.
         '''
-        pass # TODO
+        from requests import post
+        r = post(str(self.root_url / 'purge-all'))
+        r.raise_for_status()
 
     def defineMigrantPool(self, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
         # type: (str, int, str, arrow.Arrow) -> None

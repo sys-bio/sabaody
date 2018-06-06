@@ -45,19 +45,35 @@ def hits_contiguous(islands,topology):
     '''
     sg_nodes = tuple(id for id in topology.nodes if islands[id].get_population().champion_f[0] == 0.)
 
-def seed_first(islands,topology):
-    i = tuple(islands.values())[0]
+def seed_island(i):
+    '''
+    Seed an island (i.e. set the value of one decision vector)
+    with the global minimum of the Rosenbrock function.
+    '''
     p = i.get_population()
     n = p.get_x().shape[1]
     p.set_x(0,array([1.]*n))
     i.set_population(p)
 
+def seed_first(islands,topology):
+    '''
+    If the topology has defined endpoints, use the first one.
+    Otherwise, use an arbitrary point (works for rings).
+    '''
+    if hasattr(topology,'endpoints'):
+        seed_island(islands[topology.endpoints[0]])
+    else:
+        # arbitrary, works for e.g. ring
+        seed_island(tuple(islands.values())[0])
+
+def seed_last(islands,topology):
+    '''
+    Seed the last endpoint.
+    '''
+    seed_island(islands[topology.endpoints[-1]])
+
 def seed_predecessor(islands,topology):
-    i = islands[tuple(topology.predecessors(tuple(islands.keys())[0]))[0]]
-    p = i.get_population()
-    n = p.get_x().shape[1]
-    p.set_x(0,array([1.]*n))
-    i.set_population(p)
+    seed_island(islands[tuple(topology.predecessors(tuple(islands.keys())[0]))[0]])
 
 def test_one_way_ring_migration():
     '''
@@ -147,20 +163,26 @@ def test_bidir_chain():
         migrator = CentralMigrator('http://localhost:10100', BestSPolicy(migration_rate=1), FairRPolicy())
 
         from collections import OrderedDict
-        islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
-                                     prob=i.problem_constructor(),
-                                     size=i.size)) for i in topology.islands)
-        for island_id in islands.keys():
-            migrator.defineMigrantPool(island_id, 3)
-        # forward migration
-        seed_first(islands,topology)
+        for k in (1,2):
+            islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
+                                        prob=i.problem_constructor(),
+                                        size=i.size)) for i in topology.islands)
+            for island_id in islands.keys():
+                migrator.defineMigrantPool(island_id, 3)
+            if k == 1:
+                # test forward migration
+                seed_first(islands,topology)
+            else:
+                # test reverse migration
+                seed_last(islands,topology)
 
-        for n in range(1,5+1):
-            assert count_hits(islands.values()) == n
-            # perform migration
-            for island_id,i in islands.items():
-                migrator.sendMigrants(island_id, i, topology)
-            for island_id,i in islands.items():
-                deltas,src_ids = migrator.receiveMigrants(island_id, i, topology)
+            for n in range(1,5+1):
+                assert count_hits(islands.values()) == n
+                # perform migration
+                for island_id,i in islands.items():
+                    migrator.sendMigrants(island_id, i, topology)
+                for island_id,i in islands.items():
+                    deltas,src_ids = migrator.receiveMigrants(island_id, i, topology)
+            migrator.purgeAll()
     finally:
         process.terminate()

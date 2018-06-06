@@ -96,8 +96,6 @@ class TopologyFactory:
         self._addExtraAttributes(g)
         return g
 
-
-    #@staticmethod
     def createBidirChain(self, algorithm_factory, number_of_islands = 100, island_size = 20):
         # type: (Callable, int, int) -> DiTopology
         '''
