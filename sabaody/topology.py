@@ -54,6 +54,7 @@ class TopologyFactory:
         self.mc_host = mc_host
         self.mc_port = mc_port
 
+
     def _getAlgorithmConstructor(self, algorithm_factory, node, graph):
         # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, Union[nx.Graph,nx.DiGraph]) -> Callable[[],pg.algorithm]
         '''
@@ -68,6 +69,7 @@ class TopologyFactory:
             return choice(algorithm_factory)
         else:
             return algorithm_factory
+
 
     def _processTopology(self,raw,algorithm_factory,island_size,topology_class):
         m = dict((k,Island(str(uuid4()),
@@ -88,6 +90,7 @@ class TopologyFactory:
         g.islands = tuple(g.nodes[i]['island'] for i in g.nodes)
         return g
 
+
     def createOneWayRing(self, algorithm_factory, number_of_islands = 100, island_size = 20):
         # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> DiTopology
         '''
@@ -95,6 +98,7 @@ class TopologyFactory:
         '''
         g = self._processTopology(nx.cycle_graph(number_of_islands, create_using=nx.DiGraph()), algorithm_factory, island_size, DiTopology)
         return g
+
 
     def createBidirChain(self, algorithm_factory, number_of_islands = 100, island_size = 20):
         # type: (Callable, int, int) -> DiTopology
@@ -111,73 +115,65 @@ class TopologyFactory:
         return g
 
 
-    #@staticmethod
-    #def create_ring(number_of_islands=4):
-        #archipelago = nx.Graph()
-        #archipelago.add_nodes_from(range(1, number_of_islands + 1))
-        #for each_island in range(1, number_of_islands + 1):
-            #if each_island == number_of_islands:
-                #archipelago.add_edge(each_island,1)
-            #else:
-                #archipelago.add_edge(each_island, (each_island + 1))
-        #return archipelago
+    def createLollipop(self, algorithm_factory, complete_subgraph_size = 100, chain_size = 10, island_size = 20):
+        # type: (Callable, int, int, int) -> DiTopology
+        '''
+        Creates a topology from a lollipop graph.
+        '''
+        g = self._processTopology(nx.lollipop_graph(complete_subgraph_size, chain_size, create_using=nx.Graph()), algorithm_factory, island_size, Topology)
+        # label tail nodes
+        endpoints = set()
+        for n in g.nodes:
+            if len(tuple(g.neighbors(n))) == 1:
+                endpoints.add(n)
+        g.endpoints = tuple(endpoints)
+        return g
 
 
-    #@staticmethod
-    #def create_1_2_ring(number_of_islands = 4):
-        #archipelago = nx.Graph()
-        #archipelago.add_nodes_from(range(1, number_of_islands + 1))
-        #for each_island in range(1, number_of_islands + 1):
-
-            #for step in range(1,3):
-                #to_edge = each_island + step
-                #if to_edge > number_of_islands:
-                    #to_edge = to_edge % number_of_islands
-                #archipelago.add_edge(each_island,to_edge)
-
-        #return archipelago
+    def create_12_Ring(self, algorithm_factory, number_of_islands = 100, island_size = 20):
+        g = nx.Graph()
+        g.add_nodes_from(range(1, number_of_islands + 1))
+        for each_island in range(1, number_of_islands + 1):
+            for step in range(1,3):
+                to_edge = each_island + step
+                if to_edge > number_of_islands:
+                    to_edge = to_edge % number_of_islands
+                g.add_edge(each_island,to_edge)
+        g = self._processTopology(g)
+        return g
 
 
-    #@staticmethod
-    #def create_1_2_3_ring(number_of_islands=4):
-        #archipelago = nx.Graph()
-        #archipelago.add_nodes_from(range(1, number_of_islands + 1))
-        #for each_island in range(1, number_of_islands + 1):
-
-            #for step in range(1, 4):
-                #to_edge = each_island + step
-                #if to_edge > number_of_islands:
-                    #to_edge = to_edge % number_of_islands
-                #archipelago.add_edge(each_island, to_edge)
-
-        #return archipelago
+    def create_123_Ring(self, algorithm_factory, number_of_islands = 100, island_size = 20):
+        g = nx.Graph()
+        g.add_nodes_from(range(1, number_of_islands + 1))
+        for each_island in range(1, number_of_islands + 1):
+            for step in range(1, 4):
+                to_edge = each_island + step
+                if to_edge > number_of_islands:
+                    to_edge = to_edge % number_of_islands
+                g.add_edge(each_island, to_edge)
+        g = self._processTopology(g)
+        return g
 
 
-    #@staticmethod
-    #def create_fully_connected(number_of_islands=4):
-        #archipelago = nx.Graph()
-        #archipelago.add_nodes_from(range(1, number_of_islands + 1))
-        #all_edges = itertools.combinations(range(1,number_of_islands+1),2)
-        #archipelago.add_edges_from(all_edges)
-        #return  archipelago
+    def createFullyConnected(self, algorithm_factory, number_of_islands = 100, central_node = 1, island_size = 20):
+        g = nx.Graph()
+        g.add_nodes_from(range(1, number_of_islands + 1))
+        all_edges = itertools.combinations(range(1,number_of_islands+1),2)
+        g.add_edges_from(all_edges)
+        g = self._processTopology(g)
+        return  g
 
 
-    #@staticmethod
-    #def create_broadcast(number_of_islands = 4, central_node=1):
-        #archipelago = nx.Graph()
-        #archipelago.add_nodes_from(range(1, number_of_islands + 1))
-        #for each_island in range(1,number_of_islands+1):
-            #if central_node == each_island:
-                #continue
-            #archipelago.add_edge(central_node,each_island)
-        #return archipelago
-
-
-    #def add_edge(self,from_node,to_node,weight=0):
-        #if self.directed:
-            #self.topology.add_edge(from_node,to_node,weight = weight)
-        #else:
-            #self.topology.add_edge(from_node,to_node)
+    def createBroadcast(self, algorithm_factory, number_of_islands = 100, central_node = 1, island_size = 20):
+        g = nx.Graph()
+        g.add_nodes_from(range(1, number_of_islands + 1))
+        for each_island in range(1,number_of_islands+1):
+            if central_node == each_island:
+                continue
+            g.add_edge(central_node,each_island)
+        g = self._processTopology(g)
+        return g
 
 
 
