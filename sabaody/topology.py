@@ -11,7 +11,7 @@ from itertools import chain
 from abc import ABC, abstractmethod
 from uuid import uuid4
 import collections
-from random import choice
+from random import choice, randint
 from typing import Union, Callable
 
 class AlgorithmCtorFactory(ABC):
@@ -245,6 +245,36 @@ class TopologyFactory:
         Creates a hypercube topology.
         '''
         return self._processTopology(nx.hypercube_graph(dimension), algorithm_factory, island_size, Topology)
+
+
+    def createWattsStrogatz(self, algorithm_factory, num_nodes=100, k=10, p=0.1, seed = None, island_size = 20):
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, float, int, int) -> Topology
+        '''
+        Creates a Watts Strogatz topology - a ring lattice (i.e. a ring of n nodes each connected to k
+        neighbors) in which the rightmost k/2 nodes are rewired with probability p.
+        These graphs tend to exhibit high clustering and short average path lengths.
+        `See also: PaGMO's description. <http://esa.github.io/pygmo/documentation/topology.html>`_
+        '''
+        seed = seed or randint(0,10000)
+        return self._processTopology(nx.watts_strogatz_graph(num_nodes,k,p,seed), algorithm_factory, island_size, Topology)
+
+
+    def createErdosRenyi(self, algorithm_factory, num_nodes=100, p=0.1, directed = False, seed = None, island_size = 20):
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, float, bool, int, int) -> Topology
+        '''
+        Creates a topology based on an Erdős-Rényi random graph.
+        '''
+        seed = seed or randint(0,10000)
+        return self._processTopology(nx.erdos_renyi_graph(num_nodes,p,seed,directed), algorithm_factory, island_size, Topology)
+
+
+    def createBarabasiAlbert(self, algorithm_factory, num_nodes=100, m=3, seed = None, island_size = 20):
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, int, int) -> Topology
+        '''
+        Creates a topology based on a Barabási-Albert graph.
+        '''
+        seed = seed or randint(0,10000)
+        return self._processTopology(nx.barabasi_albert_graph(num_nodes,m,seed), algorithm_factory, island_size, Topology)
 
 
 
