@@ -34,17 +34,20 @@ class Topology(nx.Graph):
     '''
 
     def neighbor_ids(self, id):
-        return self.neighbors(id)
+        return tuple(self.neighbors(id))
 
     def outgoing_ids(self, id):
         '''
         For an undirected topology, the outgoing ids are just
         the neighbor ids.
         '''
-        return self.neighbors(id)
+        return tuple(self.neighbors(id))
 
     def neighbor_islands(self, id):
-        return tuple(self.nodes[n]['island'] for n in chain(self.successors(id),self.predecessors(id)))
+        return tuple(self.nodes[n]['island'] for n in self.neighbors(id))
+
+    def outgoing_islands(self, id):
+        return self.neighbor_islands(id)
 
 
 class DiTopology(nx.DiGraph,Topology):
@@ -64,6 +67,9 @@ class DiTopology(nx.DiGraph,Topology):
 
     def neighbor_ids(self, id):
         return tuple(chain(self.successors(id),self.predecessors(id)))
+
+    def neighbor_islands(self, id):
+        return tuple(self.nodes[n]['island'] for n in chain(self.successors(id),self.predecessors(id)))
 
 
 class TopologyFactory:
@@ -127,6 +133,15 @@ class TopologyFactory:
         return g
 
 
+    def createBidirRing(self, algorithm_factory, number_of_islands = 100, island_size = 20):
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> DiTopology
+        '''
+        Creates a bidirectional ring topology.
+        '''
+        g = self._processTopology(nx.cycle_graph(number_of_islands, create_using=nx.Graph()), algorithm_factory, island_size, Topology)
+        return g
+
+
     def createBidirChain(self, algorithm_factory, number_of_islands = 100, island_size = 20):
         # type: (Callable, int, int) -> Topology
         '''
@@ -163,7 +178,7 @@ class TopologyFactory:
         '''
         Creates a rim topology (ring with all nodes connected to a single node).
         '''
-        g = self._processTopology(nx.cycle_graph(number_of_islands, create_using=nx.DiGraph()), algorithm_factory, island_size, Topology)
+        g = self._processTopology(nx.cycle_graph(number_of_islands, create_using=nx.Graph()), algorithm_factory, island_size, Topology)
         g.hub = tuple(g.nodes)[0]
         for n in g.nodes:
             if n != g.hub:
@@ -222,6 +237,14 @@ class TopologyFactory:
                 continue
             g.add_edge(central_node,each_island)
         return self._processTopology(g)
+
+
+    def createHypercube(self, algorithm_factory, dimension = 10, island_size = 20):
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> Topology
+        '''
+        Creates a hypercube topology.
+        '''
+        return self._processTopology(nx.hypercube_graph(dimension), algorithm_factory, island_size, Topology)
 
 
 

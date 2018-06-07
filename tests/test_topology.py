@@ -42,6 +42,21 @@ def test_one_way_ring_topology():
         assert frozenset(t.outgoing_ids(id)) < frozenset(t.neighbor_ids(id))
         assert frozenset(t.outgoing_islands(id)) < frozenset(t.neighbor_islands(id))
 
+def test_bidir_ring_topology():
+    '''
+    Test the one way ring topology.
+    '''
+    from sabaody.topology import TopologyFactory
+    domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_topology')
+    topology_factory = TopologyFactory(NoProblem, domain_qual, 'localhost', 11211)
+
+    t = topology_factory.createBidirRing(None,4)
+    assert len(t.island_ids) == 4
+    assert len(t.islands) == 4
+    for id in t.island_ids:
+        assert len(t.neighbor_islands(id)) == len(t.neighbor_ids(id)) == 2
+        assert len(t.outgoing_islands(id)) == len(t.outgoing_ids(id)) == 2
+
 def test_rim_topology():
     '''
     Test the rim topology.
