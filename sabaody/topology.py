@@ -120,6 +120,7 @@ class TopologyFactory:
         '''
         Creates a topology from a lollipop graph.
         '''
+        # TODO: chain should be one-way
         g = self._processTopology(nx.lollipop_graph(complete_subgraph_size, chain_size, create_using=nx.Graph()), algorithm_factory, island_size, Topology)
         # label tail nodes
         endpoints = set()

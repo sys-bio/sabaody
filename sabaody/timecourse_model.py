@@ -131,6 +131,7 @@ class TimecourseModel(Evaluator):
 
     def setParameterVector(self, x, param_list):
         # type: (array, List) -> None
+        # TODO: sample in log space
         expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
         for i,v in enumerate(x):
             self.r[param_list[i]] = v
