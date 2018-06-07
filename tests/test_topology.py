@@ -11,12 +11,22 @@ from itertools import islice
 class NoProblem:
     pass
 
-def test_one_way_ring():
+def count_nodes_with_degree(topology, degree):
+    '''
+    Counts the number of nodes with a given degree.
+    '''
+    total = 0
+    for n in topology:
+        if topology.degree[n] == degree:
+            total += 1
+    return total
+
+def test_one_way_ring_topology():
     '''
     Test the one way ring topology.
     '''
     from sabaody.topology import TopologyFactory
-    domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring')
+    domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_topology')
     topology_factory = TopologyFactory(NoProblem, domain_qual, 'localhost', 11211)
 
     t = topology_factory.createOneWayRing(None,4)
@@ -31,6 +41,24 @@ def test_one_way_ring():
         # outgoing node should be in neighbors
         assert frozenset(t.outgoing_ids(id)) < frozenset(t.neighbor_ids(id))
         assert frozenset(t.outgoing_islands(id)) < frozenset(t.neighbor_islands(id))
+
+def test_rim_topology():
+    '''
+    Test the rim topology.
+    '''
+    from sabaody.topology import TopologyFactory
+    domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_rim_topology')
+    topology_factory = TopologyFactory(NoProblem, domain_qual, 'localhost', 11211)
+
+    t = topology_factory.createRim(None,5)
+    assert len(t.island_ids) == 5
+    assert len(t.islands) == 5
+    # hub
+    assert count_nodes_with_degree(t,4) == 1
+    # adjacent to hub
+    assert count_nodes_with_degree(t,2) == 2
+    # not adjacent to hub
+    assert count_nodes_with_degree(t,3) == 2
 
 def count_hits(islands):
     '''
@@ -148,7 +176,7 @@ def test_bidir_chain():
     def make_algorithm():
         return pg.de(gen=10)
 
-    domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_bidir_chain')
+    domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_bidir_chain_migration')
     topology_factory = TopologyFactory(make_problem, domain_qual, 'localhost', 11211)
     topology = topology_factory.createBidirChain(make_algorithm,5)
     assert len(topology.island_ids) == 5

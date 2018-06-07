@@ -33,6 +33,7 @@ class Topology(nx.Graph):
     def neighbor_islands(self, id):
         return tuple(self.nodes[n]['island'] for n in chain(self.successors(id),self.predecessors(id)))
 
+
 class DiTopology(nx.DiGraph,Topology):
     def outgoing_ids(self, id):
         '''
@@ -46,6 +47,7 @@ class DiTopology(nx.DiGraph,Topology):
 
     def neighbor_ids(self, id):
         return tuple(chain(self.successors(id),self.predecessors(id)))
+
 
 class TopologyFactory:
     def __init__(self, problem_constructor, domain_qualifier, mc_host, mc_port=11211):
@@ -101,7 +103,7 @@ class TopologyFactory:
 
 
     def createBidirChain(self, algorithm_factory, number_of_islands = 100, island_size = 20):
-        # type: (Callable, int, int) -> DiTopology
+        # type: (Callable, int, int) -> Topology
         '''
         Creates a linear chain topology.
         '''
@@ -116,7 +118,7 @@ class TopologyFactory:
 
 
     def createLollipop(self, algorithm_factory, complete_subgraph_size = 100, chain_size = 10, island_size = 20):
-        # type: (Callable, int, int, int) -> DiTopology
+        # type: (Callable, int, int, int) -> Topology
         '''
         Creates a topology from a lollipop graph.
         '''
@@ -128,6 +130,19 @@ class TopologyFactory:
             if len(tuple(g.neighbors(n))) == 1:
                 endpoints.add(n)
         g.endpoints = tuple(endpoints)
+        return g
+
+
+    def createRim(self, algorithm_factory, number_of_islands = 100, island_size = 20):
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> Topology
+        '''
+        Creates a rim topology (ring with all nodes connected to a single node).
+        '''
+        g = self._processTopology(nx.cycle_graph(number_of_islands, create_using=nx.DiGraph()), algorithm_factory, island_size, Topology)
+        g.hub = tuple(g.nodes)[0]
+        for n in g.nodes:
+            if n != g.hub:
+                g.add_edge(n,g.hub)
         return g
 
 
