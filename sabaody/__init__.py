@@ -4,7 +4,6 @@ __version__ = '0.1.0'
 
 
 #from .diffevo import differential_evolution
-from .pygmo_interf import Evaluator, Archipelago, Island, run_island, problem_constructor
+from .pygmo_interf import Evaluator, Archipelago, Island, run_island
 #from .timecourse_model import TimecourseModel
 from .utils import getQualifiedName
-from .migration_central import define_island
