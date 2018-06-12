@@ -10,6 +10,8 @@ Welcome to sabaody's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   lenotebouk.ipynb
+
 .. automodule:: sabaody
    :members:
    :undoc-members:
