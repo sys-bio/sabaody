@@ -11,19 +11,19 @@ class KafkaBuilder(object):
 
     @staticmethod
     def build_producer():
-        url = ",".join(each_host + ":" + KafkaMigration._port for each_host in KafkaMigration._hosts.split(","))
+        url = ",".join(each_host + ":" + KafkaBuilder._port for each_host in KafkaBuilder._hosts.split(","))
         return KafkaProducer(bootstrap_servers=url)
+
 
     @staticmethod
     def build_consumer(topic_name):
-        url = ",".join(each_host + ":" + KafkaMigration._port for each_host in KafkaMigration._hosts.split(","))
+        url = ",".join(each_host + ":" + KafkaBuilder._port for each_host in KafkaBuilder._hosts.split(","))
         return KafkaConsumer(topic_name , bootstrap_servers=url , auto_offset_reset='earliest')
 
 
+
 class KafkaMigration(object):
-
-
-    _producer = KafkaBuilder.build_producer()
+    _producer = None
     _buffer_size = 10
     _identifier = str(uuid4())
     _timeout = 10
@@ -40,8 +40,9 @@ class KafkaMigration(object):
 
     @staticmethod
     def migrate(migrants , from_island , to_island , num_generation):
-        topic_name = "_".join([to_island , KafkaMigration._identifier , str(num_generation)])
-        KafkaMigration._producer.send(topic_name , key = from_island, value =KafkaMigration.serialize(each_migrant))
+        for each_migrant in migrants:
+            topic_name = "_".join([to_island , KafkaMigration._identifier , str(num_generation)])
+            KafkaMigration._producer.send(topic_name , key = from_island, value =KafkaMigration.serialize(each_migrant))
 
 
     @staticmethod
@@ -53,7 +54,6 @@ class KafkaMigration(object):
     @staticmethod
     def deserialize(migrant):
         return json.loads(migrant)["data"]
-
 
 
     @staticmethod
@@ -72,7 +72,9 @@ class KafkaMigration(object):
                     elif len(replacement_policy_migrants) >= indegree:
                         break
         except RuntimeError:
-            print "Timeout for request from Island : {0} for generation : {1}".format(island,num_generation)
-        replacement_policy_migrants =  zip(*replacement_policy_migrants)
+            print("Timeout for request from Island : {0} for generation : {1}".format(island,num_generation))
+        replacement_policy_migrants = zip(*replacement_policy_migrants) # FIXME: needs to be a list?
         replacement_policy_migrants.append(source_ids)
         return replacement_policy_migrants
+
+KafkaMigration._producer = KafkaBuilder.build_producer()
