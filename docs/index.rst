@@ -10,9 +10,7 @@ Welcome to sabaody's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   lenotebouk.ipynb
-
-   emptynotebook.ipynb
+   topologies.ipynb
 
 .. automodule:: sabaody
    :members:

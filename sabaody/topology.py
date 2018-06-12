@@ -77,7 +77,7 @@ class TopologyFactory:
     Has methods for constructing a variety of topologies.
     '''
 
-    def __init__(self, problem_constructor, domain_qualifier, mc_host, mc_port=11211):
+    def __init__(self, problem_constructor, domain_qualifier=None, mc_host='localhost', mc_port=11211):
         self.problem_constructor = problem_constructor
         self.domain_qualifier = domain_qualifier
         self.mc_host = mc_host
