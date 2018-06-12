@@ -10,7 +10,9 @@ Welcome to sabaody's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+.. automodule:: sabaody
+   :members:
+   :undoc-members:
 
 Indices and tables
 ==================
