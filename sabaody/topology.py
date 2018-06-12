@@ -199,7 +199,7 @@ class TopologyFactory:
                 if to_edge > number_of_islands:
                     to_edge = to_edge % number_of_islands
                 g.add_edge(each_island,to_edge)
-        return self._processTopology(g)
+        return self._processTopology(g, algorithm_factory, island_size, Topology)
 
 
     def create_123_Ring(self, algorithm_factory, number_of_islands = 100, island_size = 20):
@@ -215,7 +215,7 @@ class TopologyFactory:
                 if to_edge > number_of_islands:
                     to_edge = to_edge % number_of_islands
                 g.add_edge(each_island, to_edge)
-        return self._processTopology(g)
+        return self._processTopology(g, algorithm_factory, island_size, Topology)
 
 
     def createFullyConnected(self, algorithm_factory, number_of_islands = 100, island_size = 20):
@@ -236,7 +236,7 @@ class TopologyFactory:
             if central_node == each_island:
                 continue
             g.add_edge(central_node,each_island)
-        return self._processTopology(g)
+        return self._processTopology(g, algorithm_factory, island_size, Topology)
 
 
     def createHypercube(self, algorithm_factory, dimension = 10, island_size = 20):
