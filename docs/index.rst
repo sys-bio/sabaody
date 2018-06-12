@@ -12,6 +12,8 @@ Welcome to sabaody's documentation!
 
    lenotebouk.ipynb
 
+   emptynotebook.ipynb
+
 .. automodule:: sabaody
    :members:
    :undoc-members:
