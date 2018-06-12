@@ -59,6 +59,13 @@ def run_island(island, topology):
         # perform migration
         migrator.sendMigrants(island.id, i, topology)
         deltas,src_ids = migrator.receiveMigrants(island.id, i, topology)
+
+        """
+        For Kafka Migration Enable below 
+        """
+        #migrator.send_migrants(island.id,i,topology,generation=x)
+        #deltas,src_ids = migrator.receive_migrants(island.id,i,topology,generation=x)
+
         migration_log.append((float(pop.champion_f[0]),deltas,src_ids))
 
     import socket

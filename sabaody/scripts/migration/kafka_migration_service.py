@@ -2,7 +2,7 @@ from kafka import KafkaProducer
 from kafka import KafkaConsumer
 from uuid import uuid4
 from interruptingcow import timeout
-
+import json
 
 class KafkaBuilder(object):
     _hosts = "128.208.17.254"
@@ -22,6 +22,7 @@ class KafkaBuilder(object):
 
 class KafkaMigration(object):
 
+
     _producer = KafkaBuilder.build_producer()
     _buffer_size = 10
     _identifier = str(uuid4())
@@ -40,22 +41,38 @@ class KafkaMigration(object):
     @staticmethod
     def migrate(migrants , from_island , to_island , num_generation):
         topic_name = "_".join([to_island , KafkaMigration._identifier , str(num_generation)])
-        for each_migrant in migrants:
-            KafkaMigration._producer.send(topic_name , key = from_island, value =str(each_migrant))
+        KafkaMigration._producer.send(topic_name , key = from_island, value =KafkaMigration.serialize(each_migrant))
+
+
+    @staticmethod
+    def serialize(migrants):
+        serialized_data = {"data":migrants}
+        return json.dumps(serialized_data)
+
+
+    @staticmethod
+    def deserialize(migrant):
+        return json.loads(migrant)["data"]
 
 
 
     @staticmethod
-    def welcome(island,num_generation):
+    def welcome(island,indegree, num_generation=1):
         replacement_policy_migrants = []
+        source_ids = []
         topic_name = "_".join([island , KafkaMigration._identifier , str(num_generation-1)])
         consumer = KafkaBuilder.build_consumer(topic_name)
         try:
-            with timeout(60 * 5 , exception=RuntimeError):
+            with timeout(KafkaMigration._timeout , exception=RuntimeError):
                 for each_migrant in consumer:
-                    replacement_policy_migrants.append(each_migrant.value)
+                    source_ids.append((each_migrant.key))
+                    replacement_policy_migrants.append(KafkaMigration.deserialize(each_migrant.value))
                     if len(replacement_policy_migrants) >= KafkaMigration._buffer_size:
+                        break
+                    elif len(replacement_policy_migrants) >= indegree:
                         break
         except RuntimeError:
             print "Timeout for request from Island : {0} for generation : {1}".format(island,num_generation)
+        replacement_policy_migrants =  zip(*replacement_policy_migrants)
+        replacement_policy_migrants.append(source_ids)
         return replacement_policy_migrants
