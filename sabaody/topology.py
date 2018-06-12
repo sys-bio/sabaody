@@ -43,6 +43,8 @@ class Topology(nx.Graph):
         '''
         return tuple(self.neighbors(id))
 
+
+
     def neighbor_islands(self, id):
         return tuple(self.nodes[n]['island'] for n in self.neighbors(id))
 
@@ -67,6 +69,13 @@ class DiTopology(nx.DiGraph,Topology):
 
     def neighbor_ids(self, id):
         return tuple(chain(self.successors(id),self.predecessors(id)))
+
+    def incoming_ids(self , id):
+        node_list = []
+        for each_node in list(self.nodes):
+            if id in list(self.neighbors(each_node)):
+                node_list.append(each_node)
+        return node_list
 
     def neighbor_islands(self, id):
         return tuple(self.nodes[n]['island'] for n in chain(self.successors(id),self.predecessors(id)))
