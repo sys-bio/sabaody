@@ -1,6 +1,5 @@
 from __future__ import print_function, division, absolute_import
 
-from sabaody.scripts.migration.kafka_migration_service import KafkaMigration
 from .topology import Topology, DiTopology
 
 from numpy import argsort, flipud, ndarray
@@ -108,6 +107,10 @@ class FairRPolicy(ReplacementPolicyBase):
 
 # ** Migration Policies **
 class Migrator(ABC):
+    '''
+    Base class for migrator implementations (e.g. Kafka, centralized).
+    '''
+
     def __init__(self, selection_policy, replacement_policy):
         self.selection_policy = selection_policy
         self.replacement_policy = replacement_policy
@@ -128,12 +131,12 @@ class Migrator(ABC):
         '''
         Sends migrants from a pagmo island to other connected islands.
         '''
+        from sabaody.kafka_migration_service import KafkaMigrator
         pop = island.get_population()
         candidates,candidate_f = self.selection_policy.select(pop)
 
-
         for connected_island in topology.outgoing_ids(island_id):
-            KafkaMigration.migrate(zip(candidates,candidate_f),island_id,connected_island,generation)
+            KafkaMigrator.migrate(zip(candidates,candidate_f),island_id,connected_island,generation)
 
 
     def receiveMigrants(self, island_id, island, topology):
@@ -152,6 +155,7 @@ class Migrator(ABC):
         '''
         Receives migrants from other islands.
         '''
+        from sabaody.kafka_migration_service import KafkaMigrator
         incoming_ids = topology.incoming_ids(island_id)
         pop = island.get_population()
         deltas , src_ids = self.replace_migrants(island_id , pop,len(incoming_ids),generation)
@@ -190,5 +194,6 @@ class Migrator(ABC):
 
 
     def pull_migrants(self,island_id, buffer_length, generation=1):
-        return KafkaMigration.welcome(island_id,buffer_length,generation)
+        from sabaody.kafka_migration_service import KafkaMigrator
+        return KafkaMigrator.welcome(island_id,buffer_length,generation)
 
