@@ -126,17 +126,18 @@ class Migrator(ABC):
             for candidate,f in zip(candidates,candidate_f):
                 self.pushMigrant(connected_island, candidate, f, src_island_id=island_id)
 
-    def send_migrants(self, island_id, island, topology,generation=1):
-        # type: (str, pg.island, typing.Union[Topology,DiTopology]) -> None
+    def send_migrants(self, island_id, island, topology, generation=1):
+        # type: (str, pg.island, typing.Union[Topology,DiTopology], int) -> None
         '''
         Sends migrants from a pagmo island to other connected islands.
         '''
-        from sabaody.kafka_migration_service import KafkaMigrator
+        from sabaody.kafka_migration_service import KafkaMigrator, KafkaBuilder
         pop = island.get_population()
         candidates,candidate_f = self.selection_policy.select(pop)
+        migrator = KafkaMigrator(KafkaBuilder('unknown_host','unknown_port'))
 
         for connected_island in topology.outgoing_ids(island_id):
-            KafkaMigrator.migrate(zip(candidates,candidate_f),island_id,connected_island,generation)
+            migrator.migrate(zip(candidates,candidate_f),island_id,connected_island,generation)
 
 
     def receiveMigrants(self, island_id, island, topology):
@@ -149,9 +150,9 @@ class Migrator(ABC):
         island.set_population(pop)
         return (deltas,src_ids)
 
-    def receive_migrants(self,island_id, island, topology,generation =1):
+    def receive_migrants(self,island_id, island, topology, generation =1):
 
-        # type: (str, pg.island, typing.Union[Topology,DiTopology]) -> typing.Tuple[typing.List,typing.List]
+        # type: (str, pg.island, typing.Union[Topology,DiTopology], int) -> typing.Tuple[typing.List,typing.List]
         '''
         Receives migrants from other islands.
         '''
@@ -162,8 +163,8 @@ class Migrator(ABC):
         island.set_population(pop)
         return (deltas , src_ids)
 
-    def replace_migrants(self, island_id, population,buffer_length, generation):
-        # type: (str, pg.population) -> typing.Tuple[typing.List,typing.List]
+    def replace_migrants(self, island_id, population, buffer_length, generation):
+        # type: (str, pg.population, int, int) -> typing.Tuple[typing.List,typing.List]
         '''
         Replace migrants in the specified population with candidates
         in the pool according to the specified policy.
