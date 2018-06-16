@@ -264,7 +264,7 @@ class TopologyFactory:
         These graphs tend to exhibit high clustering and short average path lengths.
         `See also: PaGMO's description. <http://esa.github.io/pygmo/documentation/topology.html>`_
         '''
-        seed = seed or randint(0,10000)
+        seed = seed if seed is not None else randint(0,10000)
         return self._processTopology(nx.watts_strogatz_graph(num_nodes,k,p,seed), algorithm_factory, island_size, Topology)
 
 
@@ -273,7 +273,7 @@ class TopologyFactory:
         '''
         Creates a topology based on an Erdős-Rényi random graph.
         '''
-        seed = seed or randint(0,10000)
+        seed = seed if seed is not None else randint(0,10000)
         return self._processTopology(nx.erdos_renyi_graph(num_nodes,p,seed,directed), algorithm_factory, island_size, Topology)
 
 
@@ -282,8 +282,143 @@ class TopologyFactory:
         '''
         Creates a topology based on a Barabási-Albert graph.
         '''
-        seed = seed or randint(0,10000)
+        seed = seed if seed is not None else randint(0,10000)
         return self._processTopology(nx.barabasi_albert_graph(num_nodes,m,seed), algorithm_factory, island_size, Topology)
+
+    def createAgeingExtendedBarabasiAlbert(self, algorithm_factory, n=100, m=10, p=0.3, q=0.1, max_age=10, seed = None, island_size = 20):
+        '''
+        Create an extended Barabási-Albert graph with ageing.
+        Ageing means that nodes older than max_age do not continue to receive connections as the network expands.
+        Adapted from networkx source code.
+        '''
+        import random
+        from networkx.generators.random_graphs import _random_subset
+        seed = seed if seed is not None else randint(0,10000)
+
+        if m < 1 or m >= n:
+            msg = "Extended ageing Barabasi-Albert network needs m>=1 and m<n, m=%d, n=%d"
+            raise nx.NetworkXError(msg % (m, n))
+        if p + q >= 1:
+            msg = "Extended ageing Barabasi-Albert network needs p + q <= 1, p=%d, q=%d"
+            raise nx.NetworkXError(msg % (p, q))
+        if seed is not None:
+            random.seed(seed)
+
+        # Add m initial nodes (m0 in barabasi-speak)
+        G = nx.empty_graph(m)
+
+        # List of nodes to represent the preferential attachment random selection.
+        # At the creation of the graph, all nodes are added to the list
+        # so that even nodes that are not connected have a chance to get selected,
+        # for rewiring and adding of edges.
+        # With each new edge, nodes at the ends of the edge are added to the list.
+        attachment_preference = []
+        attachment_preference.extend(range(m))
+
+        def has_young_neighbor(node):
+            for neighbor in G[node]:
+                if neighbor > new_node-max_age:
+                    return True
+            return False
+
+        # Start adding the other n-m nodes. The first node is m.
+        new_node = m
+        while new_node < n:
+            a_probability = random.random()
+
+            # Total number of edges of a Clique of all the nodes
+            clique_degree = len(G) - 1
+            clique_size = (len(G) * clique_degree) / 2
+
+            # Adding m new edges, if there is room to add them
+            if a_probability < p and G.size() <= clique_size - m:
+                # Select the nodes where an edge can be added
+                elligible_nodes = [nd for nd, deg in G.degree()
+                                  if deg < clique_degree and nd > new_node-max_age]
+                for i in range(m):
+                    # Choosing a random source node from elligible_nodes
+                    src_node = random.choice(elligible_nodes)
+
+                    # Picking a possible node that is not 'src_node' or
+                    # neighbor with 'src_node', with preferential attachment
+                    prohibited_nodes = list(G[src_node])
+                    prohibited_nodes.append(src_node)
+                    # This will raise an exception if the sequence is empty
+                    dest_node = random.choice([nd for nd in attachment_preference
+                                              if nd not in prohibited_nodes and nd > new_node-max_age])
+                    # Adding the new edge
+                    G.add_edge(src_node, dest_node)
+
+                    # Appending both nodes to add to their preferential attachment
+                    attachment_preference.append(src_node)
+                    attachment_preference.append(dest_node)
+
+                    # Adjusting the elligible nodes. Degree may be saturated.
+                    if G.degree(src_node) == clique_degree:
+                        elligible_nodes.remove(src_node)
+                    if G.degree(dest_node) == clique_degree \
+                            and dest_node in elligible_nodes:
+                        elligible_nodes.remove(dest_node)
+
+            # Rewiring m edges, if there are enough edges
+            elif p <= a_probability < (p + q) and m <= G.size() < clique_size:
+                # Selecting nodes that have at least 1 edge but that are not
+                # fully connected to ALL other nodes (center of star).
+                # These nodes are the pivot nodes of the edges to rewire
+                elligible_nodes = [nd for nd, deg in G.degree()
+                                  if 0 < deg < clique_degree and has_young_neighbor(nd)]
+                for i in range(m):
+                    # Choosing a random source node
+                    node = random.choice(elligible_nodes)
+
+                    # The available nodes do have a neighbor at least.
+                    neighbor_nodes = [nd for nd in G[node] if nd > new_node-max_age]
+
+                    # Choosing the other end that will get dettached
+                    src_node = random.choice(neighbor_nodes)
+
+                    # Picking a target node that is not 'node' or
+                    # neighbor with 'node', with preferential attachment
+                    neighbor_nodes.append(node)
+                    dest_node = random.choice([nd for nd in attachment_preference
+                                              if nd not in neighbor_nodes and nd > new_node-max_age])
+                    # Rewire
+                    G.remove_edge(node, src_node)
+                    G.add_edge(node, dest_node)
+
+                    # Adjusting the preferential attachment list
+                    attachment_preference.remove(src_node)
+                    attachment_preference.append(dest_node)
+
+                    # Adjusting the elligible nodes.
+                    # nodes may be saturated or isolated.
+                    if G.degree(src_node) == 0 and src_node in elligible_nodes:
+                        elligible_nodes.remove(src_node)
+                    if dest_node in elligible_nodes:
+                        if G.degree(dest_node) == clique_degree:
+                            elligible_nodes.remove(dest_node)
+                    else:
+                        if G.degree(dest_node) == 1:
+                            elligible_nodes.append(dest_node)
+
+            # Adding new node with m edges
+            else:
+                # Select the edges' nodes by preferential attachment
+                targets = _random_subset([nd for nd in attachment_preference if nd > new_node-max_age], m)
+                G.add_edges_from(zip([new_node] * m, targets))
+
+                # Add one node to the list for each new edge just created.
+                attachment_preference.extend(targets)
+                # The new node has m edges to it, plus itself: m + 1
+                attachment_preference.extend([new_node] * (m + 1))
+                new_node += 1
+        return self._processTopology(G, algorithm_factory, island_size, Topology)
+
+    def fromNetworkxGraph(self, algorithm_factory, g, island_size = 20, directed=False):
+        '''
+        Create a custom topology from a networkx graph.
+        '''
+        return self._processTopology(g, algorithm_factory, island_size, DiTopology if directed else Topology)
 
 
 
