@@ -285,6 +285,16 @@ class TopologyFactory:
         seed = seed if seed is not None else randint(0,10000)
         return self._processTopology(nx.barabasi_albert_graph(num_nodes,m,seed), algorithm_factory, island_size, Topology)
 
+
+    def createExtendedBarabasiAlbert(self, algorithm_factory, num_nodes=100, m=3, p=0.3, q=0.1, seed = None, island_size = 20):
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, int, int) -> Topology
+        '''
+        Creates a topology based on the extended Barabási-Albert method.
+        '''
+        seed = seed if seed is not None else randint(0,10000)
+        return self._processTopology(nx.extended_barabasi_albert_graph(num_nodes,m,p,q,seed), algorithm_factory, island_size, Topology)
+
+
     def createAgeingExtendedBarabasiAlbert(self, algorithm_factory, n=100, m=10, p=0.3, q=0.1, max_age=10, seed = None, island_size = 20):
         '''
         Create an extended Barabási-Albert graph with ageing.
