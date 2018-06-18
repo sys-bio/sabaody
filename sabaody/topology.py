@@ -287,7 +287,7 @@ class TopologyFactory:
 
 
     def createExtendedBarabasiAlbert(self, algorithm_factory, num_nodes=100, m=3, p=0.3, q=0.1, seed = None, island_size = 20):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, int, int) -> Topology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, float, float, int, int) -> Topology
         '''
         Creates a topology based on the extended Barabási-Albert method.
         '''
