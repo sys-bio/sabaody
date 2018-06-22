@@ -14,30 +14,30 @@ from uuid import uuid4
 import json
 import typing
 
-def make_migrant_array(migrants):
+def convert_to_2d_array(array_or_list):
     # type: (typing.Union[ndarray,typing.List[ndarray]]) -> ndarray
     '''
-    Convert ``migrants`` into a 2d array.
-    ``migrants`` can be a list of decision vectors,
+    Convert ``array_or_list`` into a 2d array.
+    ``array_or_list`` can be a list of decision vectors,
     a single decision vector, or a 2d (in which case
     it is returned as-is).
     '''
-    if isinstance(migrants,list):
-        for m in migrants:
+    if isinstance(array_or_list,list):
+        for m in array_or_list:
             if not isinstance(m,ndarray):
-                raise RuntimeError('`migrants` should be a list of ndarrays, instead found element of type {}'.format(type(m)))
-            if not (m.ndim < 2 or (m.ndim == 2 and m.shape[-1] == 1)):
-                raise RuntimeError('Received 2d array for migrant - migrants should be 1d arrays or row vectors')
-        return vstack(tuple(m for m in migrants))
-    elif isinstance(migrants,ndarray):
-        if migrants.ndim == 1:
-            return migrants.reshape((1,-1))
-        elif migrants.ndim == 2:
-            return migrants
+                raise RuntimeError('`array_or_list` should be a list of ndarrays, instead found element of type {}'.format(type(m)))
+            if not (m.ndim < 2 or (m.ndim == 2 and m.shape[0] == 1)):
+                raise RuntimeError('Received 2d array for migrant - array_or_list should be 1d arrays or row vectors')
+        return vstack(tuple(m for m in array_or_list))
+    elif isinstance(array_or_list,ndarray):
+        if array_or_list.ndim == 1:
+            return array_or_list.reshape((1,-1))
+        elif array_or_list.ndim == 2:
+            return array_or_list
         else:
-            raise RuntimeError('Wrong n dims for migrants: {}'.format(migrants.ndim))
+            raise RuntimeError('Wrong n dims for array_or_list: {}'.format(array_or_list.ndim))
     else:
-        raise RuntimeError('Wrong type for migrants - should be list or ndarray but received {}'.format(type(migrants)))
+        raise RuntimeError('Wrong type for array_or_list - should be list or ndarray but received {}'.format(type(array_or_list)))
 
 class KafkaBuilder:
     '''
@@ -113,7 +113,9 @@ class KafkaMigrator(Migrator):
         a list of vectors, or a 2d matrix with the decision vectors
         encoded in rows.
         '''
-        migrants = make_migrant_array(migrants)
+        migrants = convert_to_2d_array(migrants)
+        fitness = convert_to_2d_array(fitness)
+        assert migrants.shape[0] == fitness.shape[0]
         topic_name = '_'.join([dest_island_id, self._identifier])
         if isinstance(src_island_id,str):
             src_island_id = src_island_id.encode('utf-8')

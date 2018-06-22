@@ -34,7 +34,7 @@ def test_migration_client(mocker):
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()
-    m.pushMigrant(island_id, array([1., 2., 3., 4.]), 1.)
+    m.migrate(island_id, array([1., 2., 3., 4.]), 1.)
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()
