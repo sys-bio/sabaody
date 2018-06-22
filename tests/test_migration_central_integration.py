@@ -16,7 +16,7 @@ def test_migration_replacement_policy_integration():
     try:
         process = start_migration_service()
         sleep(2)
-        m = CentralMigrator('http://localhost:10100', None, FairRPolicy())
+        m = CentralMigrator(None, FairRPolicy(), 'http://localhost:10100')
 
         island1 = uuid4()
         island2 = uuid4()

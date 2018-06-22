@@ -24,7 +24,7 @@ setup(name='sabaody',
         'yarl>=1.2.4',
         'attrs>=18.1.0',
         'pytest-mock>=1.10.0',
-        'kafka>=1.3.5',
+        'kafka-python>=1.4.3',
         'interruptingcow>=0.8',
         ],
       )

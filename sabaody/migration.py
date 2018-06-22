@@ -184,12 +184,12 @@ class Migrator(ABC):
         return (self.replacement_policy.replace(population,candidates,candidate_f),src_ids)
 
     @abstractmethod
-    def pushMigrant(self, dest_island_id, migrant_vector, fitness, src_island_id=None, expiration_time=arrow.utcnow().shift(days=+1)):
+    def migrate(self, dest_island_id, migrant_vector, fitness, src_island_id=None, expiration_time=arrow.utcnow().shift(days=+1)):
         # type: (str, ndarray, float, str, arrow.Arrow) -> None
         pass
 
     @abstractmethod
-    def pullMigrants(self, island_id, n=0):
+    def welcome(self, island_id, n=0):
         # type: (ndarray, int) -> typing.Tuple[ndarray,ndarray,typing.List[str]]
         pass
 
