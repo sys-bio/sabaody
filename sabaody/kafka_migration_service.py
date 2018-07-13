@@ -106,7 +106,7 @@ class KafkaMigrator(Migrator):
 
 
     def migrate(self, dest_island_id, migrants, fitness, src_island_id = None, expiration_time=arrow.utcnow().shift(days=+1)):
-        # type: (str, ndarray, float, str, arrow.Arrow) -> None
+        # type: (str, ndarray, ndarray, str, arrow.Arrow) -> None
         '''
         Send migrants from one island to another.
         The ``mingrants`` parameter can be a single decision vector,
@@ -117,9 +117,9 @@ class KafkaMigrator(Migrator):
         fitness = convert_to_2d_array(fitness)
         assert migrants.shape[0] == fitness.shape[0]
         topic_name = '_'.join([dest_island_id, self._identifier])
-        if isinstance(src_island_id,str):
-            src_island_id = src_island_id.encode('utf-8')
-        self._producer.send(topic_name, key = src_island_id, value = self.serialize(migrants, fitness))
+        self._producer.send(topic_name,
+                            key = src_island_id.encode('utf-8') if isinstance(src_island_id,str) else None,
+                            value = self.serialize(migrants, fitness))
 
 
     def welcome(self, island_id, n=0):
