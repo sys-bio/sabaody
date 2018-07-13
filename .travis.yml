@@ -8,6 +8,11 @@ notifications:
     - jkmtravisnotify@gmail.com
     - secure: "LcKi1HyerBNkgizdbQRlk/8PhAhcDyFUnfYy9ksrTbzbA9nolR2LacabGI0bf05Mw3VGZHnQdL+fTT3756GQmIHBbV+9S65U7majCcSdE++j+Ha0ceG8puj2FFr9H8B/Vb4BuAYUwt6qZCeyqQnTsIa6ymPNr6w2ovlHLWm+gJammdU5OU2H9RmL+Fy2NzZnw/uXsKCe6KIhxZnNvNChBC0X18EiehzyX4BnzxFVwiRs8fCwO8BNW74NAQSK6n0D5gpBLiEwk85tLB3dt8uY2LezlXqH9o1DSSIpjnZPsQBeCTixIzlhaqrBfkFdv9A7l7nhYNNmxoeggBLS+72za5qY1ZZ6TTkwl8VyqOqEyyDz61WzPw+IIN1amLc7sMhMmWe4SGdBA/UgU41kMe47YRhrHSv3DFAWjyuFMSG24a3y9l0VBXA/w9LmVMRTi2pXIGGBBvEMjgFMSqTRuDmNCenSgMGTUXwP54o7CeE5Qeh7npTD87crtwD7OBvkJWwFyLn9gUkRYf/OkQWWQaz8RE6dXNIPG+44HCommOs3HRSmdu5kiQdpXW1CRiN0toUqySzDiubyt63rTgoBnE2J/mPI7rQFbiwYemyMi4UlLvN0/Hkmh6Aj01msbCcDXoDrf6DMGq2IV/KZxWGdUxY3UnaiYKcT3luGFvpFjRFahFg="
 
+addons:
+  apt:
+    packages:
+    - ansible
+
 python:
   - "3.5"
   - "3.6"
