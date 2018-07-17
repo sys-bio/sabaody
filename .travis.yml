@@ -22,6 +22,8 @@ python:
 install:
   - which java
   - java -version
+  - which ansible
+  - ansible --version
   - pip install -r requirements.txt
   - pip install mypy
 
