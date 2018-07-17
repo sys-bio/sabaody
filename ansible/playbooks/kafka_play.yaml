@@ -1,0 +1,151 @@
+---
+
+- hosts: all
+  gather_facts: False
+  become: true
+  
+  tasks:
+    - name: Installing Python
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal unzip)
+
+# Setting up Java 8
+- hosts: all
+  become: true
+  tasks:
+    - name: Adding Repo for Java8
+      apt_repository: repo='ppa:webupd8team/java' state=present
+
+    - name: Installing Python Package
+      apt:  name={{item}} state=latest update_cache=yes
+      with_items:
+        - python-software-properties
+        - python-pip 
+        - python-dev 
+        - build-essential
+        - sysstat
+
+    - name: Selecting licence
+      shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+
+    - name: Setting licence as seen
+      shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | /usr/bin/debconf-set-selections
+
+    - name: Installing java 8
+      apt: name=oracle-java8-installer state=latest update-cache=yes force=yes
+
+    - name: Setting Java 8 Environment
+      apt: name=oracle-java8-set-default state=latest install_recommends=yes
+
+    - name: setting JAVA_HOME environment variable
+      lineinfile:  dest=/etc/profile regexp='export JAVA_HOME.*' line='export JAVA_HOME=/usr/lib/jvm/java-8-oracle'
+
+    - name: Updating PATH variable
+      lineinfile: dest=/etc/profile regexp='export PATH.*' line='export PATH=$PATH:$JAVA_HOME/bin'
+
+    - name: Sourcing environment 
+      sudo: no   
+      shell: source /etc/profile
+      args:
+         executable: /bin/bash
+
+
+# Setting up SupervisorD
+- hosts: all
+  become: true
+  tasks:
+    - name: Installing SupervisorD
+      pip:  name=supervisor version=3.3.4
+
+    - name: Creating Configuration File
+      shell: echo_supervisord_conf > /etc/supervisord.conf
+
+    - name: Including Configuration 
+      lineinfile: dest=/etc/supervisord.conf regexp='files = \/etc\/supervisord' line='\n[inet_http_server]\nport=*:9001\n\n[include]\nfiles = /etc/supervisord.d/*.conf'
+
+# Setting up Zookeeper
+- hosts: kafka_zookeeper
+  become: true
+  tasks:
+
+    - name: Creating Directories
+      file: path={{item}} state=directory mode=0755
+      with_items:
+        - /home/ubuntu/Downloads
+        - /etc/supervisord.d
+        - /opt/zookeeper
+        - /app/data00/logs/zookeeper
+        - /app/data00/zookeeper/
+        - /app/data00/logs/zookeeper/
+       
+    - name: Downloading Zookeeper
+      shell: wget -P /home/ubuntu/Downloads/ https://apache.org/dist/zookeeper/zookeeper-3.4.12/zookeeper-3.4.12.tar.gz
+      
+    - name: Extracting Zookeeper
+      unarchive: src=/home/ubuntu/Downloads/zookeeper-3.4.12.tar.gz dest=/opt/zookeeper/ mode=0755 remote_src=yes
+
+    - name: Configuring Zookeeper
+      template: src=../configs/zoo.cfg.j2 dest=/opt/zookeeper/zookeeper-3.4.12/conf/zoo.cfg mode=0755
+
+    - name: Adding myid to the Zookeeper
+      template: src=../configs/myid.j2 dest=/app/data00/zookeeper/myid mode=0755
+
+
+    - name: Copy SupervisorD Zookeeper Config File
+      copy: src=../configs/zookeeper.conf dest=/etc/supervisord.d/ mode=0755
+
+
+- hosts: kafka
+  become: true
+  tasks:
+    - name: Creating Directories
+      file: path={{item}} state=directory mode=0755
+      with_items:
+        - /home/ubuntu/Downloads
+        - /etc/supervisord.d
+        - /opt/zookeeper
+        - /app/data00/logs/zookeeper
+        - /app/data00/zookeeper/
+        - /app/data00/logs/zookeeper/
+        - /opt/kafka
+        - /opt/kafka/manager
+        - /app/data00/kafka
+        - /app/data01/kafka
+        - /app/data00/logs/kafka
+        - /home/ubuntu/keystore
+
+    
+
+    - name: Downloading Kafka
+      shell: wget -P /home/ubuntu/Downloads/ http://www-eu.apache.org/dist/kafka/1.1.0/kafka_2.11-1.1.0.tgz
+      
+    - name: Extract Kafka
+      unarchive: src=/home/ubuntu/Downloads/kafka_2.11-1.1.0.tgz dest=/opt/kafka mode=0755 remote_src=yes
+
+    - name: Copy Kafka Server Configuration file
+      template: src=../configs/server.properties.j2 dest=/opt/kafka/kafka_2.11-1.1.0/config/server.properties mode=0755
+
+    - name: Copy Consumer properties
+      template: src=../configs/consumer.properties.j2 dest=/opt/kafka/kafka_2.11-1.1.0/config/consumer.properties mode=0755
+
+    - name: Copy Producer properties
+      template: src=../configs/producer.properties.j2 dest=/opt/kafka/kafka_2.11-1.1.0/config/producer.properties mode=0755
+      
+    - name: Copy SupervisorD Kafka Config File
+      copy: src=../configs/kafka.conf dest=/etc/supervisord.d/ mode=0755
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
