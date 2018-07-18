@@ -37,8 +37,11 @@
     - name: Configuring Zookeeper
       template: src=../configs/zoo.cfg.j2 dest=~/zookeeper/zookeeper-3.4.12/conf/zoo.cfg mode=0755
 
-    - name: Adding myid to the Zookeeper
-      template: src=../configs/myid.j2 dest=~/data00/zookeeper/myid mode=0755
+    # https://stackoverflow.com/questions/30794025/ansible-how-can-i-set-serial-numbers-for-hosts
+    - name: Set Zookeeper Id
+      set_fact: zk_id={{item.0 + 1}}
+      with_indexed_items: "{{groups['kafka_zookeeper']}}"
+      when: item.1 == "{{inventory_hostname}}"
 
     - name: Copy SupervisorD Zookeeper Config File
       copy: src=../configs/zookeeper.conf dest=~/supervisord.d/ mode=0755
