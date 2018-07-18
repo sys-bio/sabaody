@@ -1,4 +1,4 @@
-[kafka_ui]
+[kafka_ui] # ip for zookeeper instance. not used? change to 127.0.0.1?
 1.2.3.4 internal_ip=1.2.3.4
 
 [kafka_zookeeper]
