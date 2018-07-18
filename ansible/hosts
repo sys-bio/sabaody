@@ -1,5 +1,8 @@
+[kafka_ui]
+1.2.3.4 internal_ip=1.2.3.4
+
 [kafka_zookeeper]
-127.0.0.1
+127.0.0.1 internal_ip=1.2.3.4
 
 [kafka]
-127.0.0.1
+127.0.0.1 internal_ip=1.2.3.4
