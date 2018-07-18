@@ -25,6 +25,7 @@ install:
   - echo $JAVA_HOME
   - which ansible
   - ansible --version
+  - ansible-playbook ansible/playbooks/kafka_play.yaml
   - pip install -r requirements.txt
   - pip install mypy
 
