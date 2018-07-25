@@ -1,18 +1,5 @@
 ---
 
-# Setting up SupervisorD
-#- hosts: all
-  #tasks:
-    #- name: Installing SupervisorD
-      #pip:  name=supervisor version=3.3.4
-
-    #- name: Creating Configuration File
-      #shell: echo_supervisord_conf > ~/supervisord.conf
-
-    #- name: Including Configuration
-      #lineinfile: dest=~/supervisord.conf regexp='files = \~\/supervisord' line='\n[inet_http_server]\nport=*:9001\n\n[include]\nfiles = ~/supervisord.d/*.conf'
-
-
 # Setting up Zookeeper
 - hosts: kafka_zookeeper
   tasks:
@@ -44,9 +31,10 @@
       when: item.1 == "{{inventory_hostname}}"
 
     - name: Copy SupervisorD Zookeeper Config File
-      copy: src=../configs/zookeeper.conf dest=~/supervisord.d/ mode=0755
+      copy: src=../configs/supervisor_zookeeper.conf dest=~/supervisord.d/ mode=0755
 
 
+# Setting up Kafka
 - hosts: kafka
   tasks:
     - name: Creating Directories
@@ -81,4 +69,4 @@
       template: src=../configs/producer.properties.j2 dest=~/kafka/kafka_2.11-1.1.0/config/producer.properties mode=0755
 
     - name: Copy SupervisorD Kafka Config File
-      copy: src=../configs/kafka.conf dest=~/supervisord.d/ mode=0755
+      copy: src=../configs/supervisor_kafka.conf dest=~/supervisord.d/ mode=0755
