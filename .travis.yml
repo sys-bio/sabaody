@@ -27,6 +27,7 @@ install:
 
 script:
   - supervisord -c ~/supervisord.conf
+  - sleep 30
   - supervisorctl start kafka
   - python setup.py develop
   - mypy ./tests/*.py --ignore-missing-imports
