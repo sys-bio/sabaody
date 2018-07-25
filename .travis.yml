@@ -26,9 +26,9 @@ install:
   - pip install mypy
 
 script:
-  - supervisord -c ~/supervisord.conf
-  - sleep 30
-  - supervisorctl start kafka
+  - nohup ~zookeeper/zookeeper-3.4.12/bin/zookeeper-server-start.sh config/zookeeper.properties > /dev/null 2>&1 &
+  - sleep 2
+  - nohup ~kafka/kafka_2.11-1.1.0/bin/kafka-server-start.sh ~/kafka/kafka_2.11-1.1.0/config/server.properties > /dev/null 2>&1 &
   - python setup.py develop
   - mypy ./tests/*.py --ignore-missing-imports
   - pytest
