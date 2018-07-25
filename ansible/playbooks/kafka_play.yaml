@@ -2,7 +2,7 @@
 
 - hosts: all
   tasks:
-    - name Writing Supervisor Config File
+    - name: Write Supervisor Config File
       template: src=../configs/supervisord.conf.j2 dest=~/supervisord.conf mode=0755
 
 # Setting up Zookeeper
