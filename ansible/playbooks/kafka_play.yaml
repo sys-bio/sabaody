@@ -31,7 +31,7 @@
 
     # https://stackoverflow.com/questions/30794025/ansible-how-can-i-set-serial-numbers-for-hosts
     - name: Set Zookeeper Id
-      set_fact: zk_id={{item.0 + 1}}
+      set_fact: zk_id={{item.0}}
       with_indexed_items: "{{groups['kafka_zookeeper']}}"
       when: item.1 == "{{inventory_hostname}}"
 
@@ -66,6 +66,9 @@
 
     - name: Write Kafka Server Configuration file
       template: src=../configs/server.properties.j2 dest=~/kafka/kafka_2.11-1.1.0/config/server.properties mode=0755
+
+    - name: Write Kafka Zookeeper Configuration file
+      template: src=../configs/zookeeper.properties.j2 dest=~/kafka/kafka_2.11-1.1.0/config/zookeeper.properties mode=0755
 
     - name: Write Consumer properties
       template: src=../configs/consumer.properties.j2 dest=~/kafka/kafka_2.11-1.1.0/config/consumer.properties mode=0755

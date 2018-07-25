@@ -2,7 +2,7 @@
 server.{{loop.index}}={{hostvars[server]['internal_ip']}}:2888:3888
 {% endfor %}
 tickTime=2000
-dataDir=/app/data00/zookeeper/
+dataDir={{lookup('env','HOME')}}/data00/zookeeper/
 clientPort=2181
 initLimit=5
 syncLimit=2
