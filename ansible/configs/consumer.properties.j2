@@ -1,5 +1,2 @@
-bootstrap.servers="{% for server in groups.kafka %}
-{{hostvars[server]['internal_ip']}}:9092
-{%- if not loop.last %},{% endif %}
-{% endfor %}"
+bootstrap.servers=localhost:9092
 group.id=console-consumer-group

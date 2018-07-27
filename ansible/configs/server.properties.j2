@@ -5,7 +5,4 @@ log.dirs=/app/data00/kafka,/app/data01/kafka
 num.recovery.threads.per.data.dir=2
 log.retention.hours=24
 log.retention.bytes=200073741824
-zookeeper.connect={% for server in groups.kafka_zookeeper %}
-{{hostvars[server]['internal_ip']}}:2181
-{%- if not loop.last %},{% endif %}
-{% endfor %}
+zookeeper.connect=localhost:2181
