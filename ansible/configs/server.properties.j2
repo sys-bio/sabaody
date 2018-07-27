@@ -1,7 +1,7 @@
 broker.id=0
 auto.create.topics.enable=true
 min.insync.replicas=2
-log.dirs=/app/data00/kafka,/app/data01/kafka
+log.dirs={{lookup('env','HOME')}}/data00/kafka
 num.recovery.threads.per.data.dir=2
 log.retention.hours=24
 log.retention.bytes=200073741824
