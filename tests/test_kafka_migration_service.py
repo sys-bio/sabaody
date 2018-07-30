@@ -6,7 +6,7 @@ from numpy import array, array_equal
 
 def test_migrate():
     from sabaody.kafka_migration_service import KafkaMigrator, KafkaBuilder
-    migrator = KafkaMigrator(None, None, KafkaBuilder('128.208.17.254', 9092))
+    migrator = KafkaMigrator(None, None, KafkaBuilder('localhost', 9092))
 
     migrator.migrate('to-island', array([1,2,3,4]), array([0.]), 'from-island')
 
