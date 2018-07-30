@@ -138,7 +138,7 @@ class KafkaMigrator(Migrator):
                 for migrant_msg in consumer:
                     source_ids.append(migrant_msg.key.decode('utf-8'))
 
-                    migrants,fitness = self.deserialize(migrant_msg.value)
+                    migrants,fitness = self.deserialize(migrant_msg.value.decode('utf-8'))
                     result_migrants.append(migrants)
                     result_fitness.append(fitness)
                     if n != 0 and len(result_migrants) >= n:
