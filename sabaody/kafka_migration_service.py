@@ -4,11 +4,14 @@ from __future__ import print_function, division, absolute_import
 
 from .migration import Migrator
 
+import attr
+from typing import Any
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
 from interruptingcow import timeout
 from numpy import array, ndarray, vstack
 import arrow
+from functools import reduce
 
 from uuid import uuid4
 import json
@@ -62,11 +65,16 @@ class KafkaBuilder:
         return KafkaProducer(bootstrap_servers=url)
 
 
-    def build_consumer(self, topic_name):
+    def build_consumer(self, topic_name, *args, **kwargs):
         url = ",".join(each_host + ":" + self._port for each_host in self._hosts)
-        return KafkaConsumer(topic_name , bootstrap_servers=url , auto_offset_reset='earliest')
+        return KafkaConsumer(topic_name, *args, bootstrap_servers=url, auto_offset_reset='earliest', **kwargs)
 
-
+@attr.s
+class MigrantData:
+    migrants = attr.ib(type=array)
+    fitness = attr.ib(type=array)
+    timestamp = attr.ib(type=arrow.Arrow)
+    src_id = attr.ib(type=str)
 
 class KafkaMigrator(Migrator):
     '''
@@ -76,7 +84,8 @@ class KafkaMigrator(Migrator):
     received will, in general, be unknown.
     '''
 
-    def __init__(self, selection_policy, migration_policy, builder, timeout=10):
+
+    def __init__(self, selection_policy, migration_policy, builder, time_limit=10):
         '''
         Constructor for KafkaMigrator.
 
@@ -84,8 +93,13 @@ class KafkaMigrator(Migrator):
         '''
         self._builder = builder
         self._identifier = str(uuid4())
-        self._timeout = timeout
+        self._time_limit = time_limit
         self._producer = self._builder.build_producer()
+        self._consumer = self._builder.build_consumer(self.topic()) # consumer_timeout_ms=time_limit*1000
+
+
+    def topic(self):
+        return '_'.join([dest_island_id, self._identifier])
 
 
     def serialize(self, migrant_array, fitness):
@@ -94,19 +108,26 @@ class KafkaMigrator(Migrator):
         Decision vectors should be row-encoded in the input array.
         '''
         serialized_data = {
-            'migrants': migrant_array.tolist(),
-            'fitness' : fitness.tolist(),
+            'migrants' : migrant_array.tolist(),
+            'fitness'  : fitness.tolist(),
+            'timestamp': arrow.utcnow().isoformat(),
             }
         return json.dumps(serialized_data).encode('utf-8')
 
 
-    def deserialize(self, migrant_data):
-        data = json.loads(migrant_data)
-        return (array(data['migrants']), array(data['fitness']))
+    def deserialize(self, migrant_msg):
+        # type: (Any) -> MigrantData
+        data = json.loads(migrant_msg.value.decode('utf-8'))
+        src_id = migrant_msg.key.decode('utf-8')
+        return MigrantData(
+          migrants  = array(data['migrants']),
+          fitness   = array(data['fitness']),
+          timestamp = arrow.get(data['timestamp']),
+          src_id    = src_id)
 
 
-    def migrate(self, dest_island_id, migrants, fitness, src_island_id = None, expiration_time=arrow.utcnow().shift(days=+1)):
-        # type: (str, ndarray, ndarray, str, arrow.Arrow) -> None
+    def migrate(self, dest_island_id, migrants, fitness, src_island_id=None, *args, **kwars):
+        # type: (str, ndarray, ndarray, str, *Any, **Any) -> None
         '''
         Send migrants from one island to another.
         The ``mingrants`` parameter can be a single decision vector,
@@ -116,8 +137,7 @@ class KafkaMigrator(Migrator):
         migrants = convert_to_2d_array(migrants)
         fitness = convert_to_2d_array(fitness)
         assert migrants.shape[0] == fitness.shape[0]
-        topic_name = '_'.join([dest_island_id, self._identifier])
-        self._producer.send(topic_name,
+        self._producer.send(self.topic(),
                             key = src_island_id.encode('utf-8') if isinstance(src_island_id,str) else None,
                             value = self.serialize(migrants, fitness))
 
@@ -129,22 +149,39 @@ class KafkaMigrator(Migrator):
         If ``n`` is zero, return all migrants.
         '''
         result_migrants = []
-        result_fitness = []
-        source_ids = []
-        topic_name = "_".join([island_id, self._identifier])
-        consumer = self._builder.build_consumer(topic_name)
         try:
-            with timeout(self._timeout, exception=RuntimeError):
-                for migrant_msg in consumer:
-                    source_ids.append(migrant_msg.key.decode('utf-8'))
+            with timeout(self._time_limit, exception=RuntimeError):
+                for migrant_msg in self._consumer:
+                    # unpack the message
+                    migrant = self.deserialize(migrant_msg)
 
-                    migrants,fitness = self.deserialize(migrant_msg.value.decode('utf-8'))
-                    result_migrants.append(migrants)
-                    result_fitness.append(fitness)
+                    result_migrants.append(migrant)
                     if n != 0 and len(result_migrants) >= n:
                         # we have the requested number of migrants - return
                         break
         except RuntimeError:
             print('Timeout for request from Island : {0}'.format(island_id))
-        return (vstack(result_migrants), vstack(result_fitness), source_ids)
+        # sort by most recent
+        sorted_migrants = sorted(result_migrants, key=lambda migrant: migrant.timestamp)
+
+        # vstack with empties
+        def myvstack(u,v):
+            if u.shape == (0,):
+                return v
+            elif v.shape == (0,):
+                return u
+            else:
+                return vstack([u,v])
+
+        def reducer(a,m):
+            marray, farray, sid = *a
+            if marray.shape[0] < n or n == 0:
+                return (myvstack(marray,m.migrants),
+                        myvstack(farray,m.fitness),
+                        sid + [m.src_id])
+            else:
+                return (marray, farray, sid)
+
+        migrant_array, fitness_array, source_ids = reduce(reducer, sorted_migrants, initializer=(array(),array(),[])) # type: ignore
+        return (migrant_array, fitness_array, source_ids)
 

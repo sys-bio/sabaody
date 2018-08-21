@@ -29,7 +29,7 @@ class ESMigrator(Migrator):
         self.topology_id = topology_id
 
 
-    def migrate(self, dest_island_id, migrants, fitness, src_island_id = None, expiration_time=arrow.utcnow().shift(days=+1)):
+    def migrate(self, dest_island_id, migrants, fitness, src_island_id=None, expiration_time=arrow.utcnow().shift(days=+1)):
         # type: (str, ndarray, ndarray, str, arrow.Arrow) -> None
         """
         :param application_id:

@@ -15,7 +15,7 @@ import arrow
 
 from collections import deque
 from abc import ABC, abstractmethod
-import typing
+from typing import Union, Tuple, List, Any
 
 # ** Client Logic **
 class CentralMigrator(Migrator):
@@ -54,27 +54,28 @@ class CentralMigrator(Migrator):
         r.raise_for_status()
 
     def defineMigrantPools(self, topology, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
-        # type: (typing.Union[Topology,DiTopology], int, str, arrow.Arrow) -> None
+        # type: (Union[Topology,DiTopology], int, str, arrow.Arrow) -> None
         '''
         Defines migrant pools for every island in the topology.
         '''
         for id in topology.island_ids:
             self.defineMigrantPool(id, param_vector_size=param_vector_size, buffer_type=buffer_type, expiration_time=expiration_time)
 
-    def migrate(self, dest_island_id, migrant_vector, fitness, src_island_id = None, expiration_time=arrow.utcnow().shift(days=+1)):
-        # type: (str, ndarray, float, str, arrow.Arrow) -> None
+    def migrate(self, dest_island_id, migrants, fitness, src_island_id = None, *args, **kwars):
+        # type: (str, ndarray, ndarray, str, *Any, **Any) -> None
         '''
         Sends migrants from one island to another.
 
         :param expiration_time: If set, updates the expiration time of the pool.
         '''
         extra_args = dict()
+        expiration_time = kwars['expiration_time']
         if src_island_id is not None:
             extra_args['src_island_id'] = src_island_id
         from requests import post
         r = post(str(self.root_url / str(dest_island_id) / 'push-migrant'),
                 json={
-                  'migrant_vector': migrant_vector.tolist(),
+                  'migrant_vector': migrants.tolist(),
                   'fitness': float(fitness),
                   'expiration_time': arrow.get(expiration_time).isoformat(),
                   **extra_args
@@ -82,7 +83,7 @@ class CentralMigrator(Migrator):
         r.raise_for_status()
 
     def welcome(self, island_id, n=0):
-        # type: (str, int) -> typing.Tuple[ndarray,ndarray,typing.List[str]]
+        # type: (str, int) -> Tuple[ndarray,ndarray,List[str]]
         '''
         Gets n migrants from the pool and returns them.
         If n is zero, return all migrants.

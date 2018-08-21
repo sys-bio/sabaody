@@ -7,7 +7,7 @@ import pygmo as pg
 import arrow
 
 from abc import ABC, abstractmethod
-import typing
+from typing import Union, Tuple, List, Any
 
 class SelectionPolicyBase(ABC):
     '''
@@ -116,7 +116,7 @@ class Migrator(ABC):
         self.replacement_policy = replacement_policy
 
     def sendMigrants(self, island_id, island, topology):
-        # type: (str, pg.island, typing.Union[Topology,DiTopology]) -> None
+        # type: (str, pg.island, Union[Topology,DiTopology]) -> None
         '''
         Sends migrants from a pagmo island to other connected islands.
         '''
@@ -128,7 +128,7 @@ class Migrator(ABC):
 
 
     def receiveMigrants(self, island_id, island, topology):
-        # type: (str, pg.island, typing.Union[Topology,DiTopology]) -> typing.Tuple[typing.List,typing.List]
+        # type: (str, pg.island, Union[Topology,DiTopology]) -> Tuple[List,List]
         '''
         Receives migrants from other islands.
         '''
@@ -139,7 +139,7 @@ class Migrator(ABC):
 
 
     def replace(self, island_id, population):
-        # type: (str, pg.population) -> typing.Tuple[typing.List,typing.List]
+        # type: (str, pg.population) -> Tuple[List,List]
         '''
         Replace migrants in the specified population with candidates
         in the pool according to the specified policy.
@@ -148,13 +148,13 @@ class Migrator(ABC):
         return (self.replacement_policy.replace(population,candidates,candidate_f),src_ids)
 
     @abstractmethod
-    def migrate(self, dest_island_id, migrant_vector, fitness, src_island_id=None, expiration_time=arrow.utcnow().shift(days=+1)):
-        # type: (str, ndarray, float, str, arrow.Arrow) -> None
+    def migrate(self, dest_island_id, migrants, fitness, src_island_id=None, *args, **kwars):
+        # type: (str, ndarray, ndarray, str, *Any, **Any) -> None
         pass
 
     @abstractmethod
     def welcome(self, island_id, n=0):
-        # type: (ndarray, int) -> typing.Tuple[ndarray,ndarray,typing.List[str]]
+        # type: (ndarray, int) -> Tuple[ndarray,ndarray,List[str]]
         pass
 
 
