@@ -183,5 +183,6 @@ class KafkaMigrator(Migrator):
                 return (marray, farray, sid)
 
         migrant_array, fitness_array, source_ids = reduce(reducer, sorted_migrants, initializer=(array(),array(),[])) # type: ignore
-        return (migrant_array, fitness_array, source_ids)
+        # truncate at n
+        return (array(migrant_array[:n,:]), array(fitness_array[:n,:]), list(source_ids[:n]))
 
