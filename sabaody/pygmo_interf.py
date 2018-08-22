@@ -94,8 +94,6 @@ class Archipelago:
             mc_client.set(self.domain_qualifier('islandIds'), dumps(topology.island_ids), 10000)
 
     def run(self, sc, migrator):
-        for island_id in self.island_ids:
-            migrator.defineMigrantPool(island_id, 5) # FIXME: hardcoded
         #islands = sc.parallelize(self.island_ids).map(lambda u: Island(u, self.problem_factory, self.domain_qualifier, self.mc_host, self.mc_port))
         islands = [Island(u, problem_factory=self.problem_factory, domain_qualifier=self.domain_qualifier, mc_host=self.mc_host, mc_port=self.mc_port) for u in self.island_ids]
         #print(islands.map(lambda i: i.id).collect())

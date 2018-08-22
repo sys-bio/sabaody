@@ -27,9 +27,9 @@ def test_one_way_ring_topology():
     '''
     from sabaody.topology import TopologyFactory
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_topology')
-    topology_factory = TopologyFactory(NoProblem, domain_qual, 'localhost', 11211)
+    topology_factory = TopologyFactory(NoProblem, island_size=4, domain_qualifier=domain_qual, 'localhost', 11211)
 
-    t = topology_factory.createOneWayRing(None,4)
+    t = topology_factory.createOneWayRing(None)
     assert len(t.island_ids) == 4
     assert len(t.islands) == 4
     for island,id in zip(t.islands,t.island_ids):
@@ -48,9 +48,9 @@ def test_bidir_ring_topology():
     '''
     from sabaody.topology import TopologyFactory
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_topology')
-    topology_factory = TopologyFactory(NoProblem, domain_qual, 'localhost', 11211)
+    topology_factory = TopologyFactory(NoProblem, island_size=4, domain_qualifier=domain_qual, 'localhost', 11211)
 
-    t = topology_factory.createBidirRing(None,4)
+    t = topology_factory.createBidirRing(None)
     assert len(t.island_ids) == 4
     assert len(t.islands) == 4
     for id in t.island_ids:
@@ -63,9 +63,9 @@ def test_rim_topology():
     '''
     from sabaody.topology import TopologyFactory
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_rim_topology')
-    topology_factory = TopologyFactory(NoProblem, domain_qual, 'localhost', 11211)
+    topology_factory = TopologyFactory(NoProblem, island_size=5, domain_qual, 'localhost', 11211)
 
-    t = topology_factory.createRim(None,5)
+    t = topology_factory.createRim(None)
     assert len(t.island_ids) == 5
     assert len(t.islands) == 5
     # hub
@@ -132,8 +132,8 @@ def test_one_way_ring_migration():
         return pg.de(gen=10)
 
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_migration')
-    topology_factory = TopologyFactory(make_problem, domain_qual, 'localhost', 11211)
-    topology = topology_factory.createOneWayRing(make_algorithm,5)
+    topology_factory = TopologyFactory(make_problem, island_size=5, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
+    topology = topology_factory.createOneWayRing(make_algorithm)
     assert len(topology.island_ids) == 5
 
     from sabaody.migration_central import CentralMigrator, start_migration_service
@@ -142,7 +142,7 @@ def test_one_way_ring_migration():
     try:
         process = start_migration_service()
         sleep(2)
-        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), 'http://localhost:10100')
+        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), topology, 'http://localhost:10100')
 
         from collections import OrderedDict
         islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
@@ -192,8 +192,8 @@ def test_bidir_chain():
         return pg.de(gen=10)
 
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_bidir_chain_migration')
-    topology_factory = TopologyFactory(make_problem, domain_qual, 'localhost', 11211)
-    topology = topology_factory.createBidirChain(make_algorithm,5)
+    topology_factory = TopologyFactory(make_problem, domain_qual, island_size=5, mc_host='localhost', mc_port=11211)
+    topology = topology_factory.createBidirChain(make_algorithm)
     assert len(topology.island_ids) == 5
     assert len(topology.endpoints) == 2
 
@@ -203,7 +203,7 @@ def test_bidir_chain():
     try:
         process = start_migration_service()
         sleep(2)
-        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), 'http://localhost:10100')
+        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), topology, 'http://localhost:10100')
 
         from collections import OrderedDict
         for k in (1,2):

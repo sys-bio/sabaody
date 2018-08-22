@@ -19,9 +19,19 @@ from typing import Union, Tuple, List, Any
 
 # ** Client Logic **
 class CentralMigrator(Migrator):
-    def __init__(self, selection_policy, migration_policy, root_url):
+    def __init__(self, selection_policy, migration_policy, topology, root_url):
         super().__init__(selection_policy, migration_policy)
         self.root_url = URL(root_url)
+        self.testCommunication
+        for island_id in topology.island_ids:
+            self.defineMigrantPool(island_id, 5) # FIXME: hardcoded
+
+
+    def testCommunication(self):
+        from requests import post
+        r = post(str(self.root_url / 'test-communication')
+        r.raise_for_status()
+
 
     def purgeAll(self):
         # type: () -> None
@@ -32,6 +42,7 @@ class CentralMigrator(Migrator):
         from requests import post
         r = post(str(self.root_url / 'purge-all'))
         r.raise_for_status()
+
 
     def defineMigrantPool(self, id, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
         # type: (str, int, str, arrow.Arrow) -> None
@@ -52,6 +63,7 @@ class CentralMigrator(Migrator):
                   'expiration_time': arrow.get(expiration_time).isoformat(),
                   })
         r.raise_for_status()
+
 
     def defineMigrantPools(self, topology, param_vector_size, buffer_type='FIFO', expiration_time=arrow.utcnow().shift(days=+1)):
         # type: (Union[Topology,DiTopology], int, str, arrow.Arrow) -> None
@@ -224,20 +236,19 @@ class MigrationServiceHost:
         self._migrant_pools = {(id,p) for id,p in self._migrant_pools.items() if time_now <= p.expiration_time}
 
 # ** Request Handlers **
+class TestCommunicationHandler(RequestHandler):
+    def initialize(self, migration_host):
+        self.migration_host = migration_host
+
+    def post(self):
+
+
 class PurgeAllHandler(RequestHandler):
     def initialize(self, migration_host):
         self.migration_host = migration_host
 
     def post(self):
-        try:
-            self.migration_host.purgeAll()
-        except Exception as e:
-            print('Misc. error "{}"'.format(e))
-            self.clear()
-            self.set_status(400)
-            self.write({
-              'error': str(e),
-              })
+        self.write('Okay')
 
 class DefineMigrantPoolHandler(RequestHandler):
     def initialize(self, migration_host):
@@ -301,6 +312,7 @@ class PopMigrantsHandler(RequestHandler):
 def create_central_migration_service():
     migration_host = MigrationServiceHost()
     return Application([
+        (r"/test-communication/?", TestCommunicationHandler, {'migration_host': migration_host}),
         (r"/purge-all/?", PurgeAllHandler, {'migration_host': migration_host}),
         (r"/define-island/([a-z0-9-]+)/?", DefineMigrantPoolHandler, {'migration_host': migration_host}),
         (r"/([a-z0-9-]+)/push-migrant/?", PushMigrantHandler, {'migration_host': migration_host}),

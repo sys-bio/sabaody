@@ -115,6 +115,13 @@ class Migrator(ABC):
         self.selection_policy = selection_policy
         self.replacement_policy = replacement_policy
 
+    #def initializeFromTopology(self, topology):
+        #'''
+        #Perform any initialization actions (e.g. defineMigrantPool)
+        #for the topology.
+        #'''
+        #pass
+
     def sendMigrants(self, island_id, island, topology):
         # type: (str, pg.island, Union[Topology,DiTopology]) -> None
         '''
