@@ -223,7 +223,7 @@ class KafkaMigrator(Migrator):
             else:
                 return l
 
-        migrant_array, fitness_array, source_ids = reduce(reducer, sorted_migrants, initializer=(array([]),array([]),[])) # type: ignore
+        migrant_array, fitness_array, source_ids = reduce(reducer, sorted_migrants, (array([]),array([]),[])) # type: ignore
         # truncate at n
         return (truncate(migrant_array,n), truncate(fitness_array,n), truncate_list(source_ids,n))
 
