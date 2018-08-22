@@ -211,7 +211,19 @@ class KafkaMigrator(Migrator):
             else:
                 return (marray, farray, sid)
 
-        migrant_array, fitness_array, source_ids = reduce(reducer, sorted_migrants, initializer=(array(),array(),[])) # type: ignore
+        def truncate(a,n):
+            if a.shape[0] > n:
+                return array(a[:n,:])
+            else:
+                return a
+
+        def truncate_list(l):
+            if len(l) > n:
+                return list(l[:n])
+            else:
+                return l
+
+        migrant_array, fitness_array, source_ids = reduce(reducer, sorted_migrants, initializer=(array([]),array([]),[])) # type: ignore
         # truncate at n
-        return (array(migrant_array[:n,:]), array(fitness_array[:n,:]), list(source_ids[:n]))
+        return (truncate(migrant_array,n), truncate(fitness_array,n), truncate_list(source_ids,n))
 
