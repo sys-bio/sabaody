@@ -30,11 +30,12 @@ with B2Run('luna', 11211) as run:
 
     # instantiate algorithm and topology
     import pygmo as pg
-    algorithm = pg.de(gen=10)
+    def make_algorithm():
+        return pg.de(gen=10)
     if topology_name == 'ring' or topology == 'bidir-ring':
-        a = Archipelago(topology_factory.createBidirRing(algorithm,n_islands))
+        a = Archipelago(topology_factory.createBidirRing(make_algorithm,n_islands))
     elif topology_name == 'one-way-ring':
-        a = Archipelago(topology_factory.createOneWayRing(algorithm,n_islands))
+        a = Archipelago(topology_factory.createOneWayRing(make_algorithm,n_islands))
     else:
         raise RuntimeError('Unrecognized topology')
 

@@ -93,6 +93,7 @@ class TopologyFactory:
         self.domain_qualifier = domain_qualifier
         self.mc_host = mc_host
         self.mc_port = mc_port
+        self.island_size = island_size
 
 
     def _getAlgorithmConstructor(self, algorithm_factory, node, graph):
