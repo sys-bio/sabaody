@@ -95,7 +95,6 @@ class KafkaMigrator(Migrator):
         self._identifier = str(uuid4())
         self._time_limit = time_limit
         self._producer = self._builder.build_producer()
-        self._consumer = self._builder.build_consumer(self.topic()) # consumer_timeout_ms=time_limit*1000
 
 
     def topic(self):
@@ -148,10 +147,11 @@ class KafkaMigrator(Migrator):
         Gets ``n`` incoming migrants for the given island and returns them.
         If ``n`` is zero, return all migrants.
         '''
+        consumer = self._builder.build_consumer(self.topic()) # consumer_timeout_ms=time_limit*1000
         result_migrants = []
         try:
             with timeout(self._time_limit, exception=RuntimeError):
-                for migrant_msg in self._consumer:
+                for migrant_msg in consumer:
                     # unpack the message
                     migrant = self.deserialize(migrant_msg)
 

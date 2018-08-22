@@ -36,6 +36,7 @@ class Topology(nx.Graph):
     def neighbor_ids(self, id):
         return tuple(self.neighbors(id))
 
+
     def outgoing_ids(self, id):
         '''
         For an undirected topology, the outgoing ids are just
@@ -47,6 +48,7 @@ class Topology(nx.Graph):
 
     def neighbor_islands(self, id):
         return tuple(self.nodes[n]['island'] for n in self.neighbors(id))
+
 
     def outgoing_islands(self, id):
         return self.neighbor_islands(id)

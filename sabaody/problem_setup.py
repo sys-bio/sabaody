@@ -15,12 +15,14 @@ class ProblemSetup:
     def __init__(self, mc_host, mc_port):
         self.mc_host = mc_host
         self.mc_port = mc_port
-        self.client = Client((mc_host,mc_port))
 
         self.setupMonitoringVariables()
         self.calculateInitialScore()
 
     def __enter__(self):
+        from .diagnostics import test_memcached
+        self.client = Client((self.mc_host,self.mc_port))
+        test_memcached(self.mc_host, self.mc_port)
         return self
 
     def domainAppend(self,s):
