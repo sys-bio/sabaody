@@ -241,6 +241,7 @@ class TestCommunicationHandler(RequestHandler):
         self.migration_host = migration_host
 
     def post(self):
+        self.write('Okay')
 
 
 class PurgeAllHandler(RequestHandler):
@@ -248,7 +249,15 @@ class PurgeAllHandler(RequestHandler):
         self.migration_host = migration_host
 
     def post(self):
-        self.write('Okay')
+        try:
+            self.migration_host.purgeAll()
+        except Exception as e:
+            print('Misc. error "{}"'.format(e))
+            self.clear()
+            self.set_status(400)
+            self.write({
+              'error': str(e),
+              })
 
 class DefineMigrantPoolHandler(RequestHandler):
     def initialize(self, migration_host):
