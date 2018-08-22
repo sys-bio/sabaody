@@ -191,7 +191,7 @@ class KafkaMigrator(Migrator):
         except RuntimeError:
             print('Timeout for request from Island : {0}'.format(island_id))
         # sort by most recent
-        sorted_migrants = sorted(result_migrants, key=lambda migrant: migrant.timestamp)
+        sorted_migrants = sorted(result_migrants, key=lambda migrant: migrant.timestamp, reverse=True)
 
         # vstack with empties
         def myvstack(u,v):
