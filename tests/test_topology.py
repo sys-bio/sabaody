@@ -48,7 +48,7 @@ def test_bidir_ring_topology():
     '''
     from sabaody.topology import TopologyFactory
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_topology')
-    topology_factory = TopologyFactory(NoProblem, island_size=4, domain_qualifier=domain_qual, 'localhost', 11211)
+    topology_factory = TopologyFactory(NoProblem, island_size=4, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
 
     t = topology_factory.createBidirRing(None)
     assert len(t.island_ids) == 4
@@ -63,7 +63,7 @@ def test_rim_topology():
     '''
     from sabaody.topology import TopologyFactory
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_rim_topology')
-    topology_factory = TopologyFactory(NoProblem, island_size=5, domain_qual, 'localhost', 11211)
+    topology_factory = TopologyFactory(NoProblem, island_size=5, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
 
     t = topology_factory.createRim(None)
     assert len(t.island_ids) == 5
