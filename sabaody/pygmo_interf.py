@@ -33,7 +33,7 @@ class Island:
         self.size = size
         self.domain_qualifier = domain_qualifier
 
-def run_island(island, topology):
+def run_island(island, topology, migrator):
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
@@ -43,7 +43,6 @@ def run_island(island, topology):
         mc_client = Client((island.mc_host,island.mc_port))
     else:
         mc_client = None
-    migrator = CentralMigrator('http://luna:10100')
 
     algorithm = pg.de(gen=10)
     problem = island.problem_constructor()
@@ -95,7 +94,9 @@ class Archipelago:
             mc_client.set(self.domain_qualifier('islandIds'), dumps(self.topology.island_ids), 10000)
 
     def run(self, sc, migrator):
-        return sc.parallelize(self.topology.islands).map(run_island).collect()
+        def worker(island):
+            return run_island(island,self.topology,migrator)
+        return sc.parallelize(self.topology.islands).map(worker).collect()
 
 
 

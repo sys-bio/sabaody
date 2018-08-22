@@ -97,13 +97,13 @@ class KafkaMigrator(Migrator):
     '''
 
 
-    def __init__(self, selection_policy, migration_policy, builder, time_limit=10):
+    def __init__(self, selection_policy, replacement_policy, builder, time_limit=10):
         '''
         Constructor for KafkaMigrator.
 
         :param timeout: Time limit (in seconds) to wait for incoming migrants.
         '''
-        super().__init__(selection_policy, migration_policy)
+        super().__init__(selection_policy, replacement_policy)
         self._builder = builder
         self._identifier = str(uuid4())
         self._time_limit = time_limit
@@ -115,11 +115,16 @@ class KafkaMigrator(Migrator):
           'builder': self._builder.__getstate__(),
           'identifier': self._identifier,
           'time_limit': self._time_limit,
-          **super().__getstate()
+          'selection_policy': self.selection_policy,
+          'replacement_policy': self.replacement_policy,
           }
 
 
     def __setstate__(self, state):
+        selection_policy = state['selection_policy']
+        replacement_policy = state['replacement_policy']
+        super().__init__(selection_policy, replacement_policy)
+
         self._builder = KafkaBuilder(**state['builder'])
         self._identifier = state['identifier']
         self._time_limit = state['time_limit']

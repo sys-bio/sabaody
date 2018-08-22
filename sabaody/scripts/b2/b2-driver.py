@@ -30,16 +30,16 @@ import os
 from os.path import join
 script_dir = os.path.dirname(os.path.realpath(__file__))
 # set files to be copied to the cwd of each executor
-conf.set('spark.files', ','.join(join(script_dir,p) for p in [
-    join('..','..','..','sbml','b2.xml'),
-    ]))
-# set py files
-conf.set('spark.submit.pyFiles', ','.join(join(script_dir,p) for p in [
-    'data.py',
-    'b2problem.py',
-    'params.py',
-    'b2setup.py',
-    ]))
+#conf.set('spark.files', ','.join(join(script_dir,p) for p in [
+    #join('..','..','..','sbml','b2.xml'),
+    #]))
+## set py files
+#conf.set('spark.submit.pyFiles', ','.join(join(script_dir,p) for p in [
+    #'data.py',
+    #'b2problem.py',
+    #'params.py',
+    #'b2setup.py',
+    #]))
 conf.set('spark.logConf', True)
 sc = SparkContext(conf=conf)
 
@@ -68,13 +68,14 @@ with B2Run('luna', 11211) as run:
                                        mc_port=run.mc_port)
 
     # instantiate algorithm and topology
-    import pygmo as pg
     def make_algorithm():
-        return pg.de(gen=10)
+        pass
+        #import pygmo as pg
+        #return pg.de(gen=10)
     if topology_name == 'ring' or topology == 'bidir-ring':
-        a = Archipelago(topology_factory.createBidirRing(make_algorithm,n_islands))
+        a = Archipelago(topology_factory.createBidirRing(None,n_islands))
     elif topology_name == 'one-way-ring':
-        a = Archipelago(topology_factory.createOneWayRing(make_algorithm,n_islands))
+        a = Archipelago(topology_factory.createOneWayRing(None,n_islands))
     else:
         raise RuntimeError('Unrecognized topology')
 
