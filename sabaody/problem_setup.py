@@ -15,13 +15,13 @@ class ProblemSetup:
     def __init__(self, mc_host, mc_port):
         self.mc_host = mc_host
         self.mc_port = mc_port
+        self.mc_client = Client((self.mc_host,self.mc_port))
 
         self.setupMonitoringVariables()
         self.calculateInitialScore()
 
     def __enter__(self):
         from .diagnostics import test_memcached
-        self.client = Client((self.mc_host,self.mc_port))
         test_memcached(self.mc_host, self.mc_port)
         return self
 
@@ -29,18 +29,18 @@ class ProblemSetup:
         return '.'.join((self.getDomain(),s))
 
     def __exit__(self, exception_type, exception_val, trace):
-        self.client.set(self.domainAppend('run.status'), 'finished', 604800)
-        self.client.set(self.domainAppend('run.endTime'), str(time()), 604800)
+        self.mc_client.set(self.domainAppend('run.status'), 'finished', 604800)
+        self.mc_client.set(self.domainAppend('run.endTime'), str(time()), 604800)
 
     def setupMonitoringVariables(self):
-        self.run = int(self.client.get(self.domainAppend('run')) or 0)
+        self.run = int(self.mc_client.get(self.domainAppend('run')) or 0)
         self.run += 1
-        self.client.set(self.domainAppend('run'), self.run, 604800)
+        self.mc_client.set(self.domainAppend('run'), self.run, 604800)
 
         self.run_id = str(uuid4())
-        self.client.set(self.domainAppend('runId'), self.run_id, 604800)
-        self.client.set(self.domainAppend('run.startTime'), str(time()), 604800)
-        self.client.set(self.domainAppend('run.status'), 'active', 604800)
+        self.mc_client.set(self.domainAppend('runId'), self.run_id, 604800)
+        self.mc_client.set(self.domainAppend('run.startTime'), str(time()), 604800)
+        self.mc_client.set(self.domainAppend('run.status'), 'active', 604800)
 
         print('Starting run {} of {} problem with id {}...'.format(self.run, self.getName(), self.run_id))
 

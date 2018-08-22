@@ -1,9 +1,27 @@
 # Driver code for B2 parameter fitting problem.
 from __future__ import print_function, division, absolute_import
 
+import argparse
+
+parser = argparse.ArgumentParser(description='Run the B2 problem.')
+parser.add_argument('host', metavar='hostname',
+                    help='The hostname of the master node of the spark cluster')
+parser.add_argument('--topology', required=True,
+                    choices = ['ring', 'bidir-ring', 'one-way-ring'],
+                    help='The topology to use')
+parser.add_argument('--migration', required=True,
+                    choices = ['central', 'central-migrator', 'kafka', 'kafka-migrator'],
+                    help='The migration scheme to use')
+args = parser.parse_args()
+hostname = args.host
+topology_name = args.topology
+migrator_name = args.migration
+print('migration scheme {}'.format(migrator_name))
+print('Connecting to spark master {}:7077'.format(hostname))
+
 from pyspark import SparkContext, SparkConf
 conf = SparkConf().setAppName("b2-driver")
-conf.setMaster('spark://10.21.208.21:7077')
+conf.setMaster('spark://{}:7077'.format(hostname))
 conf.set('spark.driver.memory', '1g')
 #conf.set('spark.executor.memory', '2g')
 #conf.set('spark.executor.cores', '4')
@@ -13,7 +31,7 @@ from os.path import join
 script_dir = os.path.dirname(os.path.realpath(__file__))
 # set files to be copied to the cwd of each executor
 conf.set('spark.files', ','.join(join(script_dir,p) for p in [
-    join(['..','..','..','sbml','b2.xml']),
+    join('..','..','..','sbml','b2.xml'),
     ]))
 # set py files
 conf.set('spark.submit.pyFiles', ','.join(join(script_dir,p) for p in [
@@ -33,6 +51,7 @@ topology = 'one-way-ring'
 n_islands = 100
 island_size = 100
 migrant_pool_size = 5
+from sabaody.migration import BestSPolicy, FairRPolicy
 selection_policy = BestSPolicy(migration_rate=migrant_pool_size)
 replacement_policy = FairRPolicy()
 
@@ -68,7 +87,9 @@ with B2Run('luna', 11211) as run:
     elif migrator_name == 'kafka' or migrator_name == 'kafka-migrator':
         from sabaody.kafka_migration_service import KafkaMigrator, KafkaBuilder
         # Kafka must be running
-        migrator = KafkaMigrator(selection_policy, replacement_policy, KafkaBuilder('luna', 9092)
+        migrator = KafkaMigrator(selection_policy, replacement_policy, KafkaBuilder('luna', 9092))
+    else:
+        raise RuntimeError('Migration scheme undefined')
     a.set_mc_server(run.mc_host, run.mc_port, run.getNameQualifier())
     a.run(sc, migrator)
 
