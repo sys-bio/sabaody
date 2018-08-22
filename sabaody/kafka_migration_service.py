@@ -217,7 +217,7 @@ class KafkaMigrator(Migrator):
             else:
                 return a
 
-        def truncate_list(l):
+        def truncate_list(l,n):
             if len(l) > n:
                 return list(l[:n])
             else:
