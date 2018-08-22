@@ -69,6 +69,18 @@ class KafkaBuilder:
         url = ",".join(each_host + ":" + self._port for each_host in self._hosts)
         return KafkaConsumer(topic_name, *args, bootstrap_servers=url, auto_offset_reset='earliest', **kwargs)
 
+
+    def __getstate__(self):
+        return {
+          'hosts': self._hosts,
+          'port': self._port,
+          }
+
+
+    def __setstate__(self, state):
+        self._hosts = state['hosts']
+        self._port  = state['port']
+
 @attr.s
 class MigrantData:
     migrants = attr.ib(type=array)
@@ -91,9 +103,26 @@ class KafkaMigrator(Migrator):
 
         :param timeout: Time limit (in seconds) to wait for incoming migrants.
         '''
+        super().__init__(selection_policy, migration_policy)
         self._builder = builder
         self._identifier = str(uuid4())
         self._time_limit = time_limit
+        self._producer = self._builder.build_producer()
+
+
+    def __getstate__(self):
+        return {
+          'builder': self._builder.__getstate__(),
+          'identifier': self._identifier,
+          'time_limit': self._time_limit,
+          **super().__getstate()
+          }
+
+
+    def __setstate__(self, state):
+        self._builder = KafkaBuilder(**state['builder'])
+        self._identifier = state['identifier']
+        self._time_limit = state['time_limit']
         self._producer = self._builder.build_producer()
 
 
