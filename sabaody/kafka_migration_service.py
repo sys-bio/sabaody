@@ -183,20 +183,25 @@ class KafkaMigrator(Migrator):
         '''
         consumer = self._builder.build_consumer(self.topic(island_id)) # consumer_timeout_ms=time_limit*1000
         result_migrants = []
+        total_migrants = 0
+        class TimeoutError(Exception):
+            pass
         try:
-            with timeout(self._time_limit, exception=RuntimeError):
+            with timeout(self._time_limit, exception=TimeoutError):
                 for migrant_msg in consumer:
                     # unpack the message
                     migrant = self.deserialize(migrant_msg)
 
                     result_migrants.append(migrant)
-                    if n != 0 and len(result_migrants) >= n:
+                    total_migrants += migrant.migrants.shape[0]
+                    if n != 0 and total_migrants >= n:
                         # we have the requested number of migrants - return
                         break
-        except RuntimeError:
+        except TimeoutError:
             print('Timeout for request from Island : {0}'.format(island_id))
         # sort by most recent
         sorted_migrants = sorted(result_migrants, key=lambda migrant: migrant.timestamp, reverse=True)
+        #sorted_migrants = result_migrants
 
         # vstack with empties
         def myvstack(u,v):

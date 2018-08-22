@@ -10,8 +10,9 @@ def test_migrate():
 
     migrator.migrate('to-island', array([1,2,3,4]), array([0.]), 'from-island')
 
-    migrants,fitness,src_ids = migrator.welcome("to-island")
+    migrants,fitness,src_ids = migrator.welcome("to-island",n=1)
 
+    print('migrants: {}'.format(migrants))
     assert array_equal(migrants, array([[1,2,3,4]]))
     assert array_equal(fitness, array([[0.]]))
     assert src_ids == ['from-island']
@@ -25,5 +26,5 @@ def test_most_recent_migrants():
 
     migrants,fitness,src_ids = migrator.welcome("to-island",n=5)
 
-    assert array_equal(migrants, array([[9,8,7,6,5]]))
+    assert array_equal(migrants, array([[4],[3],[2],[1],[0]]))
     assert src_ids == ['from-island']*5

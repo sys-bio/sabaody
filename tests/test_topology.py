@@ -133,7 +133,7 @@ def test_one_way_ring_migration():
 
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_migration')
     topology_factory = TopologyFactory(make_problem, island_size=5, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
-    topology = topology_factory.createOneWayRing(make_algorithm)
+    topology = topology_factory.createOneWayRing(make_algorithm, number_of_islands=5)
     assert len(topology.island_ids) == 5
 
     from sabaody.migration_central import CentralMigrator, start_migration_service
