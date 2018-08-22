@@ -29,7 +29,7 @@ class CentralMigrator(Migrator):
 
     def testCommunication(self):
         from requests import post
-        r = post(str(self.root_url / 'test-communication')
+        r = post(str(self.root_url / 'test-communication'))
         r.raise_for_status()
 
 
