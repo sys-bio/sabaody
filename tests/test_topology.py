@@ -27,7 +27,7 @@ def test_one_way_ring_topology():
     '''
     from sabaody.topology import TopologyFactory
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_topology')
-    topology_factory = TopologyFactory(NoProblem, island_size=4, domain_qualifier=domain_qual, 'localhost', 11211)
+    topology_factory = TopologyFactory(NoProblem, island_size=4, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
 
     t = topology_factory.createOneWayRing(None)
     assert len(t.island_ids) == 4
