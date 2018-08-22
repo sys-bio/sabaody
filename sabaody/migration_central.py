@@ -23,8 +23,9 @@ class CentralMigrator(Migrator):
         super().__init__(selection_policy, migration_policy)
         self.root_url = URL(root_url)
         self.testCommunication
-        for island_id in topology.island_ids:
-            self.defineMigrantPool(island_id, 5) # FIXME: hardcoded
+        if topology is not None:
+            for island_id in topology.island_ids:
+                self.defineMigrantPool(island_id, 5) # FIXME: hardcoded
 
 
     def testCommunication(self):
