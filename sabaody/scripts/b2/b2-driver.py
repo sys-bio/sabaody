@@ -16,7 +16,6 @@ args = parser.parse_args()
 hostname = args.host
 topology_name = args.topology
 migrator_name = args.migration
-print('migration scheme {}'.format(migrator_name))
 print('Connecting to spark master {}:7077'.format(hostname))
 
 from pyspark import SparkContext, SparkConf
@@ -27,19 +26,23 @@ conf.set('spark.driver.memory', '1g')
 #conf.set('spark.executor.cores', '4')
 #conf.set('spark.cores.max', '40')
 import os
-from os.path import join
+from os.path import join, abspath
 script_dir = os.path.dirname(os.path.realpath(__file__))
 # set files to be copied to the cwd of each executor
-#conf.set('spark.files', ','.join(join(script_dir,p) for p in [
-    #join('..','..','..','sbml','b2.xml'),
-    #]))
-## set py files
-#conf.set('spark.submit.pyFiles', ','.join(join(script_dir,p) for p in [
-    #'data.py',
-    #'b2problem.py',
-    #'params.py',
-    #'b2setup.py',
-    #]))
+spark_files = ','.join(join(script_dir,p) for p in [
+    abspath(join('..','..','..','sbml','b2.xml')),
+    ])
+print('using spark files {}'.format(spark_files))
+conf.set('spark.files', spark_files)
+# set py files
+py_files = ','.join(join(script_dir,p) for p in [
+    'data.py',
+    'b2problem.py',
+    'params.py',
+    'b2setup.py',
+    ])
+print('using py files {}'.format(py_files))
+conf.set('spark.submit.pyFiles', py_files)
 conf.set('spark.logConf', True)
 sc = SparkContext(conf=conf)
 
@@ -57,6 +60,9 @@ replacement_policy = FairRPolicy()
 
 with B2Run('luna', 11211) as run:
     from b2problem import make_problem
+
+    import arrow
+    time_start = arrow.utcnow()
 
     # set up topology parameters
     from sabaody.topology import TopologyFactory
@@ -94,3 +100,5 @@ with B2Run('luna', 11211) as run:
     a.set_mc_server(run.mc_host, run.mc_port, run.getNameQualifier())
     a.run(sc, migrator)
 
+    time_end = arrow.utcnow()
+    print('Total run time: {}'format(time_start.humanize(time_end,only_distance=True))
