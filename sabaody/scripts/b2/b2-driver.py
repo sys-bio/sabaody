@@ -3,6 +3,26 @@ from __future__ import print_function, division, absolute_import
 
 from pyspark import SparkContext, SparkConf
 conf = SparkConf().setAppName("b2-driver")
+conf.setMaster('spark://10.21.208.21:7077')
+conf.set('spark.driver.memory', '1g')
+#conf.set('spark.executor.memory', '2g')
+#conf.set('spark.executor.cores', '4')
+#conf.set('spark.cores.max', '40')
+import os
+from os.path import join
+script_dir = os.path.dirname(os.path.realpath(__file__))
+# set files to be copied to the cwd of each executor
+conf.set('spark.files', ','.join(join(script_dir,p) for p in [
+    join(['..','..','..','sbml','b2.xml']),
+    ]))
+# set py files
+conf.set('spark.submit.pyFiles', ','.join(join(script_dir,p) for p in [
+    'data.py',
+    'b2problem.py',
+    'params.py',
+    'b2setup.py',
+    ]))
+conf.set('spark.logConf', True)
 sc = SparkContext(conf=conf)
 
 from sabaody import Archipelago
