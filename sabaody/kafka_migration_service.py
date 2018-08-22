@@ -174,7 +174,7 @@ class KafkaMigrator(Migrator):
                 return vstack([u,v])
 
         def reducer(a,m):
-            marray, farray, sid = *a
+            marray, farray, sid = a
             if marray.shape[0] < n or n == 0:
                 return (myvstack(marray,m.migrants),
                         myvstack(farray,m.fitness),
