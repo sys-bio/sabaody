@@ -97,7 +97,7 @@ class KafkaMigrator(Migrator):
         self._producer = self._builder.build_producer()
 
 
-    def topic(self):
+    def topic(self, dest_island_id):
         return '_'.join([dest_island_id, self._identifier])
 
 
@@ -136,7 +136,7 @@ class KafkaMigrator(Migrator):
         migrants = convert_to_2d_array(migrants)
         fitness = convert_to_2d_array(fitness)
         assert migrants.shape[0] == fitness.shape[0]
-        self._producer.send(self.topic(),
+        self._producer.send(self.topic(dest_island_id),
                             key = src_island_id.encode('utf-8') if isinstance(src_island_id,str) else None,
                             value = self.serialize(migrants, fitness))
 
@@ -147,7 +147,7 @@ class KafkaMigrator(Migrator):
         Gets ``n`` incoming migrants for the given island and returns them.
         If ``n`` is zero, return all migrants.
         '''
-        consumer = self._builder.build_consumer(self.topic()) # consumer_timeout_ms=time_limit*1000
+        consumer = self._builder.build_consumer(self.topic(island_id)) # consumer_timeout_ms=time_limit*1000
         result_migrants = []
         try:
             with timeout(self._time_limit, exception=RuntimeError):
