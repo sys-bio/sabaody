@@ -19,13 +19,14 @@ from typing import Union, Tuple, List, Any
 
 # ** Client Logic **
 class CentralMigrator(Migrator):
-    def __init__(self, selection_policy, migration_policy, topology, root_url):
+    def __init__(self, selection_policy, migration_policy, root_url):
         super().__init__(selection_policy, migration_policy)
-        self.root_url = URL(root_url)
+        self._root_url = root_url
         self.testCommunication
-        if topology is not None:
-            for island in topology.islands:
-                self.defineMigrantPool(island.id, island.size) # FIXME: hardcoded
+
+    @property
+    def root_url(self):
+        return URL(self._root_url)
 
 
     def testCommunication(self):
@@ -220,6 +221,7 @@ class MigrationServiceHost:
         '''
         migrant_vector = array(migrant_vector)
         if migrant_vector.size != self.param_vector_size:
+            print(migrant_vector)
             raise RuntimeError('Expected migrant vector of length {} but received length {}'.format(self.param_vector_size, migrant_vector.size))
         self._migrant_pools[str(id)].push(migrant_vector, fitness, src_island_id)
 

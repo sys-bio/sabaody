@@ -16,7 +16,7 @@ from pprint import PrettyPrinter
 from time import time
 
 def domainJoin(s):
-    return '.'.join('com.how2cell.sabaody.B2',s)
+    return '.'.join(['com.how2cell.sabaody.B2',s])
 
 def app(screen):
     while True:

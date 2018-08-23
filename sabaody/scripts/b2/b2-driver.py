@@ -10,7 +10,10 @@ parser.add_argument('--topology', required=True,
                     choices = ['ring', 'bidir-ring', 'one-way-ring'],
                     help='The topology to use')
 parser.add_argument('--migration', required=True,
-                    choices = ['central', 'central-migrator', 'kafka', 'kafka-migrator'],
+                    choices = ['none', 'null',
+                      'central', 'central-migrator',
+                      'kafka', 'kafka-migrator',
+                     ],
                     help='The migration scheme to use')
 args = parser.parse_args()
 hostname = args.host
@@ -29,20 +32,20 @@ import os
 from os.path import join, abspath
 script_dir = os.path.dirname(os.path.realpath(__file__))
 # set files to be copied to the cwd of each executor
-spark_files = ','.join(join(script_dir,p) for p in [
-    abspath(join('..','..','..','sbml','b2.xml')),
-    ])
-print('using spark files {}'.format(spark_files))
-conf.set('spark.files', spark_files)
-# set py files
-py_files = ','.join(join(script_dir,p) for p in [
-    'data.py',
-    'b2problem.py',
-    'params.py',
-    'b2setup.py',
-    ])
-print('using py files {}'.format(py_files))
-conf.set('spark.submit.pyFiles', py_files)
+#spark_files = ','.join(join(script_dir,p) for p in [
+    #abspath(join('..','..','..','sbml','b2.xml')),
+    #])
+#print('using spark files {}'.format(spark_files))
+#conf.set('spark.files', spark_files)
+## set py files
+#py_files = ','.join(join(script_dir,p) for p in [
+    #'data.py',
+    #'b2problem.py',
+    #'params.py',
+    #'b2setup.py',
+    #])
+#print('using py files {}'.format(py_files))
+#conf.set('spark.submit.pyFiles', py_files)
 conf.set('spark.logConf', True)
 sc = SparkContext(conf=conf)
 
@@ -50,7 +53,6 @@ from sabaody import Archipelago
 
 from b2setup import B2Run
 
-topology = 'one-way-ring'
 n_islands = 100
 island_size = 100
 migrant_pool_size = 5
@@ -78,7 +80,7 @@ with B2Run('luna', 11211) as run:
         pass
         #import pygmo as pg
         #return pg.de(gen=10)
-    if topology_name == 'ring' or topology == 'bidir-ring':
+    if topology_name == 'ring' or topology_name == 'bidir-ring':
         a = Archipelago(topology_factory.createBidirRing(None,n_islands))
     elif topology_name == 'one-way-ring':
         a = Archipelago(topology_factory.createOneWayRing(None,n_islands))
@@ -90,7 +92,8 @@ with B2Run('luna', 11211) as run:
     if migrator_name == 'central' or migrator_name == 'central-migrator':
         from sabaody.migration_central import CentralMigrator
         # central migrator process must be running
-        migrator = CentralMigrator(selection_policy, replacement_policy, topology, 'http://luna:10100')
+        migrator = CentralMigrator(selection_policy, replacement_policy, 'http://luna:10100')
+        migrator.defineMigrantPools(a.topology, 133)
     elif migrator_name == 'kafka' or migrator_name == 'kafka-migrator':
         from sabaody.kafka_migration_service import KafkaMigrator, KafkaBuilder
         # Kafka must be running
@@ -101,4 +104,4 @@ with B2Run('luna', 11211) as run:
     a.run(sc, migrator)
 
     time_end = arrow.utcnow()
-    print('Total run time: {}'format(time_start.humanize(time_end,only_distance=True))
+    print('Total run time: {}'.format(time_start.humanize(time_end,only_distance=True)))
