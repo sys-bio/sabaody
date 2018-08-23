@@ -15,10 +15,13 @@ parser.add_argument('--migration', required=True,
                       'kafka', 'kafka-migrator',
                      ],
                     help='The migration scheme to use')
+parser.add_argument('--num-islands', type=int, required=True,
+                    help='The migration scheme to use')
 args = parser.parse_args()
 hostname = args.host
 topology_name = args.topology
 migrator_name = args.migration
+n_islands = args.num_islands
 print('Connecting to spark master {}:7077'.format(hostname))
 
 from pyspark import SparkContext, SparkConf
@@ -53,8 +56,7 @@ from sabaody import Archipelago
 
 from b2setup import B2Run
 
-n_islands = 100
-island_size = 100
+island_size = 10
 migrant_pool_size = 5
 from sabaody.migration import BestSPolicy, FairRPolicy
 selection_policy = BestSPolicy(migration_rate=migrant_pool_size)
@@ -101,7 +103,12 @@ with B2Run('luna', 11211) as run:
     else:
         raise RuntimeError('Migration scheme undefined')
     a.set_mc_server(run.mc_host, run.mc_port, run.getNameQualifier())
-    a.run(sc, migrator)
+    champion_scores = a.run(sc, migrator, 10)
+    print('chamption scores {}'.format(champion_scores))
+    min_score = min(champion_scores)
+    average_score = float(sum(champion_scores))/len(champion_scores)
+    print('min champion score {}'.format(min_score))
+    print('mean champion score {}'.format(average_score))
 
     time_end = arrow.utcnow()
     print('Total run time: {}'.format(time_start.humanize(time_end,only_distance=True)))

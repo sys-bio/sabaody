@@ -221,7 +221,6 @@ class MigrationServiceHost:
         '''
         migrant_vector = array(migrant_vector)
         if migrant_vector.size != self.param_vector_size:
-            print(migrant_vector)
             raise RuntimeError('Expected migrant vector of length {} but received length {}'.format(self.param_vector_size, migrant_vector.size))
         self._migrant_pools[str(id)].push(migrant_vector, fitness, src_island_id)
 

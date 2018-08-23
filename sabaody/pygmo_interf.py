@@ -33,7 +33,7 @@ class Island:
         self.size = size
         self.domain_qualifier = domain_qualifier
 
-def run_island(island, topology, migrator):
+def run_island(island, topology, migrator, rounds):
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
@@ -44,18 +44,19 @@ def run_island(island, topology, migrator):
     else:
         mc_client = None
 
-    algorithm = pg.de(gen=1)
+    algorithm = pg.de(gen=10)
     problem = island.problem_constructor()
     # TODO: configure pop size
-    i = pg.island(algo=algorithm, prob=problem, size=20)
+    i = pg.island(algo=algorithm, prob=problem, size=island.size)
 
     if mc_client:
         mc_client.set(island.domain_qualifier('island', str(island.id), 'status'), 'Running', 10000)
         mc_client.set(island.domain_qualifier('island', str(island.id), 'n_cores'), str(cpu_count()), 10000)
 
-    rounds = 2
     migration_log = []
     for x in range(rounds):
+
+        mc_client.set(island.domain_qualifier('island', str(island.id), 'round'), str(x), 10000)
         i.evolve()
         i.wait()
 
@@ -75,7 +76,7 @@ def run_island(island, topology, migrator):
     #hostname = socket.gethostname()
     #ip = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
     #return (ip, hostname, island.id, migration_log, i.get_population().problem.get_fevals())
-    return i.get_population().problem.get_fevals()
+    return i.get_population().champion_f[0]
 
 class Archipelago:
     def __init__(self, topology):
@@ -93,10 +94,10 @@ class Archipelago:
             mc_client = Client((self.mc_host,self.mc_port))
             mc_client.set(self.domain_qualifier('islandIds'), dumps(self.topology.island_ids), 10000)
 
-    def run(self, sc, migrator):
+    def run(self, sc, migrator, rounds):
         def worker(island):
-            return run_island(island,self.topology,migrator)
-        return sc.parallelize(self.topology.islands).map(worker).collect()
+            return run_island(island,self.topology,migrator,rounds)
+        return sc.parallelize(self.topology.islands, numSlices=len(self.topology.islands)).map(worker).collect()
 
 
 

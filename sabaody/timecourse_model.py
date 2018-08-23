@@ -51,6 +51,7 @@ class TimecourseModel(Evaluator):
         # (check correct number of residuals)
         self.measurement_count = OrderedDict((quantity,0) for quantity in self.measurement_map)
         self.quantity_residuals = dict((quantity,list()) for quantity in self.measurement_map)
+        self.penalty_scale = 1.
 
     def calcResiduals(self,t):
         ''' Try to calculate residuals at the current time t
@@ -147,7 +148,7 @@ class TimecourseModel(Evaluator):
             self.buildResidualList()
         except RuntimeError:
             # if convergence fails, use a penalty score
-            return 1e9
+            return 1e9*self.penalty_scale
         return self.MSE()
 
     def getUsageByQuantity(self):

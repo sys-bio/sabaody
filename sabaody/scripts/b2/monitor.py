@@ -15,8 +15,8 @@ from json import dumps, loads
 from pprint import PrettyPrinter
 from time import time
 
-def domainJoin(s):
-    return '.'.join(['com.how2cell.sabaody.B2',s])
+def domainJoin(s,*args):
+    return '.'.join(['com.how2cell.sabaody.B2',s,*args])
 
 def app(screen):
     while True:
@@ -57,6 +57,9 @@ def app(screen):
             v += 1
             for i in island_ids:
                 screen.print_at(i, int(screen.width/2)-55, v, Screen.COLOUR_WHITE)
+                round = (client.get(domainJoin(run_id,'island',i,'round')) or b'-1').decode('utf8')
+                screen.print_at('   ', int(screen.width/2)+15, v, Screen.COLOUR_WHITE)
+                screen.print_at(round, int(screen.width/2)+15, v, Screen.COLOUR_WHITE)
                 v+=1
         else:
             screen.print_at('No run id'.format(run),
