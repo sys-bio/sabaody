@@ -12,7 +12,6 @@ def test_migrate():
 
     migrants,fitness,src_ids = migrator.welcome("to-island",n=1)
 
-    print('migrants: {}'.format(migrants))
     assert array_equal(migrants, array([[1,2,3,4]]))
     assert array_equal(fitness, array([[0.]]))
     assert src_ids == ['from-island']

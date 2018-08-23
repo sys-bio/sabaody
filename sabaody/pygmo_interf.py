@@ -44,7 +44,7 @@ def run_island(island, topology, migrator):
     else:
         mc_client = None
 
-    algorithm = pg.de(gen=10)
+    algorithm = pg.de(gen=1)
     problem = island.problem_constructor()
     # TODO: configure pop size
     i = pg.island(algo=algorithm, prob=problem, size=20)
@@ -53,7 +53,7 @@ def run_island(island, topology, migrator):
         mc_client.set(island.domain_qualifier('island', str(island.id), 'status'), 'Running', 10000)
         mc_client.set(island.domain_qualifier('island', str(island.id), 'n_cores'), str(cpu_count()), 10000)
 
-    rounds = 10
+    rounds = 2
     migration_log = []
     for x in range(rounds):
         i.evolve()

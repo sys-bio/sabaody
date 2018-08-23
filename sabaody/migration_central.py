@@ -24,8 +24,8 @@ class CentralMigrator(Migrator):
         self.root_url = URL(root_url)
         self.testCommunication
         if topology is not None:
-            for island_id in topology.island_ids:
-                self.defineMigrantPool(island_id, 5) # FIXME: hardcoded
+            for island in topology.islands:
+                self.defineMigrantPool(island.id, island.size) # FIXME: hardcoded
 
 
     def testCommunication(self):
@@ -82,7 +82,7 @@ class CentralMigrator(Migrator):
         :param expiration_time: If set, updates the expiration time of the pool.
         '''
         extra_args = dict()
-        expiration_time = kwars['expiration_time']
+        expiration_time = arrow.utcnow().shift(days=+1)
         if src_island_id is not None:
             extra_args['src_island_id'] = src_island_id
         from requests import post
