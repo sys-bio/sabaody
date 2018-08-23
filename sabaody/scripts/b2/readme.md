@@ -13,7 +13,7 @@ The number of islands should not exceed the number of executors, because in this
 * `--topology`: The name of the topology to use. Can be `bidir-ring` or `one-way-ring` (more to come).
 * `--migration`: Controls the migration scheme. Can be `null`, `central`, or `kafka`.
 * `--num-islands`: The number of islands in the archepelago. This should be less than or equal to `spark.cores.max` for optimal operation.
-* `host`: A positional argument, specifies the hostname of the Spark master node (the script always uses port 7077).
+* `host`: A positional argument specifying the hostname of the Spark master node (the script always uses port 7077).
 
 ```
 spark-submit --deploy-mode client --conf "spark.cores.max=17" --conf "spark.executor.cores=1" b2-driver.py --topology bidir-ring --migration central --num-islands 16 HOSTNAME
