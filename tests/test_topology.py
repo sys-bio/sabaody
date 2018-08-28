@@ -142,7 +142,7 @@ def test_one_way_ring_migration():
     try:
         process = start_migration_service()
         sleep(2)
-        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), topology, 'http://localhost:10100')
+        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), 'http://localhost:10100')
 
         from collections import OrderedDict
         islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
@@ -203,7 +203,7 @@ def test_bidir_chain():
     try:
         process = start_migration_service()
         sleep(2)
-        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), topology, 'http://localhost:10100')
+        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), 'http://localhost:10100')
 
         from collections import OrderedDict
         for k in (1,2):
