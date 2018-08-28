@@ -17,7 +17,7 @@ Before the island model can be successfully run, it requires that the migration 
   * For Zookeeper, example command: `~/etc/kafka_2.11-1.1.0/bin/zookeeper-server-start.sh ~/etc/kafka_2.11-1.1.0/config/zookeeper.properties`
   * For Kafka, example command: `~/etc/kafka_2.11-1.1.0/bin/kafka-server-start.sh ~/etc/kafka_2.11-1.1.0/config/server.properties`
 
-## Command line arguments
+## Running the island model with the B2 problem
 
 * `--topology`: The name of the topology to use. Can be `bidir-ring` or `one-way-ring` (more to come).
 * `--migration`: Controls the migration scheme. Can be `null`, `central`, or `kafka`.
