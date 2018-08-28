@@ -31,24 +31,26 @@ conf.set('spark.driver.memory', '1g')
 #conf.set('spark.executor.memory', '2g')
 #conf.set('spark.executor.cores', '4')
 #conf.set('spark.cores.max', '40')
+
 import os
 from os.path import join, abspath
 script_dir = os.path.dirname(os.path.realpath(__file__))
 # set files to be copied to the cwd of each executor
-#spark_files = ','.join(join(script_dir,p) for p in [
-    #abspath(join('..','..','..','sbml','b2.xml')),
-    #])
-#print('using spark files {}'.format(spark_files))
-#conf.set('spark.files', spark_files)
-## set py files
-#py_files = ','.join(join(script_dir,p) for p in [
-    #'data.py',
-    #'b2problem.py',
-    #'params.py',
-    #'b2setup.py',
-    #])
-#print('using py files {}'.format(py_files))
-#conf.set('spark.submit.pyFiles', py_files)
+spark_files = ','.join(join(script_dir,p) for p in [
+    abspath(join('..','..','..','sbml','b2.xml')),
+    ])
+py_files = ','.join(join(script_dir,p) for p in [
+    'data.py',
+    'b2problem.py',
+    'params.py',
+    'b2setup.py',
+    ])
+
+print('using spark files {}'.format(spark_files))
+conf.set('spark.files', ','.join([spark_files,py_files]))
+# set py files
+print('using py files {}'.format(py_files))
+conf.set('spark.submit.pyFiles', py_files)
 conf.set('spark.logConf', True)
 sc = SparkContext(conf=conf)
 
