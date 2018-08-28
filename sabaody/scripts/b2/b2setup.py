@@ -112,6 +112,11 @@ class B2Configuration:
 
         return config
 
+def make_algorithm():
+    #pass
+    import pygmo as pg
+    return pg.de(gen=10)
+
 def run_b2_islands(config):
     with B2Run('luna', 11211) as run:
         spark_context = config.spark_context
@@ -138,14 +143,10 @@ def run_b2_islands(config):
                                           mc_port=run.mc_port)
 
         # instantiate algorithm and topology
-        def make_algorithm():
-            pass
-            #import pygmo as pg
-            #return pg.de(gen=10)
         if topology_name == 'ring' or topology_name == 'bidir-ring':
-            a = Archipelago(topology_factory.createBidirRing(None,n_islands))
+            a = Archipelago(topology_factory.createBidirRing(make_algorithm,n_islands))
         elif topology_name == 'one-way-ring':
-            a = Archipelago(topology_factory.createOneWayRing(None,n_islands))
+            a = Archipelago(topology_factory.createOneWayRing(make_algorithm,n_islands))
         else:
             raise RuntimeError('Unrecognized topology')
 

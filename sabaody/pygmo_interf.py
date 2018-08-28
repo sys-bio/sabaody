@@ -44,7 +44,7 @@ def run_island(island, topology, migrator, rounds):
     else:
         mc_client = None
 
-    algorithm = pg.de(gen=10)
+    algorithm = island.algorithm_constructor()
     problem = island.problem_constructor()
     # TODO: configure pop size
     i = pg.island(algo=algorithm, prob=problem, size=island.size)
