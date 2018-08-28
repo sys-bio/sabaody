@@ -8,6 +8,15 @@ The island model is designed to run a certain number of islands on an equal or s
 
 The number of islands should not exceed the number of executors, because in this situation Spark may queue up the excess islands and run them once the first set of islands has completely finished, rendering migration to/from the excess islands pointless.
 
+## Starting the migration service
+
+Before the island model can be successfully run, it requires that the migration service be running. The migration service can be started as follows:
+
+* For the central migration service, `cd` to the `sabaody/scripts/migration` directory and run `python3 migration_service.py`.
+* For the Kafka migration service, start both Zookeeper and Kafka:
+  * For Zookeeper, example command: `~/etc/kafka_2.11-1.1.0/bin/zookeeper-server-start.sh ~/etc/kafka_2.11-1.1.0/config/zookeeper.properties`
+  * For Kafka, example command: `~/etc/kafka_2.11-1.1.0/bin/kafka-server-start.sh ~/etc/kafka_2.11-1.1.0/config/server.properties`
+
 ## Command line arguments
 
 * `--topology`: The name of the topology to use. Can be `bidir-ring` or `one-way-ring` (more to come).
