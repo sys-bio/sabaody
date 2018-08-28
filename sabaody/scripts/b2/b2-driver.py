@@ -2,10 +2,13 @@
 from __future__ import print_function, division, absolute_import
 
 import argparse
+from os.path import join, abspath, dirname, realpath
+from re import match
+from pyspark import SparkContext, SparkConf
 
 parser = argparse.ArgumentParser(description='Run the B2 problem.')
 parser.add_argument('host', metavar='hostname',
-                    help='The hostname of the master node of the spark cluster')
+                    help='The hostname of the master node of the spark cluster with optional port, e.g. localhost:7077')
 parser.add_argument('--topology', required=True,
                     choices = ['ring', 'bidir-ring', 'one-way-ring'],
                     help='The topology to use')
@@ -18,23 +21,27 @@ parser.add_argument('--migration', required=True,
 parser.add_argument('--num-islands', type=int, required=True,
                     help='The migration scheme to use')
 args = parser.parse_args()
-hostname = args.host
+if not match(r'[^: ](:[\d]+)?', args.host):
+    raise RuntimeError('Expected host name to be either a name or name:port')
+if not ':' in args.host:
+    hostname = args.host
+    port = 7077
+else:
+    hostname,port = args.host.split(':')
 topology_name = args.topology
 migrator_name = args.migration
 n_islands = args.num_islands
-print('Connecting to spark master {}:7077'.format(hostname))
+print('Connecting to spark master {}:{}'.format(hostname,port))
 
-from pyspark import SparkContext, SparkConf
 conf = SparkConf().setAppName("b2-driver")
-conf.setMaster('spark://{}:7077'.format(hostname))
+conf.setMaster('spark://{}:{}'.format(hostname,port))
 conf.set('spark.driver.memory', '1g')
 #conf.set('spark.executor.memory', '2g')
 #conf.set('spark.executor.cores', '4')
 #conf.set('spark.cores.max', '40')
 
-import os
-from os.path import join, abspath
-script_dir = os.path.dirname(os.path.realpath(__file__))
+script_dir = dirname(realpath(__file__))
+
 # set files to be copied to the cwd of each executor
 spark_files = ','.join(join(script_dir,p) for p in [
     abspath(join('..','..','..','sbml','b2.xml')),
@@ -46,15 +53,12 @@ py_files = ','.join(join(script_dir,p) for p in [
     'b2setup.py',
     ])
 
-print('using spark files {}'.format(spark_files))
 conf.set('spark.files', ','.join([spark_files,py_files]))
 # set py files
-print('using py files {}'.format(py_files))
 conf.set('spark.submit.pyFiles', py_files)
 conf.set('spark.logConf', True)
-sc = SparkContext(conf=conf)
 
-from b2setup import run_b2_islands
+sc = SparkContext(conf=conf)
 
 island_size = 10
 migrant_pool_size = 5
@@ -62,6 +66,7 @@ from sabaody.migration import BestSPolicy, FairRPolicy
 selection_policy = BestSPolicy(migration_rate=migrant_pool_size)
 replacement_policy = FairRPolicy()
 
+from b2setup import run_b2_islands
 run_b2_islands(
     spark_context=sc,
     topology_name=topology_name,
