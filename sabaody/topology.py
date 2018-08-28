@@ -137,7 +137,7 @@ class TopologyFactory:
 
 
     def createOneWayRing(self, algorithm_factory, number_of_islands = 100):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> DiTopology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int) -> DiTopology
         '''
         Creates a one way ring topology.
         '''
@@ -146,7 +146,7 @@ class TopologyFactory:
 
 
     def createBidirRing(self, algorithm_factory, number_of_islands = 100):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> DiTopology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int) -> DiTopology
         '''
         Creates a bidirectional ring topology.
         '''
@@ -155,7 +155,7 @@ class TopologyFactory:
 
 
     def createBidirChain(self, algorithm_factory, number_of_islands = 100):
-        # type: (Callable, int, int) -> Topology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int) -> Topology
         '''
         Creates a linear chain topology.
         '''
@@ -170,7 +170,7 @@ class TopologyFactory:
 
 
     def createLollipop(self, algorithm_factory, complete_subgraph_size = 100, chain_size = 10):
-        # type: (Callable, int, int, int) -> Topology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> Topology
         '''
         Creates a topology from a lollipop graph.
         '''
@@ -186,7 +186,7 @@ class TopologyFactory:
 
 
     def createRim(self, algorithm_factory, number_of_islands = 100):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> Topology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int) -> Topology
         '''
         Creates a rim topology (ring with all nodes connected to a single node).
         '''
@@ -252,7 +252,7 @@ class TopologyFactory:
 
 
     def createHypercube(self, algorithm_factory, dimension = 10):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int) -> Topology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int) -> Topology
         '''
         Creates a hypercube topology.
         '''
@@ -260,7 +260,7 @@ class TopologyFactory:
 
 
     def createWattsStrogatz(self, algorithm_factory, num_nodes=100, k=10, p=0.1, seed = None):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, float, int, int) -> Topology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, float, int) -> Topology
         '''
         Creates a Watts Strogatz topology - a ring lattice (i.e. a ring of n nodes each connected to k
         neighbors) in which the rightmost k/2 nodes are rewired with probability p.
@@ -272,7 +272,7 @@ class TopologyFactory:
 
 
     def createErdosRenyi(self, algorithm_factory, num_nodes=100, p=0.1, directed = False, seed = None):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, float, bool, int, int) -> Topology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, float, bool, int) -> Topology
         '''
         Creates a topology based on an Erdős-Rényi random graph.
         '''
@@ -281,7 +281,7 @@ class TopologyFactory:
 
 
     def createBarabasiAlbert(self, algorithm_factory, num_nodes=100, m=3, seed = None):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, int, int) -> Topology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, int) -> Topology
         '''
         Creates a topology based on a Barabási-Albert graph.
         '''
@@ -290,7 +290,7 @@ class TopologyFactory:
 
 
     def createExtendedBarabasiAlbert(self, algorithm_factory, num_nodes=100, m=3, p=0.3, q=0.1, seed = None):
-        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, float, float, int, int) -> Topology
+        # type: (Union[AlgorithmCtorFactory,collections.abc.Sequence,Callable[[],pg.algorithm]], int, int, float, float, int) -> Topology
         '''
         Creates a topology based on the extended Barabási-Albert method.
         '''
