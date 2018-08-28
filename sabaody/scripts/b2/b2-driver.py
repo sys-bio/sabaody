@@ -54,9 +54,7 @@ conf.set('spark.submit.pyFiles', py_files)
 conf.set('spark.logConf', True)
 sc = SparkContext(conf=conf)
 
-from sabaody import Archipelago
-
-from b2setup import B2Run
+from b2setup import run_b2_islands
 
 island_size = 10
 migrant_pool_size = 5
@@ -64,53 +62,13 @@ from sabaody.migration import BestSPolicy, FairRPolicy
 selection_policy = BestSPolicy(migration_rate=migrant_pool_size)
 replacement_policy = FairRPolicy()
 
-with B2Run('luna', 11211) as run:
-    from b2problem import make_problem
-
-    import arrow
-    time_start = arrow.utcnow()
-
-    # set up topology parameters
-    from sabaody.topology import TopologyFactory
-    topology_factory = TopologyFactory(problem_constructor=make_problem,
-                                       island_size=island_size,
-                                       migrant_pool_size=migrant_pool_size,
-                                       domain_qualifier=run.getNameQualifier(),
-                                       mc_host=run.mc_host,
-                                       mc_port=run.mc_port)
-
-    # instantiate algorithm and topology
-    def make_algorithm():
-        pass
-        #import pygmo as pg
-        #return pg.de(gen=10)
-    if topology_name == 'ring' or topology_name == 'bidir-ring':
-        a = Archipelago(topology_factory.createBidirRing(None,n_islands))
-    elif topology_name == 'one-way-ring':
-        a = Archipelago(topology_factory.createOneWayRing(None,n_islands))
-    else:
-        raise RuntimeError('Unrecognized topology')
-
-    # select migrator
-    # assumes the migrator process / service has already been started
-    if migrator_name == 'central' or migrator_name == 'central-migrator':
-        from sabaody.migration_central import CentralMigrator
-        # central migrator process must be running
-        migrator = CentralMigrator(selection_policy, replacement_policy, 'http://luna:10100')
-        migrator.defineMigrantPools(a.topology, 133)
-    elif migrator_name == 'kafka' or migrator_name == 'kafka-migrator':
-        from sabaody.kafka_migration_service import KafkaMigrator, KafkaBuilder
-        # Kafka must be running
-        migrator = KafkaMigrator(selection_policy, replacement_policy, KafkaBuilder('luna', 9092))
-    else:
-        raise RuntimeError('Migration scheme undefined')
-    a.set_mc_server(run.mc_host, run.mc_port, run.getNameQualifier())
-    champion_scores = a.run(sc, migrator, 10)
-    print('chamption scores {}'.format(champion_scores))
-    min_score = min(champion_scores)
-    average_score = float(sum(champion_scores))/len(champion_scores)
-    print('min champion score {}'.format(min_score))
-    print('mean champion score {}'.format(average_score))
-
-    time_end = arrow.utcnow()
-    print('Total run time: {}'.format(time_start.humanize(time_end,only_distance=True)))
+run_b2_islands(
+    spark_context=sc,
+    topology_name=topology_name,
+    migrator_name=migrator_name,
+    island_size=island_size,
+    n_islands=n_islands,
+    migrant_pool_size=migrant_pool_size,
+    selection_policy=selection_policy,
+    replacement_policy=replacement_policy,
+    )
