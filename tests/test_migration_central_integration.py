@@ -16,7 +16,7 @@ def test_migration_replacement_policy_integration():
     try:
         process = start_migration_service()
         sleep(2)
-        m = CentralMigrator(None, FairRPolicy(), 'http://localhost:10100')
+        m = CentralMigrator(None, None, FairRPolicy(), 'http://localhost:10100')
 
         island1 = uuid4()
         island2 = uuid4()
@@ -25,22 +25,22 @@ def test_migration_replacement_policy_integration():
         m.defineMigrantPool(island2, 3)
 
         # migrants to island 1
-        m.migrate(island1, array([1.,1.,1.]), 1., 'manual1')
-        m.migrate(island1, array([2.,2.,2.]), 2., 'manual1')
+        m._migrate(island1, array([1.,1.,1.]), 1., 'manual1')
+        m._migrate(island1, array([2.,2.,2.]), 2., 'manual1')
         # population for island 1
         p1 = population(prob=rosenbrock(3), size=0, seed=0)
         p1.push_back(array([9.,0.,1.]), array([3.]))
         p1.push_back(array([9.,0.,2.]), array([4.]))
 
         # migrants to island 2
-        m.migrate(island2, array([3.,3.,3.]), 3.5, 'manual2')
-        m.migrate(island2, array([4.,4.,4.]), 4.5, 'manual2')
+        m._migrate(island2, array([3.,3.,3.]), 3.5, 'manual2')
+        m._migrate(island2, array([4.,4.,4.]), 4.5, 'manual2')
         # population for island 2
         p2 = population(prob=rosenbrock(3), size=0, seed=0)
         p2.push_back(array([9.,9.,1.]), array([3.]))
         p2.push_back(array([9.,9.,2.]), array([4.]))
 
-        migrants,fitness,src_island_id = m.welcome(island1)
+        migrants,fitness,src_island_id = m._welcome(island1)
         assert array_equal(migrants, array([
           [2.,2.,2.],
           [1.,1.,1.],
@@ -56,8 +56,8 @@ def test_migration_replacement_policy_integration():
             assert array_equal(candidate, array([2.,2.,2.])) or array_equal(candidate, array([1.,1.,1.]))
 
         # re-push the migrants
-        m.migrate(island1, array([1.,1.,1.]), 1.)
-        m.migrate(island1, array([2.,2.,2.]), 2.)
+        m._migrate(island1, array([1.,1.,1.]), 1.)
+        m._migrate(island1, array([2.,2.,2.]), 2.)
 
         deltas,src_ids = m.replace(island1, p1)
         assert array_equal(sort_by_fitness(p1)[0], array([

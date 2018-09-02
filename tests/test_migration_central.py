@@ -26,7 +26,7 @@ def test_migration_client(mocker):
     mocker.patch('requests.post')
     from sabaody.migration_central import CentralMigrator
     # url doesn't matter, requests never sent
-    m = CentralMigrator(None, None, 'http://www.schneierfacts.com:10100')
+    m = CentralMigrator(None, None, None, 'http://www.schneierfacts.com:10100')
 
     island_id = uuid4()
     m.defineMigrantPool(island_id, 4)
@@ -34,7 +34,7 @@ def test_migration_client(mocker):
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()
-    m.migrate(island_id, array([1., 2., 3., 4.]), 1.)
+    m._migrate(island_id, array([1., 2., 3., 4.]), 1.)
     if sys.version_info >= (3,6):
         post.assert_called_once()
     post.reset_mock()

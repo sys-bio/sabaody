@@ -137,12 +137,12 @@ def test_one_way_ring_migration():
     assert len(topology.island_ids) == 5
 
     from sabaody.migration_central import CentralMigrator, start_migration_service
-    from sabaody.migration import BestSPolicy, FairRPolicy, sort_by_fitness
+    from sabaody.migration import MigrationPolicyEachToAll, BestSPolicy, FairRPolicy, sort_by_fitness
     import pygmo as pg
     try:
         process = start_migration_service()
         sleep(2)
-        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), 'http://localhost:10100')
+        migrator = CentralMigrator(MigrationPolicyEachToAll(), BestSPolicy(migration_rate=1), FairRPolicy(), 'http://localhost:10100')
 
         from collections import OrderedDict
         islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
@@ -198,12 +198,12 @@ def test_bidir_chain():
     assert len(topology.endpoints) == 2
 
     from sabaody.migration_central import CentralMigrator, start_migration_service
-    from sabaody.migration import BestSPolicy, FairRPolicy, sort_by_fitness
+    from sabaody.migration import MigrationPolicyEachToAll, BestSPolicy, FairRPolicy, sort_by_fitness
     import pygmo as pg
     try:
         process = start_migration_service()
         sleep(2)
-        migrator = CentralMigrator(BestSPolicy(migration_rate=1), FairRPolicy(), 'http://localhost:10100')
+        migrator = CentralMigrator(MigrationPolicyEachToAll(), BestSPolicy(migration_rate=1), FairRPolicy(), 'http://localhost:10100')
 
         from collections import OrderedDict
         for k in (1,2):

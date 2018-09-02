@@ -9,6 +9,14 @@ import arrow
 from abc import ABC, abstractmethod
 from typing import Union, Tuple, List, Any
 
+class MigrationPolicyBase(ABC):
+    '''
+    Controls how migrants are dispersed.
+    '''
+    @abstractmethod
+    def disperse(self, island_id, topology, candidates, candidate_f):
+        pass
+
 class SelectionPolicyBase(ABC):
     '''
     Selects migrants to be sent to other islands.
@@ -40,9 +48,50 @@ def sort_candidates_by_fitness(candidates,candidate_f):
     if candidates.size == 0:
         assert candidate_f.size == 0
         return (candidates,candidate_f)
+    assert len(candidate_f.shape) == 2
+    assert candidate_f.shape[1] == 1
     indices = argsort(candidate_f, axis=0)
     return (candidates[indices[:,0]],
             candidate_f[indices[:,0]])
+
+# ** Migration Policies **
+
+class MigrationPolicyEachToAll(MigrationPolicyBase):
+    '''
+    A migration policy that sends the migration candidates to all
+    connected islands, resulting in duplication of the candidates
+    for every connected island. This speeds convergence at the
+    cost of population diversity.
+    '''
+    def disperse(self, island_id, topology, candidates, candidate_f):
+        for connected_island in topology.outgoing_ids(island_id):
+            yield connected_island, candidates, candidate_f
+
+class MigrationPolicyUniform(MigrationPolicyBase):
+    '''
+    Uniformly distributes the migration candidates among the
+    connected islands. Since the number of candidates is discrete,
+    the dispersal pattern is random.
+    '''
+    # TODO: add support for weights
+    def disperse(self, island_id, topology, candidates, candidate_f):
+        if len(candidates.shape) <= 1:
+            assert len(candidate_f.shape) == len(candidates.shape)
+            from numpy import reshape
+            candidates = reshape(candidates,(1,-1))
+            candidate_f = reshape(candidate_f,(1,-1))
+        total_num_migrants = candidates.shape[0]
+        # pick the neighbors to receive migrants based on the total number of migrants
+        from numpy.random import choice
+        choices = choice(topology.outgoing_ids(island_id), total_num_migrants)
+        # get each destination and the number of migrants to send to it
+        from numpy import unique
+        neighbors,counts = unique(choices, return_counts=True)
+        # send migrants to the respective neighbors
+        k=0
+        for neighbor,num_migrants in zip(neighbors,counts):
+            yield neighbor,candidates[k:k+num_migrants,:],candidate_f[k:k+num_migrants,:]
+            k += num_migrants
 
 # ** Selection Policies **
 class BestSPolicy(SelectionPolicyBase):
@@ -93,11 +142,15 @@ class FairRPolicy(ReplacementPolicyBase):
         '''
         # sort candidates
         candidates,candidate_f = sort_candidates_by_fitness(candidates,candidate_f)
+        #print(candidates,candidate_f)
+        assert len(candidates.shape) == len(candidate_f.shape)
         indices = flipud(argsort(population.get_f(), axis=0))
         pop_f = population.get_f()
         deltas = []
         for i,k,f in zip(indices[:,0],range(len(candidate_f)),candidate_f):
             if f < pop_f[i,0]:
+                #print('candidates {}'.format(candidates[k,:]))
+                #print('f {}'.format(f))
                 population.set_xf(int(i),candidates[k,:],f)
                 deltas.append(float(f - pop_f[i,0]))
             else:
@@ -111,16 +164,10 @@ class Migrator(ABC):
     Base class for migrator implementations (e.g. Kafka, centralized).
     '''
 
-    def __init__(self, selection_policy, replacement_policy):
+    def __init__(self, migration_policy, selection_policy, replacement_policy):
+        self.migration_policy = migration_policy
         self.selection_policy = selection_policy
         self.replacement_policy = replacement_policy
-
-    #def initializeFromTopology(self, topology):
-        #'''
-        #Perform any initialization actions (e.g. defineMigrantPool)
-        #for the topology.
-        #'''
-        #pass
 
     def sendMigrants(self, island_id, island, topology):
         # type: (str, pg.island, Union[Topology,DiTopology]) -> None
@@ -129,9 +176,9 @@ class Migrator(ABC):
         '''
         pop = island.get_population()
         candidates,candidate_f = self.selection_policy.select(pop)
-        for connected_island in topology.outgoing_ids(island_id):
-            for candidate,f in zip(candidates,candidate_f):
-                self.migrate(connected_island, candidate, f, src_island_id=island_id)
+        #for connected_island in topology.outgoing_ids(island_id):
+        for connected_island,outgoing_candidates,outgoing_f in self.migration_policy.disperse(island_id, topology, candidates, candidate_f):
+            self._migrate(connected_island, outgoing_candidates, outgoing_f, src_island_id=island_id)
 
 
     def receiveMigrants(self, island_id, island, topology):
@@ -151,17 +198,24 @@ class Migrator(ABC):
         Replace migrants in the specified population with candidates
         in the pool according to the specified policy.
         '''
-        candidates,candidate_f,src_ids = self.welcome(island_id)
+        candidates,candidate_f,src_ids = self._welcome(island_id)
         return (self.replacement_policy.replace(population,candidates,candidate_f),src_ids)
 
     @abstractmethod
-    def migrate(self, dest_island_id, migrants, fitness, src_island_id=None, *args, **kwars):
+    def _migrate(self, dest_island_id, migrants, fitness, src_island_id=None, *args, **kwars):
         # type: (str, ndarray, ndarray, str, *Any, **Any) -> None
+        '''
+        Send migrants to a single island. Meant to be called by sendMigrants.
+        '''
         pass
 
     @abstractmethod
-    def welcome(self, island_id, n=0):
+    def _welcome(self, island_id, n=0):
         # type: (ndarray, int) -> Tuple[ndarray,ndarray,List[str]]
+        '''
+        Return all incoming migrants for island_id if n = 0, or all available
+        migrants otherwise. Meant to be called by replace.
+        '''
         pass
 
 

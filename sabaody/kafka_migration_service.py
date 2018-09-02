@@ -97,13 +97,13 @@ class KafkaMigrator(Migrator):
     '''
 
 
-    def __init__(self, selection_policy, replacement_policy, builder, time_limit=10):
+    def __init__(self, migration_policy, selection_policy, replacement_policy, builder, time_limit=10):
         '''
         Constructor for KafkaMigrator.
 
         :param timeout: Time limit (in seconds) to wait for incoming migrants.
         '''
-        super().__init__(selection_policy, replacement_policy)
+        super().__init__(migration_policy, selection_policy, replacement_policy)
         self._builder = builder
         self._identifier = str(uuid4())
         self._time_limit = time_limit
@@ -159,7 +159,7 @@ class KafkaMigrator(Migrator):
           src_id    = src_id)
 
 
-    def migrate(self, dest_island_id, migrants, fitness, src_island_id=None, *args, **kwars):
+    def _migrate(self, dest_island_id, migrants, fitness, src_island_id=None, *args, **kwars):
         # type: (str, ndarray, ndarray, str, *Any, **Any) -> None
         '''
         Send migrants from one island to another.
@@ -175,7 +175,7 @@ class KafkaMigrator(Migrator):
                             value = self.serialize(migrants, fitness))
 
 
-    def welcome(self, island_id, n=0):
+    def _welcome(self, island_id, n=0):
         # type: (str, int) -> typing.Tuple[ndarray,ndarray,typing.List[str]]
         '''
         Gets ``n`` incoming migrants for the given island and returns them.

@@ -8,7 +8,7 @@ from .topology import Topology, DiTopology
 #from requests import post
 from yarl import URL
 import attr
-from numpy import array, ndarray, argsort, transpose
+from numpy import array, ndarray, argsort, transpose, reshape
 from tornado.web import Application, RequestHandler
 from tornado.escape import json_decode
 import arrow
@@ -19,8 +19,8 @@ from typing import Union, Tuple, List, Any
 
 # ** Client Logic **
 class CentralMigrator(Migrator):
-    def __init__(self, selection_policy, migration_policy, root_url):
-        super().__init__(selection_policy, migration_policy)
+    def __init__(self, migration_policy, selection_policy, replacement_policy, root_url):
+        super().__init__(migration_policy, selection_policy, replacement_policy)
         self._root_url = root_url
         self.testCommunication
 
@@ -75,28 +75,34 @@ class CentralMigrator(Migrator):
         for id in topology.island_ids:
             self.defineMigrantPool(id, param_vector_size=param_vector_size, buffer_type=buffer_type, expiration_time=expiration_time)
 
-    def migrate(self, dest_island_id, migrants, fitness, src_island_id = None, *args, **kwars):
+    def _migrate(self, dest_island_id, migrants, fitness, src_island_id = None, *args, **kwars):
         # type: (str, ndarray, ndarray, str, *Any, **Any) -> None
         '''
         Sends migrants from one island to another.
 
         :param expiration_time: If set, updates the expiration time of the pool.
         '''
+        from numbers import Real
+        if isinstance(fitness, Real):
+            # convert to 2d array
+            assert len(migrants.shape) == 1, 'Scalar fitness but non-vector migrant'
+            fitness = array([[fitness]])
+            migrants = reshape(migrants,(1,-1))
         extra_args = dict()
         expiration_time = arrow.utcnow().shift(days=+1)
         if src_island_id is not None:
             extra_args['src_island_id'] = src_island_id
         from requests import post
-        r = post(str(self.root_url / str(dest_island_id) / 'push-migrant'),
+        r = post(str(self.root_url / str(dest_island_id) / 'push-migrants'),
                 json={
-                  'migrant_vector': migrants.tolist(),
-                  'fitness': float(fitness),
+                  'migrant_array': migrants.tolist(),
+                  'fitness_array': fitness.tolist(),
                   'expiration_time': arrow.get(expiration_time).isoformat(),
                   **extra_args
                   })
         r.raise_for_status()
 
-    def welcome(self, island_id, n=0):
+    def _welcome(self, island_id, n=0):
         # type: (str, int) -> Tuple[ndarray,ndarray,List[str]]
         '''
         Gets n migrants from the pool and returns them.
@@ -109,7 +115,7 @@ class CentralMigrator(Migrator):
                   })
         r.raise_for_status()
         return (array(r.json()['migrants']),
-                array([[f] for f in r.json()['fitness']]),
+                array(r.json()['fitness']),
                 r.json()['src_island_id'])
 
 # ** Server Logic **
@@ -137,7 +143,7 @@ class FIFOMigrationBuffer(MigrationBuffer):
         return deque(maxlen=self.buffer_size)
 
     def push(self, param_vec, fitness, src_island_id=None):
-        # type: (ndarray, float, str) -> None
+        # type: (ndarray, ndarray, str) -> None
         '''
         Pushes a new migrant parameter vector
         to the buffer.
@@ -215,14 +221,17 @@ class MigrationServiceHost:
             raise InvalidMigrantBufferType()
         self._migrant_pools[str(id)] = self._migrant_pool_ctors[buffer_type](param_vector_size=param_vector_size, expiration_time=arrow.get(expiration_time))
 
-    def pushMigrant(self, id, migrant_vector, fitness, src_island_id=None, expiration_time=arrow.utcnow().shift(days=+1)):
+    def pushMigrants(self, id, migrant_array, fitness_array, src_island_id=None, expiration_time=arrow.utcnow().shift(days=+1)):
         '''
-        Pushes a migrant vector to a pool.
+        Pushes a migrant matrix to a pool.
         '''
-        migrant_vector = array(migrant_vector)
-        if migrant_vector.size != self.param_vector_size:
-            raise RuntimeError('Expected migrant vector of length {} but received length {}'.format(self.param_vector_size, migrant_vector.size))
-        self._migrant_pools[str(id)].push(migrant_vector, fitness, src_island_id)
+        migrant_array = array(migrant_array)
+        fitness_array = array(fitness_array)
+        assert len(migrant_array.shape) == len(fitness_array.shape) == 2
+        if migrant_array.shape[1] != self.param_vector_size:
+            raise RuntimeError('Expected migrant vector of length {} but received length {}'.format(self.param_vector_size, migrant_array.size))
+        for migrant_row,fitness_row in zip(migrant_array,fitness_array):
+            self._migrant_pools[str(id)].push(migrant_row, fitness_row, src_island_id)
 
     def popMigrants(self, id, n):
         '''
@@ -282,14 +291,14 @@ class DefineMigrantPoolHandler(RequestHandler):
               'error': str(e),
               })
 
-class PushMigrantHandler(RequestHandler):
+class PushMigrantsHandler(RequestHandler):
     def initialize(self, migration_host):
         self.migration_host = migration_host
 
     def post(self, id):
         args = json_decode(self.request.body)
         try:
-            self.migration_host.pushMigrant(id, **args)
+            self.migration_host.pushMigrants(id, **args)
         except Exception as e:
             print('Misc. error "{}"'.format(e))
             self.clear()
@@ -308,7 +317,7 @@ class PopMigrantsHandler(RequestHandler):
             migrants = self.migration_host.popMigrants(id, **args)
             self.write({
               'migrants': [v.tolist() for v,fitness,src_id in migrants],
-              'fitness': [float(fitness) for v,fitness,src_id in migrants],
+              'fitness': [fitness.tolist() for v,fitness,src_id in migrants],
               'src_island_id': [str(src_id) for v,fitness,src_id in migrants],
               })
         except Exception as e:
@@ -326,7 +335,7 @@ def create_central_migration_service():
         (r"/test-communication/?", TestCommunicationHandler, {'migration_host': migration_host}),
         (r"/purge-all/?", PurgeAllHandler, {'migration_host': migration_host}),
         (r"/define-island/([a-z0-9-]+)/?", DefineMigrantPoolHandler, {'migration_host': migration_host}),
-        (r"/([a-z0-9-]+)/push-migrant/?", PushMigrantHandler, {'migration_host': migration_host}),
+        (r"/([a-z0-9-]+)/push-migrants/?", PushMigrantsHandler, {'migration_host': migration_host}),
         (r"/([a-z0-9-]+)/pop-migrants/?", PopMigrantsHandler, {'migration_host': migration_host}),
     ])
 

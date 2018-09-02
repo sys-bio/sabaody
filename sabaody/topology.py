@@ -33,6 +33,9 @@ class Topology(nx.Graph):
     nx.Graph with additional convenience methods.
     '''
 
+    def island(self, id):
+        return self.nodes[id]['island']
+
     def neighbor_ids(self, id):
         return tuple(self.neighbors(id))
 
