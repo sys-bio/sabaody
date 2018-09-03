@@ -66,10 +66,12 @@ class B2Configuration(TimecourseRunConfiguration):
             # instantiate algorithm and topology
             a = self.generate_archipelago(self.topology_name, topology_factory, make_de)
 
+            # select migration policy
+            migration_policy = self.select_migration_policy(self.migration_policy_name)
             # select migrator
             # assumes the migrator process / service has already been started
             migrator = self.select_migrator(self.migrator_name,
-                                            self.migration_policy,
+                                            migration_policy,
                                             self.selection_policy,
                                             self.replacement_policy)
             from sabaody.migration_central import CentralMigrator
@@ -85,7 +87,7 @@ class B2Configuration(TimecourseRunConfiguration):
             print('mean champion score {}'.format(average_score))
 
             time_end = arrow.utcnow()
-            print('Total run time: {}'.format(time_start.humanize))
+            print('Total run time: {}'.format(time_start.humanize()))
 
 
     def calculateInitialScore(self):

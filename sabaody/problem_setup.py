@@ -95,9 +95,16 @@ class TimecourseRunConfiguration:
                               'kafka', 'kafka-migrator',
                             ],
                             help='The migration scheme to use')
+        parser.add_argument('--migration-policy', required=True,
+                            choices = ['none', 'null',
+                              'each', 'each-to-all',
+                              'uniform',
+                            ],
+                            help='The migration policy to use')
         parser.add_argument('--num-islands', type=int, required=True,
                             help='The migration scheme to use')
         return parser
+
 
     @classmethod
     def from_cmdline_args(cls, app_name, spark_files, py_files):
@@ -117,12 +124,14 @@ class TimecourseRunConfiguration:
             config.hostname,config.port = args.host.split(':')
         config.topology_name = args.topology
         config.migrator_name = args.migration
+        config.migration_policy_name = args.migration_policy
         config.n_islands = args.num_islands
         config.command = args.command
 
         config._initialize_spark(app_name, spark_files, py_files)
 
         return config
+
 
     def generate_archipelago(self, topology_name, topology_factory, make_algorithm):
         if topology_name == 'ring' or topology_name == 'bidir-ring':
@@ -131,6 +140,16 @@ class TimecourseRunConfiguration:
             return Archipelago(topology_factory.createOneWayRing(make_algorithm,self.n_islands))
         else:
             raise RuntimeError('Unrecognized topology')
+
+    def select_migration_policy(self, migration_policy_name):
+        from sabaody.migration import MigrationPolicyEachToAll, MigrationPolicyUniform
+        if migration_policy_name == 'each' or migration_policy_name == 'each-to-all':
+            return MigrationPolicyEachToAll()
+        elif migration_policy_name == 'uniform':
+            return MigrationPolicyUniform()
+        else:
+            raise RuntimeError('Unknown migration policy')
+
 
     def select_migrator(self, migrator_name, migration_policy, selection_policy, replacement_policy):
         if migrator_name == 'central' or migrator_name == 'central-migrator':
@@ -143,6 +162,7 @@ class TimecourseRunConfiguration:
             return KafkaMigrator(selection_policy, replacement_policy, KafkaBuilder('luna', 9092)) # FIXME: hardcoded
         else:
             raise RuntimeError('Migration scheme undefined')
+
 
     def run_command(self, command):
         if command == 'run' or command == 'run-islands':
