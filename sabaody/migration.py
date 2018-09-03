@@ -90,7 +90,7 @@ class MigrationPolicyUniform(MigrationPolicyBase):
         # send migrants to the respective neighbors
         k=0
         for neighbor,num_migrants in zip(neighbors,counts):
-            yield neighbor,candidates[k:k+num_migrants,:],candidate_f[k:k+num_migrants,:]
+            yield (neighbor,candidates[k:k+num_migrants,:],candidate_f[k:k+num_migrants,:])
             k += num_migrants
 
 # ** Selection Policies **

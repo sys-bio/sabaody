@@ -71,6 +71,7 @@ def test_uniform_migration_policy():
     from sabaody.migration import MigrationPolicyUniform
     uniform_policy = MigrationPolicyUniform()
 
+    # test whether # migrants out = # migrants in
     from numpy import vstack
     all_migrants = vstack(
       map(
@@ -82,3 +83,36 @@ def test_uniform_migration_policy():
         [9.,9.,9.,9.],
         [9.,9.,9.,9.],
         [9.,9.,9.,9.]]))
+
+    # test statistical properties like:
+    # * sampling WITH replacement
+    # * uniformity
+    # since this is a statistical test, it has a chance to fail spuriously
+    # use a large sample size to minimize probability of failure
+    clique = topology_factory.createFullyConnected(None, number_of_islands = 4)
+    # graph is fully connected and hence symmetric - pick any node
+    node = clique.islands[0]
+
+    num_migrants = 3
+    migrants = array([[9.]*4]*num_migrants)
+    fitness = array([[0.]]*num_migrants)
+
+    with_replacement_at_least_once = False
+    N = 1000
+    sums = {id: 0. for id in clique.island_ids if not id == node.id}
+    for k in range(N):
+        for id,incoming,f in uniform_policy.disperse(node.id, clique, migrants, fitness):
+            if incoming.shape[0] > 1:
+                with_replacement_at_least_once = True
+            sums[id] += float(incoming.shape[0])
+    averages = {id: float(sums[id])/N for id in sums.keys()}
+    # With three neighboring islands, the variance for number of migrants
+    # per island is 2/3. By the Central Limit Theorem, the variance  of the
+    # mean number of migrants per island will approach 2/(3*N) for large N.
+    # Following a six sigma rule, a bounds check of sqrt(6*(2/(3*N))) = 2/sqrt(N)
+    # will yield about 1 / 1 billion spurious failures.
+    from math import sqrt, isclose
+    for id,average in averages.items():
+        assert isclose(average,1.,abs_tol=2./sqrt(N))
+    # check that at least one island had 2 or more migrants in the N runs
+    assert with_replacement_at_least_once == True
