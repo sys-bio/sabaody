@@ -6,24 +6,25 @@ from collections import OrderedDict
 from numpy import array
 
 d = {
-  'cdhap_init': 0.167,
-  'ce4p_init': 0.098,
-  'cf6p_init': 0.6,
-  'cfdp_init': 0.272,
-  'cg1p_init': 0.653,
-  'cg6p_init': 3.48,
-  'cgap_init': 0.218,
-  'cpep_init': 2.67,
-  'cpg_init': 0.808,
-  'cpg2_init': 0.399,
-  'cpg3_init': 2.13,
-  'cpgp_init': 0.008,
-  'cpyr_init': 2.67,
-  'crib5p_init': 0.398,
-  'cribu5p_init': 0.111,
-  'csed7p_init': 0.276,
-  'cxyl5p_init': 0.138,
-  'cglcex_init': 2,
+  # initial conditions
+  #'cdhap_init': 0.167,
+  #'ce4p_init': 0.098,
+  #'cf6p_init': 0.6,
+  #'cfdp_init': 0.272,
+  #'cg1p_init': 0.653,
+  #'cg6p_init': 3.48,
+  #'cgap_init': 0.218,
+  #'cpep_init': 2.67,
+  #'cpg_init': 0.808,
+  #'cpg2_init': 0.399,
+  #'cpg3_init': 2.13,
+  #'cpgp_init': 0.008,
+  #'cpyr_init': 2.67,
+  #'crib5p_init': 0.398,
+  #'cribu5p_init': 0.111,
+  #'csed7p_init': 0.276,
+  #'cxyl5p_init': 0.138,
+  #'cglcex_init': 2,
   'kALDOdhap': 0.088,
   'kALDOeq': 0.144,
   'kALDOfdp': 1.75,
@@ -101,13 +102,14 @@ d = {
   'KTKbeq': 10,
   'LPFK': 5629067,
   'LPK': 1000,
+  # Hill params
   'nDAHPSe4p': 2.6,
   'nDAHPSpep': 2.2,
   'nG1PATfdp': 1.2,
   'nPDH': 3.68,
   'npepCxylasefdp': 4.21,
-  'nPFK': 11.1, # Hill param
-  'nPK': 4, # Hill param
+  'nPFK': 11.1,
+  'nPK': 4,
   'nPTSg6p': 3.66,
   'rmaxALDO': 17.41464425,
   'rmaxDAHPS': 0.1079531227,
@@ -139,7 +141,7 @@ d = {
   'rmaxTKa': 9.473384783,
   'rmaxTKb': 86.55855855,
   'rmaxTrpSynth': 0.001037,
-  #'VALDOblf': 2, # TODO: aldolase parameter, needs more investigation
+  'VALDOblf': 2, # aldolase parameter, needs more investigation
   #'cfeed': 110.96, # carbon influx, don't fit
   #'Dil': 2.78e-05, # dilution, don't fit
   #'mu': 2.78e-05, # not a parameter, possibly volume factor

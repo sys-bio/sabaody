@@ -26,8 +26,11 @@ class B2Problem(TimecourseModel):
         })
 
     def setParameterVector(self, x):
-        # type: (array) -> None
+        # type: (ndarray) -> None
         super().setParameterVector(x, param_list)
+
+    def getParameterNames(self):
+        return param_list
 
 class b2_ctor_class():
     def __init__(self, prob_class, model_class, lb, ub):
