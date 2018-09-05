@@ -2,45 +2,18 @@
 # Copyright 2018 Shaik Asifullah and J Kyle Medley
 from __future__ import print_function, division, absolute_import
 
-from .migration import Migrator
+from .migration import Migrator, MigrantData, convert_to_2d_array, to_migrant_tuple
 
-import attr
 from typing import Any
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
 from interruptingcow import timeout
 from numpy import array, ndarray, vstack
 import arrow
-from functools import reduce
 
 from uuid import uuid4
 import json
 import typing
-
-def convert_to_2d_array(array_or_list):
-    # type: (typing.Union[ndarray,typing.List[ndarray]]) -> ndarray
-    '''
-    Convert ``array_or_list`` into a 2d array.
-    ``array_or_list`` can be a list of decision vectors,
-    a single decision vector, or a 2d (in which case
-    it is returned as-is).
-    '''
-    if isinstance(array_or_list,list):
-        for m in array_or_list:
-            if not isinstance(m,ndarray):
-                raise RuntimeError('`array_or_list` should be a list of ndarrays, instead found element of type {}'.format(type(m)))
-            if not (m.ndim < 2 or (m.ndim == 2 and m.shape[0] == 1)):
-                raise RuntimeError('Received 2d array for migrant - array_or_list should be 1d arrays or row vectors')
-        return vstack(tuple(m for m in array_or_list))
-    elif isinstance(array_or_list,ndarray):
-        if array_or_list.ndim == 1:
-            return array_or_list.reshape((1,-1))
-        elif array_or_list.ndim == 2:
-            return array_or_list
-        else:
-            raise RuntimeError('Wrong n dims for array_or_list: {}'.format(array_or_list.ndim))
-    else:
-        raise RuntimeError('Wrong type for array_or_list - should be list or ndarray but received {}'.format(type(array_or_list)))
 
 class KafkaBuilder:
     '''
@@ -81,12 +54,6 @@ class KafkaBuilder:
         self._hosts = state['hosts']
         self._port  = state['port']
 
-@attr.s
-class MigrantData:
-    migrants = attr.ib(type=array)
-    fitness = attr.ib(type=array)
-    timestamp = attr.ib(type=arrow.Arrow)
-    src_id = attr.ib(type=str)
 
 class KafkaMigrator(Migrator):
     '''
@@ -203,37 +170,5 @@ class KafkaMigrator(Migrator):
         sorted_migrants = sorted(result_migrants, key=lambda migrant: migrant.timestamp, reverse=True)
         #sorted_migrants = result_migrants
 
-        # vstack with empties
-        def myvstack(u,v):
-            if u.shape == (0,):
-                return v
-            elif v.shape == (0,):
-                return u
-            else:
-                return vstack([u,v])
-
-        def reducer(a,m):
-            marray, farray, sid = a
-            if marray.shape[0] < n or n == 0:
-                return (myvstack(marray,m.migrants),
-                        myvstack(farray,m.fitness),
-                        sid + [m.src_id])
-            else:
-                return (marray, farray, sid)
-
-        def truncate(a,n):
-            if a.shape[0] > n:
-                return array(a[:n,:])
-            else:
-                return a
-
-        def truncate_list(l,n):
-            if len(l) > n:
-                return list(l[:n])
-            else:
-                return l
-
-        migrant_array, fitness_array, source_ids = reduce(reducer, sorted_migrants, (array([]),array([]),[])) # type: ignore
-        # truncate at n
-        return (truncate(migrant_array,n), truncate(fitness_array,n), truncate_list(source_ids,n))
+        return to_migrant_tuple(sorted_migrants, n)
 

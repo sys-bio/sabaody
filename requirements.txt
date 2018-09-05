@@ -18,3 +18,4 @@ pytest-mock>=1.10.0
 kafka-python>=1.4.3
 interruptingcow>=0.8
 nbsphinx>=0.3.3
+elasticsearch>=6.3.1
