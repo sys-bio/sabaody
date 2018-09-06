@@ -43,14 +43,13 @@ class ESMigratorBase(Migrator):
     A migrator which sends / receives migrants using Elastic Search.
     '''
 
-    def __init__(self, migration_policy, selection_policy, replacement_policy, es_builder, application_id, topology_id):
+    def __init__(self, migration_policy, selection_policy, replacement_policy, es_builder, archipelago_id):
         '''
         Constructor for ES migrator.
         '''
         super().__init__(migration_policy, selection_policy, replacement_policy)
         self.es_instance = es_builder.build()
-        self.application_id = application_id
-        self.topology_id = topology_id
+        self.archipelago_id = archipelago_id
 
 
     def deserialize(self, data):
@@ -68,25 +67,34 @@ class ESMigratorBase(Migrator):
         migrants = convert_to_2d_array(migrants)
         fitness = convert_to_2d_array(fitness)
         assert migrants.shape[0] == fitness.shape[0]
-        # TODO: do not have to separate
-        push_body = [
-            {
-                "_index": self.application_id ,
-                "_type": self.topology_id ,
-                "_id": str(uuid4()) ,
-                "_source": {
-                    #"gen": generation ,
-                    "to": dest_island_id,
-                    "from": src_island_id,
-                    "migrants": migrants.tolist(),
-                    "fitness": fitness.tolist(),
-                    "timestamp": arrow.utcnow().isoformat(),
-                }
-            }
-            for migrants in migrants
-        ]
 
-        helpers.bulk(self.es_instance, push_body)
+        #helpers.bulk(self.es_instance, [
+            #{
+                #"_index": self.archipelago_id,
+                #"_type": "document",
+                #"_id": str(uuid4()),
+                #"_source": {
+                    ##"gen": generation ,
+                    #"to": dest_island_id,
+                    #"from": src_island_id,
+                    #"migrants": m.tolist(),
+                    #"fitness": f.tolist(),
+                    #"timestamp": arrow.utcnow().isoformat(),
+                #}
+            #}
+            #for m,f in zip(migrants,fitness)
+        #])
+        self.es_instance.index(index=self.archipelago_id,
+                               doc_type="document",
+                               id=str(uuid4()),
+                               body={
+                                   #"gen": generation ,
+                                   "to": dest_island_id,
+                                   "from": src_island_id,
+                                   "migrants": migrants.tolist(),
+                                   "fitness": fitness.tolist(),
+                                   "timestamp": arrow.utcnow().isoformat(),
+                               })
 
 
 class ESMigratorPostSort(ESMigratorBase):
@@ -103,12 +111,15 @@ class ESMigratorPostSort(ESMigratorBase):
         '''
         search_object = {
             "query": {
-                "term": {"to": island}
+                "term": {"to": island_id}
+                #"match_all": {}
             }
         }
-        search_results = es.search(index=self.application_id,
-                                   doc_type=self.topology_id,
-                                   body=json.dumps(search_object))
+        self.es_instance.indices.refresh(index=self.archipelago_id)
+        search_results = self.es_instance.search(index=self.archipelago_id,
+                                                 doc_type='document',
+                                                 body=json.dumps(search_object))
+        print('search results: {}'.format(search_results))
 
         migrants = []
 
@@ -137,7 +148,8 @@ class ESMigrator(ESMigratorBase):
         '''
         search_object = {
             "query": {
-                "term": {"to": island}
+                "term": {"to": island_id}
+                #"match_all": {}
             },
             "sort": [
                 {
@@ -146,13 +158,17 @@ class ESMigrator(ESMigratorBase):
             ],
             "size": n
         }
-        search_results = es.search(index=self.application_id,
-                                   doc_type=self.topology_id,
-                                   body=json.dumps(search_object))
+        self.es_instance.indices.refresh(index=self.archipelago_id)
+        search_results = self.es_instance.search(index=self.archipelago_id,
+                                                 doc_type='document',
+                                                 body=json.dumps(search_object))
+        print('search results: {}'.format(search_results))
 
         for _ in range(2):
             if "hits" in search_results.keys():
                 search_results = search_results["hits"]
+
+        # TODO: delete records
 
         return to_migrant_tuple(
             [self.deserialize(each_element['_source']) for each_element in search_results],

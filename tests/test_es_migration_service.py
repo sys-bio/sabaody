@@ -7,7 +7,7 @@ from numpy import array, array_equal
 
 def test_migrate():
     from sabaody.es_migration_service import ESMigrator, ESBuilder
-    migrator = ESMigrator(None, None, None, ESBuilder('localhost', 9200), 'es_migrator_test', str(uuid4()))
+    migrator = ESMigrator(None, None, None, ESBuilder('localhost', 9200), str(uuid4()))
 
     migrator._migrate('to-island', array([1,2,3,4]), array([0.]), 'from-island')
 
@@ -19,7 +19,7 @@ def test_migrate():
 
 def test_most_recent_migrants():
     from sabaody.es_migration_service import ESMigrator, ESBuilder
-    migrator = ESMigrator(None, None, None, ESBuilder('localhost', 9200), 'es_migrator_test', str(uuid4()))
+    migrator = ESMigrator(None, None, None, ESBuilder('localhost', 9200), str(uuid4()))
 
     for k in range(10):
         migrator._migrate('to-island', array([k]), array([0.]), 'from-island')

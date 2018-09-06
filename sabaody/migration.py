@@ -45,9 +45,9 @@ class MigrantData:
 
 # vstack with empties
 def myvstack(u,v):
-    if u.shape == (0,):
+    if u is None or u.shape == (0,):
         return v
-    elif v.shape == (0,):
+    elif v is None or v.shape == (0,):
         return u
     else:
         return vstack([u,v])
