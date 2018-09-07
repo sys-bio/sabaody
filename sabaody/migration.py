@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 from typing import Union, Tuple, List, Any
 
 def convert_to_2d_array(array_or_list):
-    # type: (typing.Union[ndarray,typing.List[ndarray]]) -> ndarray
+    # type: (Union[ndarray,List[ndarray]]) -> ndarray
     '''
     Convert ``array_or_list`` into a 2d array.
     ``array_or_list`` can be a list of decision vectors,
@@ -40,7 +40,7 @@ def convert_to_2d_array(array_or_list):
 class MigrantData:
     migrants = attr.ib(type=array)
     fitness = attr.ib(type=array)
-    timestamp = attr.ib(type=arrow.Arrow, converter=arrow.get)
+    timestamp = attr.ib(type=arrow.Arrow, converter=arrow.get) # type: ignore
     src_id = attr.ib(type=str)
 
 # vstack with empties

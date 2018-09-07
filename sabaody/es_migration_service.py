@@ -11,7 +11,7 @@ import arrow
 from uuid import uuid4
 import json
 import datetime
-import typing
+from typing import Tuple, List, Any
 
 from .kafka_migration_service import convert_to_2d_array
 
@@ -51,6 +51,29 @@ class ESMigratorBase(Migrator):
         self.es_instance = es_builder.build()
         self.archipelago_id = archipelago_id
 
+        self.es_instance.indices.create(index=self.archipelago_id, body={
+                                        "mappings" : {
+                                            "_doc" : {
+                                                "properties" : {
+                                                    #"migrants" : {
+                                                        #"type" : "keyword",
+                                                    #},
+                                                    #"fitness" : {
+                                                        #"type" : "keyword",
+                                                    #},
+                                                    "from" : {
+                                                        "type" : "keyword",
+                                                    },
+                                                    "to" : {
+                                                        "type" : "keyword",
+                                                    },
+                                                    #"timestamp" : {
+                                                        #"type" : "keyword",
+                                                    #},
+                                                }
+                                            }
+                                        }})
+
 
     def deserialize(self, data):
         # type: (Any) -> MigrantData
@@ -63,7 +86,6 @@ class ESMigratorBase(Migrator):
 
 
     def _migrate(self, dest_island_id, migrants, fitness, src_island_id=None, expiration_time=arrow.utcnow().shift(days=+1)):
-        # type: (str, ndarray, ndarray, str, arrow.Arrow) -> None
         migrants = convert_to_2d_array(migrants)
         fitness = convert_to_2d_array(fitness)
         assert migrants.shape[0] == fitness.shape[0]
@@ -84,8 +106,9 @@ class ESMigratorBase(Migrator):
             #}
             #for m,f in zip(migrants,fitness)
         #])
+        #print('index {}'.format(self.archipelago_id))
         self.es_instance.index(index=self.archipelago_id,
-                               doc_type="document",
+                               doc_type="_doc",
                                id=str(uuid4()),
                                body={
                                    #"gen": generation ,
@@ -103,35 +126,33 @@ class ESMigratorPostSort(ESMigratorBase):
     '''
 
     def _welcome(self, island_id, n=0):
-        # type: (str, int) -> typing.Tuple[ndarray,ndarray,typing.List[str]]
+        # type: (str, int) -> Tuple[ndarray,ndarray,List[str]]
         '''
         Gets ``n`` incoming migrants for the given island and returns
         migrants sorted by timestamp descending.
         If ``n`` is zero, return all migrants.
         '''
-        search_object = {
-            "query": {
-                "term": {"to": island_id}
-                #"match_all": {}
-            }
-        }
         self.es_instance.indices.refresh(index=self.archipelago_id)
         search_results = self.es_instance.search(index=self.archipelago_id,
-                                                 doc_type='document',
-                                                 body=json.dumps(search_object))
-        print('search results: {}'.format(search_results))
-
-        migrants = []
+                                                 body={
+                                                     "query": {
+                                                         "term": {"to": island_id}
+                                                         #"match_all": {}
+                                                     }
+                                                 })
 
         for _ in range(2):
             if "hits" in search_results.keys():
                 search_results = search_results["hits"]
 
-        migrants = [self.deserialize(each_element['_source']) for each_element in search_results]
+        # TODO: delete records
 
-        if len(migrants) > n:
-            migrants = sorted(migrants , key=itemgetter('timestamp') , reverse=True)[:n]
-        return to_migrant_tuple(migrants, n)
+        # sort in Python
+        migrants = sorted([self.deserialize(each_element['_source']) for each_element in search_results],
+                          key=lambda m: m.timestamp,
+                          reverse=True)
+        # truncate to n migrants if too long
+        return to_migrant_tuple(migrants[:n] if len(migrants) > n else migrants, n)
 
 
 class ESMigrator(ESMigratorBase):
@@ -140,29 +161,25 @@ class ESMigrator(ESMigratorBase):
     '''
 
     def _welcome(self, island_id, n=0):
-        # type: (str, int) -> typing.Tuple[ndarray,ndarray,typing.List[str]]
+        # type: (str, int) -> Tuple[ndarray,ndarray,List[str]]
         '''
         Gets ``n`` incoming migrants for the given island and returns
         migrants sorted by timestamp descending.
         If ``n`` is zero, return all migrants.
         '''
-        search_object = {
-            "query": {
-                "term": {"to": island_id}
-                #"match_all": {}
-            },
-            "sort": [
-                {
-                "timestamp": {"order":"desc"}
-                }
-            ],
-            "size": n
-        }
         self.es_instance.indices.refresh(index=self.archipelago_id)
         search_results = self.es_instance.search(index=self.archipelago_id,
-                                                 doc_type='document',
-                                                 body=json.dumps(search_object))
-        print('search results: {}'.format(search_results))
+                                                 body={
+                                                    "query": {
+                                                        "term": {"to": island_id}
+                                                    },
+                                                    "sort": [
+                                                        {
+                                                        "timestamp": {"order":"desc"}
+                                                        }
+                                                    ],
+                                                    "size": n
+                                                })
 
         for _ in range(2):
             if "hits" in search_results.keys():
