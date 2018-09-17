@@ -130,19 +130,19 @@ FDP = reshape(np.fromstring('''
 300    0.02
 ''', dtype=np.dtype('d'), sep=' '))
 
-# FIXME: why duplicate?
-FDP = reshape(np.fromstring('''
-  4.5  0.28
- 11    0.32
- 20    0.31
- 30    0.24
- 60    0.30
- 90    0.18
-119.5  0.22
-180    0.21
-239.5  0.22
-300    0.20
+GAP = reshape(np.fromstring('''
+ 0    0.22
+ 4.5   0.28
+ 11   0.32
+ 20   0.31
+ 30   0.24
+ 60   0.30
+ 90   0.18
+119.5 0.22
+180   0.21
+239.5 0.22
+300   0.20
 ''', dtype=np.dtype('d'), sep=' '))
 
 # all data
-data_quantities = [PEP, G6P, PYR, F6P, GLCex, G1P, x6PG, FDP]
+data_quantities = [PEP, G6P, PYR, F6P, GLCex, G1P, x6PG, FDP, GAP]

@@ -26,5 +26,7 @@ setup(name='sabaody',
         'pytest-mock>=1.10.0',
         'kafka-python>=1.4.3',
         'interruptingcow>=0.8',
+        'elasticsearch>=6.3.1',
+        'influxdb>=5.2.0',
         ],
       )

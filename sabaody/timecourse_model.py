@@ -92,10 +92,22 @@ class TimecourseModel(Evaluator):
         s = r.simulate(0,self.timepoints[-1],1000,['time',identifier])
         te.plot(s[:,0], s[:,1], name=identifier+' sim')
 
+    def RMSE_quantity(self, identifier):
+        ''' Calc the RMSE of a quantity.'''
+        from math import sqrt
+        return sqrt(float((array(self.quantity_residuals[identifier])**2).mean()))
+
     def MSE(self):
         ''' Calc the MSE for all residuals.
         Call this after calculating all residuals.'''
         r = array(self.residuals)
+        return (r**2).mean()
+
+    def RMSE(self):
+        ''' Calc the RMSE for all residuals.
+        Call this after calculating all residuals.'''
+        from math import sqrt
+        r = sqrt(float(array(self.residuals)))
         return (r**2).mean()
 
     def simulateToNextTime(self):
@@ -130,12 +142,17 @@ class TimecourseModel(Evaluator):
             self.calcResiduals(self.t)
             self.next_ti += 1
 
-    def setParameterVector(self, x, param_list):
+    def setParameterVector(self, x, param_list, exponential=True):
         # type: (array, List) -> None
         # TODO: sample in log space
         expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
-        for i,v in enumerate(x):
-            self.r[param_list[i]] = v
+        if exponential:
+            from math import exp
+            for i,v in enumerate(x):
+                self.r[param_list[i]] = exp(v)
+        else:
+            for i,v in enumerate(x):
+                self.r[param_list[i]] = v
 
     def evaluate(self, x):
         # type: (array) -> SupportsFloat

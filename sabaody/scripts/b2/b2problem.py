@@ -23,6 +23,7 @@ class B2Problem(TimecourseModel):
           'cg1p': G1P,
           'cpg': x6PG,
           'cfdp': FDP,
+          'cgap': GAP,
         })
 
     def setParameterVector(self, x):

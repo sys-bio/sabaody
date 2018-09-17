@@ -1,8 +1,14 @@
 from __future__ import print_function, division, absolute_import
 
-from obj import B2Model
+# run this in a notebook to plot
+
+from b2problem import B2Problem
 from params import getDefaultParamValues
 
-m = B2Model()
+with open('../../../sbml/b2.xml') as f:
+    sbml = f.read()
+m = B2Problem(sbml)
 m.evaluate(getDefaultParamValues())
-m.plotQuantity('cpep')
+q = 'cpep'
+m.plotQuantity(q)
+print('MSE for {}: {:.3}'.format(q,m.RMSE_quantity(q)))
