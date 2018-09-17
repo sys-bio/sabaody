@@ -49,45 +49,46 @@ class B2Configuration(TimecourseRunConfiguration):
 
     def run_islands(self):
         with self.monitor('luna', 11211) as monitor:
-            from b2problem import make_problem
+            with self.create_metric(monitor.getDomain()+'.') as metric:
+                from b2problem import make_problem
 
-            import arrow
-            time_start = arrow.utcnow()
+                import arrow
+                time_start = arrow.utcnow()
 
-            # set up topology parameters
-            from sabaody.topology import TopologyFactory
-            topology_factory = TopologyFactory(problem_constructor=make_problem,
-                                               island_size=self.island_size,
-                                               migrant_pool_size=self.migrant_pool_size,
-                                               domain_qualifier=monitor.getNameQualifier(),
-                                               mc_host=monitor.mc_host,
-                                               mc_port=monitor.mc_port)
+                # set up topology parameters
+                from sabaody.topology import TopologyFactory
+                topology_factory = TopologyFactory(problem_constructor=make_problem,
+                                                  island_size=self.island_size,
+                                                  migrant_pool_size=self.migrant_pool_size,
+                                                  domain_qualifier=monitor.getNameQualifier(),
+                                                  mc_host=monitor.mc_host,
+                                                  mc_port=monitor.mc_port)
 
-            # instantiate algorithm and topology
-            a = self.generate_archipelago(self.topology_name, topology_factory, make_de)
+                # instantiate algorithm and topology
+                a = self.generate_archipelago(self.topology_name, topology_factory, make_de, metric)
 
-            # select migration policy
-            migration_policy = self.select_migration_policy(self.migration_policy_name)
-            # select migrator
-            # assumes the migrator process / service has already been started
-            migrator = self.select_migrator(self.migrator_name,
-                                            migration_policy,
-                                            self.selection_policy,
-                                            self.replacement_policy)
-            from sabaody.migration_central import CentralMigrator
-            if isinstance(migrator, CentralMigrator):
-                migrator.defineMigrantPools(a.topology, 116)
+                # select migration policy
+                migration_policy = self.select_migration_policy(self.migration_policy_name)
+                # select migrator
+                # assumes the migrator process / service has already been started
+                migrator = self.select_migrator(self.migrator_name,
+                                                migration_policy,
+                                                self.selection_policy,
+                                                self.replacement_policy)
+                from sabaody.migration_central import CentralMigrator
+                if isinstance(migrator, CentralMigrator):
+                    migrator.defineMigrantPools(a.topology, 116)
 
-            a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
-            champion_scores = a.run(self.spark_context, migrator, 10)
-            print('chamption scores {}'.format(champion_scores))
-            min_score = min(champion_scores)
-            average_score = float(sum(champion_scores))/len(champion_scores)
-            print('min champion score {}'.format(min_score))
-            print('mean champion score {}'.format(average_score))
+                a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
+                champion_scores = a.run(self.spark_context, migrator, 10)
+                print('chamption scores {}'.format(champion_scores))
+                min_score = min(champion_scores)
+                average_score = float(sum(champion_scores))/len(champion_scores)
+                print('min champion score {}'.format(min_score))
+                print('mean champion score {}'.format(average_score))
 
-            time_end = arrow.utcnow()
-            print('Total run time: {}'.format(time_start.humanize()))
+                time_end = arrow.utcnow()
+                print('Total run time: {}'.format(time_start.humanize()))
 
 
     def calculateInitialScore(self):

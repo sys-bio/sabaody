@@ -33,7 +33,7 @@ class Island:
         self.size = size
         self.domain_qualifier = domain_qualifier
 
-def run_island(island, topology, migrator, rounds):
+def run_island(island, topology, migrator, rounds, metric=None):
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
@@ -63,13 +63,8 @@ def run_island(island, topology, migrator, rounds):
         # perform migration
         migrator.sendMigrants(island.id, i, topology)
         deltas,src_ids = migrator.receiveMigrants(island.id, i, topology)
-
-        """
-        For Kafka Migration Enable below 
-        """
-        #migrator.send_migrants(island.id,i,topology,generation=x)
-        #deltas,src_ids = migrator.receive_migrants(island.id,i,topology,generation=x)
-
+        if metric is not None:
+            metric.process_deltas(deltas,src_ids,float(i.get_population().champion_f[0]))
         migration_log.append((float(i.get_population().champion_f[0]),deltas,src_ids))
 
     #import socket
@@ -79,8 +74,10 @@ def run_island(island, topology, migrator, rounds):
     return i.get_population().champion_f[0]
 
 class Archipelago:
-    def __init__(self, topology):
+    def __init__(self, topology, metric=None):
         self.topology = topology
+        self.metric = metric
+
         self.mc_host = None
         self.mc_port = None
         self.domain_qualifier = None
@@ -96,7 +93,7 @@ class Archipelago:
 
     def run(self, sc, migrator, rounds):
         def worker(island):
-            return run_island(island,self.topology,migrator,rounds)
+            return run_island(island,self.topology,migrator,rounds,self.metric)
         return sc.parallelize(self.topology.islands, numSlices=len(self.topology.islands)).map(worker).collect()
 
 

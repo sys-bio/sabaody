@@ -133,11 +133,11 @@ class TimecourseRunConfiguration:
         return config
 
 
-    def generate_archipelago(self, topology_name, topology_factory, make_algorithm):
+    def generate_archipelago(self, topology_name, topology_factory, make_algorithm, metric):
         if topology_name == 'ring' or topology_name == 'bidir-ring':
-            return Archipelago(topology_factory.createBidirRing(make_algorithm,self.n_islands))
+            return Archipelago(topology_factory.createBidirRing(make_algorithm,self.n_islands), metric)
         elif topology_name == 'one-way-ring':
-            return Archipelago(topology_factory.createOneWayRing(make_algorithm,self.n_islands))
+            return Archipelago(topology_factory.createOneWayRing(make_algorithm,self.n_islands), metric)
         else:
             raise RuntimeError('Unrecognized topology')
 
@@ -162,6 +162,9 @@ class TimecourseRunConfiguration:
             return KafkaMigrator(selection_policy, replacement_policy, KafkaBuilder('luna', 9092)) # FIXME: hardcoded
         else:
             raise RuntimeError('Migration scheme undefined')
+
+    def create_metric(self, prefix):
+        return InfluxDBMetric(host='luna', database_prefix=prefix) # FIXME: hardcoded
 
 
     def run_command(self, command):
