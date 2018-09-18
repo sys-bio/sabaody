@@ -20,11 +20,12 @@ Before the island model can be successfully run, it requires that the migration 
 ## Running the island model with the B2 problem
 
 * `--topology`: The name of the topology to use. Can be `bidir-ring` or `one-way-ring` (more to come).
-* `--migration`: Controls the migration scheme. Can be `null`, `central`, or `kafka`.
+* `--migration`: Controls the migration scheme. Can be `null`, `central`, `kafka`, or '.
+* `--migration-policy`: Whether to send the selected list of migrants to each connected island (set to `each-to-all`) or break up the list among connected islands (set to `uniform`).
 * `--num-islands`: The number of islands in the archepelago. This should be less than or equal to `spark.cores.max` for optimal operation.
 * `--host`: An argument specifying the hostname of the Spark master node, with an optional port. Example: `my.host.name:7077` (the script defaults to port 7077 if the port is not specified).
 * `command`: The command to run. Can be simply `run` (which runs the island model) or `count-params` which returns the number of parameters in the model.
 
 ```
-spark-submit --deploy-mode client --conf "spark.cores.max=17" --conf "spark.executor.cores=1" b2-driver.py --topology bidir-ring --migration central --num-islands 16 --host HOSTNAME:PORT run
+spark-submit --deploy-mode client --conf "spark.cores.max=17" --conf "spark.executor.cores=1" b2-driver.py --topology bidir-ring --migration central --migration-policy uniform --num-islands 16 --host HOSTNAME:PORT run
 ```
