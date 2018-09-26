@@ -123,17 +123,11 @@ def test_one_way_ring_migration():
     Tests the migration on a one way ring.
     '''
     from sabaody.topology import TopologyFactory
-
-    def make_problem():
-        import pygmo as pg
-        return pg.problem(pg.rosenbrock(3))
-
-    def make_algorithm():
-        return pg.de(gen=10)
+    import pygmo as pg
 
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_migration')
-    topology_factory = TopologyFactory(make_problem, island_size=3, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
-    topology = topology_factory.createOneWayRing(make_algorithm, number_of_islands=5)
+    topology_factory = TopologyFactory(pg.problem(pg.rosenbrock(3)), island_size=3, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
+    topology = topology_factory.createOneWayRing(pg.de(gen=10), number_of_islands=5)
     assert len(topology.island_ids) == 5
 
     from sabaody.migration_central import CentralMigrator, start_migration_service
@@ -145,8 +139,8 @@ def test_one_way_ring_migration():
         migrator = CentralMigrator(MigrationPolicyEachToAll(), BestSPolicy(migration_rate=1), FairRPolicy(), 'http://localhost:10100')
 
         from collections import OrderedDict
-        islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
-                                     prob=i.problem_constructor(),
+        islands = OrderedDict((i.id, pg.island(algo=i.algorithm,
+                                     prob=i.problem,
                                      size=i.size)) for i in topology.islands)
         for island_id in islands.keys():
             migrator.defineMigrantPool(island_id, 3)
@@ -164,8 +158,8 @@ def test_one_way_ring_migration():
         assert n==5
 
         # reset & differentiate from chain
-        islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
-                                     prob=i.problem_constructor(),
+        islands = OrderedDict((i.id, pg.island(algo=i.algorithm,
+                                     prob=i.problem,
                                      size=i.size)) for i in topology.islands)
         seed_predecessor(islands,topology)
         # perform migration
@@ -183,23 +177,16 @@ def test_bidir_chain():
     Tests the migration on a one way chain.
     '''
     from sabaody.topology import TopologyFactory
-
-    def make_problem():
-        import pygmo as pg
-        return pg.problem(pg.rosenbrock(3))
-
-    def make_algorithm():
-        return pg.de(gen=10)
+    import pygmo as pg
 
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_bidir_chain_migration')
-    topology_factory = TopologyFactory(make_problem, island_size=3, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
-    topology = topology_factory.createBidirChain(make_algorithm, number_of_islands=5)
+    topology_factory = TopologyFactory(pg.problem(pg.rosenbrock(3)), island_size=3, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
+    topology = topology_factory.createBidirChain(pg.de(gen=10), number_of_islands=5)
     assert len(topology.island_ids) == 5
     assert len(topology.endpoints) == 2
 
     from sabaody.migration_central import CentralMigrator, start_migration_service
     from sabaody.migration import MigrationPolicyEachToAll, BestSPolicy, FairRPolicy, sort_by_fitness
-    import pygmo as pg
     try:
         process = start_migration_service()
         sleep(2)
@@ -207,8 +194,8 @@ def test_bidir_chain():
 
         from collections import OrderedDict
         for k in (1,2):
-            islands = OrderedDict((i.id, pg.island(algo=i.algorithm_constructor(),
-                                        prob=i.problem_constructor(),
+            islands = OrderedDict((i.id, pg.island(algo=i.algorithm,
+                                        prob=i.problem,
                                         size=i.size)) for i in topology.islands)
             for island_id in islands.keys():
                 migrator.defineMigrantPool(island_id, 3)

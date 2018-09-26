@@ -1,3 +1,6 @@
+# Sabaody
+# Copyright 2018 Shaik Asifullah and J Kyle Medley
+
 from __future__ import print_function, division, absolute_import
 
 from sabaody import getQualifiedName, Archipelago
@@ -87,7 +90,6 @@ class TimecourseRunConfiguration:
         parser.add_argument('--host', metavar='hostname', required=True,
                             help='The hostname of the master node of the spark cluster with optional port, e.g. localhost:7077')
         parser.add_argument('--topology', required=True,
-                            choices = ['ring', 'bidir-ring', 'one-way-ring'],
                             help='The topology to use')
         parser.add_argument('--migration', required=True,
                             choices = ['none', 'null',
@@ -134,7 +136,12 @@ class TimecourseRunConfiguration:
 
 
     def generate_archipelago(self, topology_name, topology_factory, make_algorithm, metric):
-        if topology_name == 'ring' or topology_name == 'bidir-ring':
+        from os.path import isfile
+        if isfile(topology_name):
+            import pickle
+            with open(topology_name) as f:
+                return Archipelago(pickle.load(f), metric)
+        elif topology_name == 'ring' or topology_name == 'bidir-ring':
             return Archipelago(topology_factory.createBidirRing(make_algorithm,self.n_islands), metric)
         elif topology_name == 'one-way-ring':
             return Archipelago(topology_factory.createOneWayRing(make_algorithm,self.n_islands), metric)
