@@ -78,10 +78,8 @@ def run_island(island, topology, migrator, rounds, metric=None):
     else:
         mc_client = None
 
-    algorithm = island.algorithm_constructor()
-    problem = island.problem_constructor()
     # TODO: configure pop size
-    i = pg.island(algo=algorithm, prob=problem, size=island.size)
+    i = pg.island(algo=island.algorithm, prob=island.problem, size=island.size)
 
     if mc_client:
         mc_client.set(island.domain_qualifier('island', str(island.id), 'status'), 'Running', 10000)
