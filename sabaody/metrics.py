@@ -15,12 +15,12 @@ class InfluxDBMetric(Metric):
     '''
     def __init__(self, host='localhost', port=8086, username='root', password='root', database=None, database_prefix=None, ssl=False, verify_ssl=False, timeout=None, retries=3, use_udp=False, udp_port=4444, proxies=None):
         self.client = InfluxDBClient(host=host, port=port, username=username, password=password, database=None, ssl=ssl, verify_ssl=verify_ssl, timeout=timeout, retries=retries, use_udp=use_udp, udp_port=udp_port, proxies=proxies)
-      if database is None:
-          if database_prefix is None:
-              raise RuntimeError('Expected a database name')
-          else:
-              database = database_prefix + str(uuid4())
-      self.database = database
+        if database is None:
+            if database_prefix is None:
+                raise RuntimeError('Expected a database name')
+            else:
+                database = database_prefix + str(uuid4())
+        self.database = database
 
     def process_deltas(self, deltas, src_ids, current_champ_score):
         self.client.write_points([

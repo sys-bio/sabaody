@@ -6,6 +6,7 @@ from __future__ import print_function, division, absolute_import
 from sabaody import getQualifiedName, Archipelago
 
 from pymemcache.client.base import Client
+from .metrics import InfluxDBMetric
 
 from pyspark import SparkContext, SparkConf
 
@@ -135,16 +136,21 @@ class TimecourseRunConfiguration:
         return config
 
 
-    def generate_archipelago(self, topology_name, topology_factory, make_algorithm, metric):
+    def make_algorithm(self):
+        import pygmo as pg
+        return pg.de(gen=10) # FIXME: hard-coded algo
+
+
+    def generate_archipelago(self, topology_name, topology_factory, metric):
         from os.path import isfile
         if isfile(topology_name):
             import pickle
             with open(topology_name) as f:
                 return Archipelago(pickle.load(f), metric)
         elif topology_name == 'ring' or topology_name == 'bidir-ring':
-            return Archipelago(topology_factory.createBidirRing(make_algorithm,self.n_islands), metric)
+            return Archipelago(topology_factory.createBidirRing(self.make_algorithm(),self.n_islands), metric)
         elif topology_name == 'one-way-ring':
-            return Archipelago(topology_factory.createOneWayRing(make_algorithm,self.n_islands), metric)
+            return Archipelago(topology_factory.createOneWayRing(self.make_algorithm(),self.n_islands), metric)
         else:
             raise RuntimeError('Unrecognized topology')
 

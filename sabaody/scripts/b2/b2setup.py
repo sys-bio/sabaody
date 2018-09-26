@@ -19,11 +19,6 @@ class B2MCMonitor(MemcachedMonitor):
     def getDomain(self):
         return 'com.how2cell.sabaody.B2'
 
-def make_de():
-    #pass
-    import pygmo as pg
-    return pg.de(gen=10)
-
 class B2Configuration(TimecourseRunConfiguration):
     @classmethod
     def from_cmdline_args(cls):
@@ -46,18 +41,20 @@ class B2Configuration(TimecourseRunConfiguration):
     def monitor(self, host, port):
         return B2MCMonitor(host, port)
 
+    def make_problem(self):
+        from b2problem import B2_UDP, getLowerBound, getUpperBound
+        import pygmo as pg
+        return pg.problem(B2_UDP(getLowerBound(),getUpperBound()))
 
     def run_islands(self):
         with self.monitor('luna', 11211) as monitor:
             with self.create_metric(monitor.getDomain()+'.') as metric:
-                from b2problem import make_problem
-
                 import arrow
                 time_start = arrow.utcnow()
 
                 # set up topology parameters
                 from sabaody.topology import TopologyFactory
-                topology_factory = TopologyFactory(problem_constructor=make_problem,
+                topology_factory = TopologyFactory(problem=self.make_problem(),
                                                   island_size=self.island_size,
                                                   migrant_pool_size=self.migrant_pool_size,
                                                   domain_qualifier=monitor.getNameQualifier(),
@@ -65,7 +62,7 @@ class B2Configuration(TimecourseRunConfiguration):
                                                   mc_port=monitor.mc_port)
 
                 # instantiate algorithm and topology
-                a = self.generate_archipelago(self.topology_name, topology_factory, make_de, metric)
+                a = self.generate_archipelago(self.topology_name, topology_factory, metric)
 
                 # select migration policy
                 migration_policy = self.select_migration_policy(self.migration_policy_name)
