@@ -93,19 +93,31 @@ class TimecourseRunConfiguration:
         parser.add_argument('--topology', required=True,
                             help='The topology to use')
         parser.add_argument('--migration', required=True,
-                            choices = ['none', 'null',
+                            choices = [
+                              'none', 'null',
                               'central', 'central-migrator',
                               'kafka', 'kafka-migrator',
                             ],
                             help='The migration scheme to use')
         parser.add_argument('--migration-policy', required=True,
-                            choices = ['none', 'null',
+                            choices = [
+                              'none', 'null',
                               'each', 'each-to-all',
                               'uniform',
                             ],
                             help='The migration policy to use')
-        parser.add_argument('--num-islands', type=int, required=True,
-                            help='The migration scheme to use')
+        parser.add_argument('--selection-policy', required=True,
+                            choices = [
+                              'best-s-policy',
+                            ],
+                            help='The selection policy to use')
+        parser.add_argument('--replacement-policy', required=True,
+                            choices = [
+                              'fair-r-policy',
+                            ],
+                            help='The replacement policy to use')
+        #parser.add_argument('--num-islands', type=int, required=True,
+                            #help='The migration scheme to use')
         return parser
 
 
@@ -127,7 +139,9 @@ class TimecourseRunConfiguration:
             config.hostname,config.port = args.host.split(':')
         config.topology_name = args.topology
         config.migrator_name = args.migration
-        config.migration_policy_name = args.migration_policy
+        config.migration_policy = self.select_migration_policy(args.migration_policy)
+        config.selection_policy = self.select_selection_policy(args.selection_policy)
+        config.replacement_policy = self.select_selection_policy(args.replacement_policy)
         config.n_islands = args.num_islands
         config.command = args.command
 
@@ -154,7 +168,7 @@ class TimecourseRunConfiguration:
         else:
             raise RuntimeError('Unrecognized topology')
 
-    def select_migration_policy(self, migration_policy_name):
+    def select_migration_policy(self, policy_name):
         from sabaody.migration import MigrationPolicyEachToAll, MigrationPolicyUniform
         if migration_policy_name == 'each' or migration_policy_name == 'each-to-all':
             return MigrationPolicyEachToAll()
@@ -162,6 +176,22 @@ class TimecourseRunConfiguration:
             return MigrationPolicyUniform()
         else:
             raise RuntimeError('Unknown migration policy')
+
+
+    def select_selection_policy(self, policy_name):
+        from sabaody.migration import BestSPolicy
+        if migration_policy_name == 'best-s-policy':
+            return BestSPolicy()
+        else:
+            raise RuntimeError('Unknown selection policy')
+
+
+    def select_replacement_policy(self, policy_name):
+        from sabaody.migration import FairRPolicy
+        if migration_policy_name == 'fair-r-policy':
+            return FairRPolicy()
+        else:
+            raise RuntimeError('Unknown replacement policy')
 
 
     def select_migrator(self, migrator_name, migration_policy, selection_policy, replacement_policy):
