@@ -36,8 +36,54 @@ class Topology(nx.Graph):
     def island(self, id):
         return self.nodes[id]['island']
 
+
     def neighbor_ids(self, id):
         return tuple(self.neighbors(id))
+
+
+    def predicated_node_search_with_origin(self, p, origin_id, max_depth, visited=None):
+        if visited is None:
+            visited = set(origin_id)
+        nodes = set()
+        if max_depth > 0:
+            for id in self.neighbor_ids(origin_id):
+                nodes += self.predicated_node_search_with_origin(p, id, max_depth-1)
+        return (set(origin_id) if p(origin_id) else set()) + \
+                nodes
+
+
+    def every_other_id(self):
+        if len(self.islands) < 1:
+            return []
+        boundary = frozenset({self.island_ids[0]})
+        visited = boundary
+        toggle = True
+        result = set()
+
+        def sprout_and_continue(nodes):
+            result = set()
+            for n in nodes:
+                if len(self.neighbor_ids(n)) != 2:
+                    raise RuntimeError('every_other_id only works for linear or cyclic graphs')
+                result.update(node for node in self.neighbor_ids(n) if node not in visited)
+            return result
+
+        while len(boundary)>0:
+            if toggle:
+                result.update(boundary)
+                toggle = False
+            else:
+                toggle = True
+            boundary = sprout_and_continue(boundary)
+            visited = visited.union(boundary)
+            if len(boundary) > 2:
+                raise RuntimeError('every_other_id only works for linear or cyclic graphs')
+
+        return tuple(result)
+
+
+    def every_other_island(self):
+        return tuple(self.nodes[n]['island'] for n in self.every_other_id())
 
 
     def outgoing_ids(self, id):
@@ -91,8 +137,7 @@ class TopologyFactory:
     Has methods for constructing a variety of topologies.
     '''
 
-    def __init__(self, problem, island_size = 20, migrant_pool_size = 5, domain_qualifier=None, mc_host='localhost', mc_port=11211):
-        self.problem = problem
+    def __init__(self, island_size = 20, migrant_pool_size = 5, domain_qualifier=None, mc_host=None, mc_port=None):
         self.domain_qualifier = domain_qualifier
         self.mc_host = mc_host
         self.mc_port = mc_port
@@ -122,7 +167,6 @@ class TopologyFactory:
         of island ids.
         '''
         m = dict((k,Island(str(uuid4()),
-                           self.problem,
                            algorithm,
                            self.island_size,
                            self.domain_qualifier,

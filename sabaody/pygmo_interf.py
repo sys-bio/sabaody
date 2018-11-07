@@ -55,11 +55,11 @@ class Evaluator(ABC):
         #return pg.de(**kwargs)
 
 class Island:
-    def __init__(self, id, problem, algorithm, size, domain_qualifier, mc_host=None, mc_port=11211):
+    def __init__(self, id, algorithm, size, domain_qualifier=None, mc_host=None, mc_port=None):
         self.id = id
         self.mc_host = mc_host
         self.mc_port = mc_port
-        self.problem = problem
+        #self.problem = problem
         self.algorithm = algorithm
         self.size = size
         self.domain_qualifier = domain_qualifier
@@ -67,7 +67,7 @@ class Island:
     #def __getstate__(self):
         #return {**self.__dict__.copy(), 'algorithm': serialize_pg_algorithm}
 
-def run_island(island, topology, migrator, rounds, metric=None):
+def run_island(island, problem, topology, migrator, rounds, metric=None):
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
@@ -79,7 +79,7 @@ def run_island(island, topology, migrator, rounds, metric=None):
         mc_client = None
 
     # TODO: configure pop size
-    i = pg.island(algo=island.algorithm, prob=island.problem, size=island.size)
+    i = pg.island(algo=island.algorithm, prob=problem, size=island.size)
 
     if mc_client:
         mc_client.set(island.domain_qualifier('island', str(island.id), 'status'), 'Running', 10000)

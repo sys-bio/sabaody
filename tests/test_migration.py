@@ -58,7 +58,7 @@ def test_uniform_migration_policy():
     Test the uniform migration policy.
     '''
     from sabaody.topology import TopologyFactory
-    topology_factory = TopologyFactory(None, island_size=5, migrant_pool_size=5)
+    topology_factory = TopologyFactory(island_size=5, migrant_pool_size=5)
     topology = topology_factory.createBidirChain(None, number_of_islands=3)
     assert len(topology.island_ids) == 3
     assert len(topology.endpoints) == 2

@@ -1,8 +1,8 @@
 from __future__ import print_function, division, absolute_import
 
 import sabaody
-from sabaody.scripts.b2.b2problem import B2Problem
-from sabaody.scripts.b2.params import getDefaultParamValues
+from sabaody.scripts.biopredyn.b2.b2problem import B2Problem
+from sabaody.scripts.biopredyn.b2.params import getDefaultParamValues
 
 import os
 

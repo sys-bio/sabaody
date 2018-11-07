@@ -8,9 +8,6 @@ from time import sleep
 
 from itertools import islice
 
-class NoProblem:
-    pass
-
 def count_nodes_with_degree(topology, degree):
     '''
     Counts the number of nodes with a given degree.
@@ -27,7 +24,7 @@ def test_one_way_ring_topology():
     '''
     from sabaody.topology import TopologyFactory
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_topology')
-    topology_factory = TopologyFactory(NoProblem, island_size=10, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
+    topology_factory = TopologyFactory(island_size=10, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
 
     t = topology_factory.createOneWayRing(None, number_of_islands=4)
     assert len(t.island_ids) == 4
@@ -48,7 +45,7 @@ def test_bidir_ring_topology():
     '''
     from sabaody.topology import TopologyFactory
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_topology')
-    topology_factory = TopologyFactory(NoProblem, island_size=10, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
+    topology_factory = TopologyFactory(island_size=10, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
 
     t = topology_factory.createBidirRing(None, number_of_islands=4)
     assert len(t.island_ids) == 4
@@ -63,7 +60,7 @@ def test_rim_topology():
     '''
     from sabaody.topology import TopologyFactory
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_rim_topology')
-    topology_factory = TopologyFactory(NoProblem, island_size=10, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
+    topology_factory = TopologyFactory(island_size=10, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
 
     t = topology_factory.createRim(None, number_of_islands=5)
     assert len(t.island_ids) == 5
@@ -126,7 +123,8 @@ def test_one_way_ring_migration():
     import pygmo as pg
 
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_one_way_ring_migration')
-    topology_factory = TopologyFactory(pg.problem(pg.rosenbrock(3)), island_size=3, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
+    problem = pg.problem(pg.rosenbrock(3))
+    topology_factory = TopologyFactory(island_size=3, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
     topology = topology_factory.createOneWayRing(pg.de(gen=10), number_of_islands=5)
     assert len(topology.island_ids) == 5
 
@@ -140,7 +138,7 @@ def test_one_way_ring_migration():
 
         from collections import OrderedDict
         islands = OrderedDict((i.id, pg.island(algo=i.algorithm,
-                                     prob=i.problem,
+                                     prob=problem,
                                      size=i.size)) for i in topology.islands)
         for island_id in islands.keys():
             migrator.defineMigrantPool(island_id, 3)
@@ -159,7 +157,7 @@ def test_one_way_ring_migration():
 
         # reset & differentiate from chain
         islands = OrderedDict((i.id, pg.island(algo=i.algorithm,
-                                     prob=i.problem,
+                                     prob=problem,
                                      size=i.size)) for i in topology.islands)
         seed_predecessor(islands,topology)
         # perform migration
@@ -180,7 +178,8 @@ def test_bidir_chain():
     import pygmo as pg
 
     domain_qual = partial(getQualifiedName, 'com.how2cell.sabaody.test_bidir_chain_migration')
-    topology_factory = TopologyFactory(pg.problem(pg.rosenbrock(3)), island_size=3, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
+    problem = pg.problem(pg.rosenbrock(3))
+    topology_factory = TopologyFactory(island_size=3, domain_qualifier=domain_qual, mc_host='localhost', mc_port=11211)
     topology = topology_factory.createBidirChain(pg.de(gen=10), number_of_islands=5)
     assert len(topology.island_ids) == 5
     assert len(topology.endpoints) == 2
@@ -195,7 +194,7 @@ def test_bidir_chain():
         from collections import OrderedDict
         for k in (1,2):
             islands = OrderedDict((i.id, pg.island(algo=i.algorithm,
-                                        prob=i.problem,
+                                        prob=problem,
                                         size=i.size)) for i in topology.islands)
             for island_id in islands.keys():
                 migrator.defineMigrantPool(island_id, 3)
