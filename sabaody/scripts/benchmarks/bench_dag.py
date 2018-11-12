@@ -15,24 +15,28 @@ def topology_generator(n_islands, island_size, migrant_pool_size):
             generator = TopologyGenerator(island_size=island_size, migrant_pool_size=migrant_pool_size)
             major,minor,patch = generator.get_version()
             cursor.execute('SELECT COUNT(DISTINCT VersionMajor, VersionMinor, VersionPatch) FROM topology_sets;')
-            n_matches = int(cursor.fetchone())
+            x = cursor.fetchone()
+            print(x)
+            n_matches = int(x[0])
             print('n_matches',n_matches)
 
             if n_matches == 0:
-                serialized_topologies = generator.generate_all()
+                serialized_topologies = generator.generate_all(n_islands)
                 # store in database
-                n_matches = cursor.execute('\n'.join(
-                    'INSERT INTO topology_sets (TopologySetID, VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Content',
+                n_matches = cursor.execute('\n'.join([
+                    'INSERT INTO topology_sets (TopologySetID, VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Content)',
                     'VALUES ({id},{major},{minor},{patch},{n_islands},{island_size},{migrant_pool_size},{content});'.format(
-                        id='topology_set({})'.format(generator.get_version_string()),
+                        id="'topology_set({})'".format(generator.get_version_string()),
                         major=major,
                         minor=minor,
                         patch=patch,
                         n_islands=n_islands,
                         island_size=island_size,
                         migrant_pool_size=migrant_pool_size,
-                        content=serialized_topologies)))
-                cursor.commit()
+                        #content="0x123",
+                        content="0x{}".format(serialized_topologies.hex()),
+                        )]))
+                mariadb_connection.commit()
 
 class TaskFactory():
     def create(self, dag):
@@ -49,7 +53,7 @@ class TaskFactory():
                   NumIslands INT NOT NULL,
                   IslandSize INT NOT NULL,
                   MigrantPoolSize INT NOT NULL,
-                  Content BLOB(100) NOT NULL);''',
+                  Content BLOB NOT NULL);''',
           dag=dag)
 
         self.generate_topologies = PythonOperator(

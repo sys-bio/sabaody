@@ -7,4 +7,5 @@ __version__ = '0.1.0'
 from .pygmo_interf import Evaluator, Archipelago, Island, run_island
 #from .timecourse_model import TimecourseModel
 from .topology import TopologyFactory
+from .topology_generator import TopologyGenerator
 from .utils import getQualifiedName
