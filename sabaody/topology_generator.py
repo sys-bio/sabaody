@@ -33,6 +33,15 @@ class TopologyGenerator:
         return t
 
 
+    def get_version(self):
+        # semantic version
+        return (0,0,1)
+
+
+    def get_version_string(self):
+        return '{}.{}.{}'.format(*self.get_version())
+
+
     def generate_all(self, n):
         '''
         Generate a set of benchmark topologies.
@@ -144,37 +153,40 @@ class TopologyGenerator:
 
         # bidirectional chains
         self.new_topology(
-          desc='Bidirectional ring, de',
+          desc='Bidirectional chain, de',
           category='rings',
           algorithms=['de'],
-          archipelago=Archipelago(self.factory.createBidirRing(de(gen=10),n)))
+          archipelago=Archipelago(self.factory.createBidirChain(de(gen=10),n)))
         self.new_topology(
-          desc='Bidirectional ring, de1220',
+          desc='Bidirectional chain, de1220',
           category='rings',
           algorithms=['de1220'],
-          archipelago=Archipelago(self.factory.createBidirRing(de1220(gen=10),n)))
+          archipelago=Archipelago(self.factory.createBidirChain(de1220(gen=10),n)))
         self.new_topology(
-          desc='Bidirectional ring, pso',
+          desc='Bidirectional chain, pso',
           category='rings',
           algorithms=['pso'],
-          archipelago=Archipelago(self.factory.createBidirRing(de1220(gen=10),n)))
+          archipelago=Archipelago(self.factory.createBidirChain(de1220(gen=10),n)))
         self.new_topology(
-          desc='Bidirectional ring, simulated_annealing',
+          desc='Bidirectional chain, simulated_annealing',
           category='rings',
           algorithms=['simulated_annealing'],
-          archipelago=Archipelago(self.factory.createBidirRing(simulated_annealing(),n)))
+          archipelago=Archipelago(self.factory.createBidirChain(simulated_annealing(),n)))
         self.new_topology(
-          desc='Bidirectional ring, bee_colony',
+          desc='Bidirectional chain, bee_colony',
           category='rings',
           algorithms=['bee_colony'],
-          archipelago=Archipelago(self.factory.createBidirRing(bee_colony(gen=10),n)))
+          archipelago=Archipelago(self.factory.createBidirChain(bee_colony(gen=10),n)))
         self.new_topology(
-          desc='Bidirectional ring, cmaes',
+          desc='Bidirectional chain, cmaes',
           category='rings',
           algorithms=['cmaes'],
-          archipelago=Archipelago(self.factory.createBidirRing(cmaes(gen=10),n)))
+          archipelago=Archipelago(self.factory.createBidirChain(cmaes(gen=10),n)))
         self.new_topology(
-          desc='Bidirectional ring, nsga2',
+          desc='Bidirectional chain, nsga2',
           category='rings',
           algorithms=['nsga2'],
-          archipelago=Archipelago(self.factory.createBidirRing(nsga2(gen=10),n)))
+          archipelago=Archipelago(self.factory.createBidirChain(nsga2(gen=10),n)))
+
+        from pickle import dumps
+        return dumps(self.topologies)

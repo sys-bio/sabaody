@@ -160,7 +160,7 @@ class TimecourseRunConfiguration:
         if isfile(topology_name):
             import pickle
             with open(topology_name) as f:
-                return Archipelago(pickle.load(f), metric)
+                return pickle.load(f)['archipelago']
         elif topology_name == 'ring' or topology_name == 'bidir-ring':
             return Archipelago(topology_factory.createBidirRing(self.make_algorithm(),self.n_islands), metric)
         elif topology_name == 'one-way-ring':
