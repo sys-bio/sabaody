@@ -19,7 +19,7 @@ dag = DAG(
   'b2_benchmark',
   default_args=default_args,
   concurrency=1,
-  schedule_interval=timedelta(100000000))
+  schedule_interval=timedelta(10000))
 
 from sabaody.scripts.benchmarks.bench_dag import TaskFactory
 

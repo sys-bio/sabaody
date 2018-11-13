@@ -5,6 +5,7 @@ from __future__ import print_function, division, absolute_import
 
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.mysql_operator import MySqlOperator
+from airflow.contrib.operators.spark_submit_operator import SparkSubmitOperator
 
 def topology_generator(n_islands, island_size, migrant_pool_size):
             from sabaody import TopologyGenerator
@@ -14,14 +15,23 @@ def topology_generator(n_islands, island_size, migrant_pool_size):
 
             generator = TopologyGenerator(island_size=island_size, migrant_pool_size=migrant_pool_size)
             major,minor,patch = generator.get_version()
-            cursor.execute('SELECT COUNT(DISTINCT VersionMajor, VersionMinor, VersionPatch) FROM topology_sets;')
+            cursor.execute('SELECT COUNT(*) FROM topology_sets WHERE '+\
+                '(VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize) = '+\
+                '({major}, {minor}, {patch}, {n_islands}, {island_size}, {migrant_pool_size});'.format(
+                major=major,
+                minor=minor,
+                patch=patch,
+                n_islands=n_islands,
+                island_size=island_size,
+                migrant_pool_size=migrant_pool_size,
+            ))
             x = cursor.fetchone()
-            print(x)
             n_matches = int(x[0])
-            print('n_matches',n_matches)
+            print('n_matches', n_matches)
 
+            # if this version is already stored, do nothing
             if n_matches == 0:
-                serialized_topologies = generator.generate_all(n_islands)
+                serialized_topologies = generator.serialize(n_islands)
                 # store in database
                 n_matches = cursor.execute('\n'.join([
                     'INSERT INTO topology_sets (TopologySetID, VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Content)',
@@ -38,8 +48,27 @@ def topology_generator(n_islands, island_size, migrant_pool_size):
                         )]))
                 mariadb_connection.commit()
 
+def legalize_name(name):
+    '''
+    Convert a string into a task id for airflow.
+    '''
+    result = ''
+    from re import compile
+    r = compile('[\w]')
+    for c in name:
+        if r.match(c) is not None:
+            result += c
+        else:
+            result += '_'
+    return result
+
 class TaskFactory():
     def create(self, dag):
+        n_islands = 10
+        island_size = 10
+        migrant_pool_size = 2
+
+        # first, make sure the SQL tables exist
         self.setup_tables = MySqlOperator(
             task_id='setup_tables',
             database='sabaody',
@@ -56,13 +85,39 @@ class TaskFactory():
                   Content BLOB NOT NULL);''',
           dag=dag)
 
+        # store the topologies in the table
         self.generate_topologies = PythonOperator(
             task_id='generate_topologies',
             python_callable=topology_generator,
             op_kwargs={
-                'n_islands': 10,
-                'island_size': 10,
-                'migrant_pool_size': 2},
+                'n_islands': n_islands,
+                'island_size': island_size,
+                'migrant_pool_size': migrant_pool_size},
             dag=dag)
 
         self.setup_tables >> self.generate_topologies
+
+        # for each topology, create a benchmark task
+        self.benchmarks = []
+        from sabaody import TopologyGenerator
+        generator = TopologyGenerator(island_size=island_size, migrant_pool_size=migrant_pool_size)
+        topologies = generator.generate_all(n_islands)
+
+        for topology in topologies:
+            # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param
+            self.benchmarks.append(SparkSubmitOperator(
+                task_id=legalize_name(topology['description']),
+                conf={
+                    'spark.cores.max': 5,
+                    'spark.executor.cores': 1,
+                },
+                application_args=[
+                    '--migration central',
+                    '--migration-policy uniform',
+                ],
+                dag=dag,
+                **{
+                    'deploy-mode' : 'client'
+                },
+            ))
+            self.generate_topologies >> self.benchmarks[-1]

@@ -29,7 +29,7 @@ class TopologyGenerator:
             t['category'] = category
         if algorithms is not None:
             t['algorithms'] = algorithms
-        self.topologies += t
+        self.topologies.append(t)
         return t
 
 
@@ -97,7 +97,7 @@ class TopologyGenerator:
           archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=10),n)), nlopt('neldermead')))
         # de + nsga2 combo
         self.new_topology(
-          desc='One-way ring, de+nelder mead',
+          desc='One-way ring, de+nsga2',
           category='rings',
           algorithms=['de','nsga2'],
           archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=10),n)), nsga2(gen=10)))
@@ -146,7 +146,7 @@ class TopologyGenerator:
           archipelago=assign_every_other_algo(Archipelago(self.factory.createBidirRing(de(gen=10),n)), nlopt('neldermead')))
         # de + nsga2 combo
         self.new_topology(
-          desc='Bidirectional ring, de+nelder mead',
+          desc='Bidirectional ring, de+nsga2',
           category='rings',
           algorithms=['de','nsga2'],
           archipelago=assign_every_other_algo(Archipelago(self.factory.createBidirRing(de(gen=10),n)), nsga2(gen=10)))
@@ -188,5 +188,9 @@ class TopologyGenerator:
           algorithms=['nsga2'],
           archipelago=Archipelago(self.factory.createBidirChain(nsga2(gen=10),n)))
 
+        return self.topologies
+
+
+    def serialize(self, n):
         from pickle import dumps
-        return dumps(self.topologies)
+        return dumps(self.generate_all(n))
