@@ -116,3 +116,35 @@ def test_uniform_migration_policy():
         assert isclose(average,1.,abs_tol=2./sqrt(N))
     # check that at least one island had 2 or more migrants in the N runs
     assert with_replacement_at_least_once == True
+
+
+def test_non_population_based_migration():
+    import pygmo as pg
+    from pygmo import de, nlopt, rosenbrock
+    from sabaody.topology import TopologyFactory
+    topology_factory = TopologyFactory(island_size=5, migrant_pool_size=5)
+    topology = topology_factory.createBidirChain(de, number_of_islands=2)
+    assert len(topology.island_ids) == 2
+    assert len(topology.endpoints) == 2
+    de_island = pg.island(algo=de(gen=10), prob=rosenbrock(3), size=topology.islands[0].size)
+    nm = nlopt('neldermead')
+    nm.selection = 'random'
+    nm.replacement = 'random'
+    nm_island = pg.island(algo=nm, prob=rosenbrock(3), size=topology.islands[1].size)
+
+    from sabaody.migration import BestSPolicy, FairRPolicy
+    selection_policy = BestSPolicy(migration_rate=2)
+    replacement_policy = FairRPolicy()
+    from sabaody.migration import MigrationPolicyEachToAll
+    migration_policy = MigrationPolicyEachToAll()
+
+    # get the candidates from the de island
+    p_de = de_island.get_population()
+    candidates,candidate_f = selection_policy.select(p_de)
+    # try migrating to the nelder mead island
+    p_nm = nm_island.get_population()
+    replacement_policy.replace(p_nm, candidates, candidate_f)
+    nm_island.set_population(p_nm)
+
+    # finally, try to evolve it
+    new_pop = nm_island.evolve(n=10)

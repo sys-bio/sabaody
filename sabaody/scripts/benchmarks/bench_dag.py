@@ -48,6 +48,7 @@ def topology_generator(n_islands, island_size, migrant_pool_size):
                         )]))
                 mariadb_connection.commit()
 
+
 def legalize_name(name):
     '''
     Convert a string into a task id for airflow.
@@ -61,6 +62,7 @@ def legalize_name(name):
         else:
             result += '_'
     return result
+
 
 class TaskFactory():
     def create(self, dag):

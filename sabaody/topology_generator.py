@@ -42,6 +42,12 @@ class TopologyGenerator:
         return '{}.{}.{}'.format(*self.get_version())
 
 
+    def make_nelder_mead(self):
+        nm = nlopt('neldermead')
+        nm.selection = 'random'
+        nm.replacement = 'random'
+        return nm
+
     def generate_all(self, n):
         '''
         Generate a set of benchmark topologies.
@@ -53,6 +59,7 @@ class TopologyGenerator:
             for island in archipelago.topology.every_other_island():
                 island.algorithm = algo
             return archipelago
+
         # one-way rings
         self.new_topology(
           desc='One-way ring, de',
@@ -94,7 +101,7 @@ class TopologyGenerator:
           desc='One-way ring, de+nelder mead',
           category='rings',
           algorithms=['de','neldermead'],
-          archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=10),n)), nlopt('neldermead')))
+          archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=10),n)), self.make_nelder_mead()))
         # de + nsga2 combo
         self.new_topology(
           desc='One-way ring, de+nsga2',
@@ -143,7 +150,7 @@ class TopologyGenerator:
           desc='Bidirectional ring, de+nelder mead',
           category='rings',
           algorithms=['de','neldermead'],
-          archipelago=assign_every_other_algo(Archipelago(self.factory.createBidirRing(de(gen=10),n)), nlopt('neldermead')))
+          archipelago=assign_every_other_algo(Archipelago(self.factory.createBidirRing(de(gen=10),n)), self.make_nelder_mead()))
         # de + nsga2 combo
         self.new_topology(
           desc='Bidirectional ring, de+nsga2',
