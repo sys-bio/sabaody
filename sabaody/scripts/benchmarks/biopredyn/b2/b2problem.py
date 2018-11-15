@@ -74,5 +74,5 @@ class B2_UDP:
     def __setstate__(self, state):
         self.lb = state['lb']
         self.ub = state['ub']
-        from b2problem import B2Problem
+        # lazy init
         self.evaluator = None

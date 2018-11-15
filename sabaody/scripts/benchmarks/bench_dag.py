@@ -7,35 +7,36 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.mysql_operator import MySqlOperator
 from airflow.contrib.operators.spark_submit_operator import SparkSubmitOperator
 
-def topology_generator(n_islands, island_size, migrant_pool_size):
+def topology_generator(n_islands, island_size, migrant_pool_size, generations):
             from sabaody import TopologyGenerator
             import MySQLdb
-            mariadb_connection = MySQLdb.connect('localhost','sabaody','w00t','sabaody')
+            mariadb_connection = MySQLdb.connect('localhost','sabaody','secret','sabaody')
             cursor = mariadb_connection.cursor()
 
-            generator = TopologyGenerator(island_size=island_size, migrant_pool_size=migrant_pool_size)
+            generator = TopologyGenerator(island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
             major,minor,patch = generator.get_version()
             cursor.execute('SELECT COUNT(*) FROM topology_sets WHERE '+\
-                '(VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize) = '+\
-                '({major}, {minor}, {patch}, {n_islands}, {island_size}, {migrant_pool_size});'.format(
+                '(VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
+                '({major}, {minor}, {patch}, {n_islands}, {island_size}, {migrant_pool_size},{generations});'.format(
                 major=major,
                 minor=minor,
                 patch=patch,
                 n_islands=n_islands,
                 island_size=island_size,
                 migrant_pool_size=migrant_pool_size,
+                generations=generations,
             ))
             x = cursor.fetchone()
             n_matches = int(x[0])
-            print('n_matches', n_matches)
+            # print('n_matches', n_matches)
 
             # if this version is already stored, do nothing
             if n_matches == 0:
                 serialized_topologies = generator.serialize(n_islands)
                 # store in database
                 n_matches = cursor.execute('\n'.join([
-                    'INSERT INTO topology_sets (TopologySetID, VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Content)',
-                    'VALUES ({id},{major},{minor},{patch},{n_islands},{island_size},{migrant_pool_size},{content});'.format(
+                    'INSERT INTO topology_sets (TopologySetID, VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
+                    'VALUES ({id},{major},{minor},{patch},{n_islands},{island_size},{migrant_pool_size},{generations},{content});'.format(
                         id="'topology_set({})'".format(generator.get_version_string()),
                         major=major,
                         minor=minor,
@@ -43,7 +44,7 @@ def topology_generator(n_islands, island_size, migrant_pool_size):
                         n_islands=n_islands,
                         island_size=island_size,
                         migrant_pool_size=migrant_pool_size,
-                        #content="0x123",
+                        generations=generations,
                         content="0x{}".format(serialized_topologies.hex()),
                         )]))
                 mariadb_connection.commit()
@@ -69,6 +70,7 @@ class TaskFactory():
         n_islands = 10
         island_size = 10
         migrant_pool_size = 2
+        generations = 10 # ideally same as island_size
 
         # first, make sure the SQL tables exist
         self.setup_tables = MySqlOperator(
@@ -84,6 +86,7 @@ class TaskFactory():
                   NumIslands INT NOT NULL,
                   IslandSize INT NOT NULL,
                   MigrantPoolSize INT NOT NULL,
+                  Generations INT NOT NULL,
                   Content BLOB NOT NULL);''',
           dag=dag)
 
@@ -94,7 +97,8 @@ class TaskFactory():
             op_kwargs={
                 'n_islands': n_islands,
                 'island_size': island_size,
-                'migrant_pool_size': migrant_pool_size},
+                'migrant_pool_size': migrant_pool_size,
+                'generations': generations},
             dag=dag)
 
         self.setup_tables >> self.generate_topologies
@@ -114,6 +118,14 @@ class TaskFactory():
                     'spark.executor.cores': 1,
                 },
                 application_args=[
+                    '--topology sql:sabaody@luna,pw=secret,db=sabaody,version={version}(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):"{desc}"'.format(
+                        version=TopologyGenerator.get_version_string(),
+                        n_islands=n_islands,
+                        island_size=island_size,
+                        migrant_pool_size=migrant_pool_size,
+                        generations=generations,
+                        desc=topology['description'],
+                    ),
                     '--migration central',
                     '--migration-policy uniform',
                 ],

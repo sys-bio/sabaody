@@ -67,7 +67,8 @@ class Island:
     #def __getstate__(self):
         #return {**self.__dict__.copy(), 'algorithm': serialize_pg_algorithm}
 
-def run_island(island, problem, topology, migrator, rounds, metric=None):
+def run_island(island, topology, migrator, udp, rounds, metric=None):
+    # TODO: pass pygmo problem not udp
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
@@ -79,16 +80,17 @@ def run_island(island, problem, topology, migrator, rounds, metric=None):
         mc_client = None
 
     # TODO: configure pop size
-    i = pg.island(algo=island.algorithm, prob=problem, size=island.size)
+    i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size)
 
-    if mc_client:
+    if mc_client is not None:
         mc_client.set(island.domain_qualifier('island', str(island.id), 'status'), 'Running', 10000)
         mc_client.set(island.domain_qualifier('island', str(island.id), 'n_cores'), str(cpu_count()), 10000)
 
     migration_log = []
     for x in range(rounds):
+        if mc_client is not None:
+            mc_client.set(island.domain_qualifier('island', str(island.id), 'round'), str(x), 10000)
 
-        mc_client.set(island.domain_qualifier('island', str(island.id), 'round'), str(x), 10000)
         i.evolve()
         i.wait()
 
@@ -120,13 +122,10 @@ class Archipelago:
         self.mc_port = mc_port
         self.domain_qualifier = domain_qualifier
         if self.mc_host:
-            mc_client = Client((self.mc_host,self.mc_port))
+            mc_client = Client((self.mc_host,self.mc_port)) self.topology.island_ids))
             mc_client.set(self.domain_qualifier('islandIds'), dumps(self.topology.island_ids), 10000)
 
-    def run(self, sc, migrator, rounds):
+    def run(self, sc, migrator, udp, rounds):
         def worker(island):
-            return run_island(island,self.topology,migrator,rounds,self.metric)
+            return run_island(island,self.topology,migrator,udp,rounds,self.metric)
         return sc.parallelize(self.topology.islands, numSlices=len(self.topology.islands)).map(worker).collect()
-
-
-

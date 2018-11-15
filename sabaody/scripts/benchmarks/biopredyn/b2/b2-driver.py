@@ -1,11 +1,13 @@
 # Driver code for B2 parameter fitting problem.
 from __future__ import print_function, division, absolute_import
 
-from biopredyn import BiopredynConfiguration
-from params import getDefaultParamValues
-from b2problem import B2Problem
+from sabaody.scripts.benchmarks.biopredyn.benchsetup import BiopredynConfiguration
+from params import getDefaultParamValues, getUpperBound, getLowerBound
+from b2problem import B2_UDP
 
-config = BiopredynConfiguration.from_cmdline_args('b2-driver', '../../../sbml/b2.xml', B2Problem, getDefaultParamValues)
+from os.path import dirname, realpath
+
+config = BiopredynConfiguration.from_cmdline_args('b2-driver', '../../../../../sbml/b2.xml', dirname(realpath(__file__)), B2_UDP(getLowerBound(),getUpperBound()), getDefaultParamValues)
 
 config.island_size = 10
 config.migrant_pool_size = 5

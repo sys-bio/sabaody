@@ -13,48 +13,42 @@ class BiopredynMCMonitor(MemcachedMonitor):
     Abstracts some of the logic of setting up a parameter fitting problem.
     Provides information via MC for monitoring.
     '''
-    def __init__(self, name, host, port):
-        super().__init__(host, port)
-        self.name = name
-
-    def getName(self):
-        return self.name
 
     def getDomain(self):
         return 'com.how2cell.sabaody.biopredyn.{}'.format(self.getName())
 
+
+    def getNameQualifier(self):
+        from toolz import partial
+        from sabaody import getQualifiedName
+        return partial(getQualifiedName, 'biopredyn', self.getName(), str(self.run_id))
+
 class BiopredynConfiguration(TimecourseRunConfiguration):
     @classmethod
-    def from_cmdline_args(cls, name, sbmlfile, problem_class, getDefaultParamValues):
-        from os.path import join, abspath, dirname, realpath
-        script_dir = dirname(realpath(__file__))
+    def from_cmdline_args(cls, app_name, sbmlfile, script_dir, udp, getDefaultParamValues):
+        from os.path import join, abspath
 
         # set files to be copied to the cwd of each executor
         spark_files = ','.join(join(script_dir,p) for p in [
-            abspath(join('..','..','..','sbml','b2.xml')),
+            abspath(join('..','..','..','..','..','sbml','b2.xml')),
             ])
         py_files = ','.join(join(script_dir,p) for p in [
             'data.py',
             'b2problem.py',
             'params.py',
-            'b2setup.py',
             ])
+        py_files += ','+join(script_dir,'..','benchsetup.py')
 
-        result = super(BiopredynConfiguration,cls).from_cmdline_args('b2-driver', spark_files, py_files)
+        result = super(BiopredynConfiguration,cls).from_cmdline_args(app_name, spark_files, py_files)
+        result.app_name = app_name
         result.sbmlfile = sbmlfile
-        result.problem_class = problem_class
+        result.udp = udp
         result.getDefaultParamValues = getDefaultParamValues
         return result
 
 
-    def monitor(self, host, port):
-        return BiopredynMCMonitor(name, host, port)
-
-
-    def make_problem(self):
-        from b2problem import B2_UDP, getLowerBound, getUpperBound
-        import pygmo as pg
-        return pg.problem(B2_UDP(getLowerBound(),getUpperBound()))
+    def monitor(self, name, host, port, run=None):
+        return BiopredynMCMonitor(name, host, port, run=None)
 
 
     def serialize_results(self, filename, champion_scores, min_score, average_score, time_start, time_end):
@@ -74,25 +68,17 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
 
 
     def run_islands(self, output):
-        with self.monitor('luna', 11211) as monitor:
+        with self.monitor(self.app_name, 'luna', 11211, self.suite_run_id) as monitor:
             with self.create_metric(monitor.getDomain()+'.') as metric:
                 import arrow
                 time_start = arrow.utcnow()
 
                 # set up topology parameters
                 from sabaody.topology import TopologyFactory
-                topology_factory = TopologyFactory(problem=self.make_problem(),
-                                                  island_size=self.island_size,
-                                                  migrant_pool_size=self.migrant_pool_size,
-                                                  domain_qualifier=monitor.getNameQualifier(),
-                                                  mc_host=monitor.mc_host,
-                                                  mc_port=monitor.mc_port)
 
                 # instantiate algorithm and topology
-                a = self.generate_archipelago(self.topology_name, topology_factory, metric)
+                a = self.generate_archipelago(self.topology_name, metric, monitor)
 
-                # select migration policy
-                migration_policy = self.select_migration_policy(self.migration_policy_name)
                 # select migrator
                 # assumes the migrator process / service has already been started
                 migrator = self.select_migrator(self.migrator_name,
@@ -104,7 +90,7 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
                     migrator.defineMigrantPools(a.topology, 116)
 
                 a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
-                champion_scores = a.run(self.spark_context, migrator, 10)
+                champion_scores = a.run(self.spark_context, migrator, self.udp, self.rounds)
 
                 min_score = min(champion_scores)
                 average_score = float(sum(champion_scores))/len(champion_scores)
@@ -123,8 +109,7 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
             sbml = f.read()
 
         # show initial score
-        p = self.problem_class(sbml)
-        self.initial_score = p.evaluate(self.getDefaultParamValues())
+        self.initial_score = self.udp.evaluate(self.getDefaultParamValues())
         print('Initial score: {}'.format(self.initial_score))
 
 
@@ -134,6 +119,6 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
                 sbml = f.read()
                 from b2problem import B2Problem
                 print('Number of parameters: {}'.format(len(
-        p = self.problem_class(sbml).getParameterNames())))
+        p = self.udp.getParameterNames())))
         else:
             return super().run_command(command)

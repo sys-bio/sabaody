@@ -16,7 +16,7 @@ from pprint import PrettyPrinter
 from time import time
 
 def domainJoin(s,*args):
-    return '.'.join(['com.how2cell.sabaody.B2',s,*args])
+    return '.'.join(['com.how2cell.sabaody.biopredyn.b2-driver',s,*args])
 
 def app(screen):
     while True:
@@ -31,7 +31,7 @@ def app(screen):
         else:
             runtime = stopped-started
         if run_id:
-            domain_qualifier = partial(getQualifiedName, 'B2', str(run_id))
+            domain_qualifier = partial(getQualifiedName, 'biopredyn', 'b2-driver', str(run_id))
             def get(*args):
                 return client.get(domain_qualifier(*args))
             island_ids = [i for i in loads(get('islandIds') or '[]')]
