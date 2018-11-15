@@ -67,7 +67,35 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
             return json.load(f)
 
 
-    def run_islands(self, output):
+    def commit_results_to_database(self, host, user, database, password, champion_scores, min_score, average_score, time_start, time_end):
+        import MySQLdb
+        mariadb_connection = MySQLdb.connect(host,user,password,database)
+        cursor = mariadb_connection.cursor()
+        from pickle import dumps
+        cursor.execute(
+            "DELETE FROM benchmark_runs WHERE (Benchmark, SuiteRunID, Description)=('{benchmark}',{suite_run_id},'{description}');".format(
+                benchmark=self.app_name,
+                suite_run_id=self.suite_run_id,
+                description=self.description,
+            ))
+        mariadb_connection.commit()
+        cursor.execute('\n'.join([
+            'INSERT INTO benchmark_runs (Benchmark, SuiteRunID, Description, TopologyID, ChampionScores, MinScore, AverageScore, TimeStart, TimeEnd)',
+            "VALUES ('{benchmark}',{suite_run_id},'{description}','{topologyid}',{champion_scores},{min_score},{average_score},'{time_start}','{time_end}');".format(
+                benchmark=self.app_name,
+                suite_run_id=self.suite_run_id,
+                description=self.description,
+                topologyid=self.topology_id,
+                champion_scores='0x{}'.format(dumps(champion_scores).hex()),
+                min_score=min_score,
+                average_score=average_score,
+                time_start=time_start.format('YYYY-MM-DD HH:mm:ss'),
+                time_end=time_end.format('YYYY-MM-DD HH:mm:ss'),
+                )]))
+        mariadb_connection.commit()
+
+
+    def run_islands(self):
         with self.monitor(self.app_name, 'luna', 11211, self.suite_run_id) as monitor:
             with self.create_metric(monitor.getDomain()+'.') as metric:
                 import arrow
@@ -96,7 +124,17 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
                 average_score = float(sum(champion_scores))/len(champion_scores)
                 time_end = arrow.utcnow()
 
-                self.serialize_results(output, champion_scores, min_score, average_score, time_start, time_end)
+                # self.serialize_results(output, champion_scores, min_score, average_score, time_start, time_end)
+                self.commit_results_to_database(
+                    host='luna',
+                    user='sabaody',
+                    database='sabaody',
+                    password='w00t',
+                    champion_scores=champion_scores,
+                    min_score=min_score,
+                    average_score=average_score,
+                    time_start=time_start,
+                    time_end=time_end)
 
                 print('chamption scores {}'.format(champion_scores))
                 print('min champion score {}'.format(min_score))

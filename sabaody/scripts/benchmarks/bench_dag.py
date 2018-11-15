@@ -10,7 +10,7 @@ from airflow.contrib.operators.spark_submit_operator import SparkSubmitOperator
 def topology_generator(n_islands, island_size, migrant_pool_size, generations):
             from sabaody import TopologyGenerator
             import MySQLdb
-            mariadb_connection = MySQLdb.connect('localhost','sabaody','secret','sabaody')
+            mariadb_connection = MySQLdb.connect('luna','sabaody','w00t','sabaody')
             cursor = mariadb_connection.cursor()
 
             generator = TopologyGenerator(island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
@@ -34,7 +34,7 @@ def topology_generator(n_islands, island_size, migrant_pool_size, generations):
             if n_matches == 0:
                 serialized_topologies = generator.serialize(n_islands)
                 # store in database
-                n_matches = cursor.execute('\n'.join([
+                cursor.execute('\n'.join([
                     'INSERT INTO topology_sets (TopologySetID, VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
                     'VALUES ({id},{major},{minor},{patch},{n_islands},{island_size},{migrant_pool_size},{generations},{content});'.format(
                         id="'topology_set({})'".format(generator.get_version_string()),
@@ -87,7 +87,18 @@ class TaskFactory():
                   IslandSize INT NOT NULL,
                   MigrantPoolSize INT NOT NULL,
                   Generations INT NOT NULL,
-                  Content BLOB NOT NULL);''',
+                  Content BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS benchmark_runs (
+                  PrimaryKey INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                  Benchmark VARCHAR(255) NOT NULL,
+                  SuiteRunID INT NOT NULL,
+                  Description TEXT NOT NULL,
+                  TopologyID VARCHAR(255) NOT NULL,
+                  ChampionScores BLOB NOT NULL,
+                  MinScore DOUBLE NOT NULL,
+                  AverageScore DOUBLE NOT NULL,
+                  TimeStart DATETIME NOT NULL,
+                  TimeEnd DATETIME NOT NULL);''',
           dag=dag)
 
         # store the topologies in the table
@@ -118,7 +129,7 @@ class TaskFactory():
                     'spark.executor.cores': 1,
                 },
                 application_args=[
-                    '--topology sql:sabaody@luna,pw=secret,db=sabaody,version={version}(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):"{desc}"'.format(
+                    '--topology sql:sabaody@luna,pw=w00t,db=sabaody,version={version}(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):"{desc}"'.format(
                         version=TopologyGenerator.get_version_string(),
                         n_islands=n_islands,
                         island_size=island_size,
@@ -128,6 +139,8 @@ class TaskFactory():
                     ),
                     '--migration central',
                     '--migration-policy uniform',
+                    '--rounds 100',
+                    '--description "{}"'.format(topology['description']),
                 ],
                 dag=dag,
                 **{

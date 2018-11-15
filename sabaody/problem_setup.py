@@ -137,6 +137,8 @@ class TimecourseRunConfiguration:
                             help='The id of this run, used for indexing. Shared with rest of suite.')
         parser.add_argument('--rounds', type=int, default=10,
                             help='The number of rounds of migrations to perform.')
+        parser.add_argument('--description', required=True,
+                            help='A description of the topology used.')
         #parser.add_argument('--num-islands', type=int, required=True,
                             #help='The migration scheme to use')
         return parser
@@ -173,6 +175,7 @@ class TimecourseRunConfiguration:
         config.n_islands = args.num_islands
         config.suite_run_id = args.suite_run_id
         config.rounds = args.rounds
+        config.description = args.description
         config.command = args.command
 
         config._initialize_spark(app_name, spark_files, py_files)
@@ -196,7 +199,7 @@ class TimecourseRunConfiguration:
         elif db_regex.match(topology_name) is not None:
             m = db_regex.match(topology_name)
             from sabaody import TopologyGenerator
-            return TopologyGenerator.find_in_database(
+            topology,id = TopologyGenerator.find_in_database(
                 desc = m.group(10),
                 user = m.group(1),
                 host = m.group(2),
@@ -207,6 +210,9 @@ class TimecourseRunConfiguration:
                 island_size = m.group(7),
                 migrant_pool_size = m.group(8),
                 generations = m.group(9))
+            self.topology_set_id = id
+            self.topology_id=topology['id']
+            return topology['archipelago']
         else:
             # generate the topology from available presets via command line arguments
             topology_factory = TopologyFactory(problem=self.make_problem(),
@@ -277,6 +283,6 @@ class TimecourseRunConfiguration:
 
     def run_command(self, command):
         if command == 'run' or command == 'run-islands':
-            return self.run_islands('/tmp/bench')
+            return self.run_islands()
         else:
             raise RuntimeError('Unrecognized command: {}'.format(command))

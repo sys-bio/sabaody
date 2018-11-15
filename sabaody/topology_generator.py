@@ -8,6 +8,8 @@ from sabaody import Archipelago
 from pygmo import de, de1220, pso, simulated_annealing, bee_colony, cmaes, nsga2
 from pygmo import nlopt
 
+from uuid import uuid4
+
 class TopologyGenerator:
     '''
     Generates a set of topologies used for benchmarks.
@@ -25,6 +27,7 @@ class TopologyGenerator:
         t = {
             'description': desc,
             'archipelago': archipelago,
+            'id': uuid4(),
             }
         if category is not None:
             t['category'] = category
@@ -56,7 +59,7 @@ class TopologyGenerator:
     def find(cls,desc,topologies):
         for t in topologies:
             if t['description'] == desc:
-                return t['archipelago']
+                return t
         raise RuntimeError('No such topology "{}"'.format(desc))
 
 
@@ -66,7 +69,7 @@ class TopologyGenerator:
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host=host,user=user,passwd=pw,db=db)
         cursor = mariadb_connection.cursor()
-        cursor.execute('SELECT Content FROM topology_sets WHERE '+\
+        cursor.execute('SELECT PrimaryKey,Content FROM topology_sets WHERE '+\
             '(VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
             '({major}, {minor}, {patch}, {n_islands}, {island_size}, {migrant_pool_size},{generations});'.format(
             major=major,
@@ -78,8 +81,10 @@ class TopologyGenerator:
             generations=generations,
         ))
         from pickle import loads
-        topologies = loads(cursor.fetchone()[0])
-        return cls.find(desc,topologies)
+        t = cursor.fetchone()
+        key = int(t[0])
+        topologies = loads(t[1])
+        return (cls.find(desc,topologies),key)
 
 
     def generate_all(self, n):
