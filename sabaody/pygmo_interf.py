@@ -67,29 +67,25 @@ class Island:
     #def __getstate__(self):
         #return {**self.__dict__.copy(), 'algorithm': serialize_pg_algorithm}
 
-def run_island(island, topology, migrator, udp, rounds, metric=None):
+def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=None):
     # TODO: pass pygmo problem not udp
     import pygmo as pg
     from multiprocessing import cpu_count
     from pymemcache.client.base import Client
     from sabaody.migration import BestSPolicy, FairRPolicy
     from sabaody.migration_central import CentralMigrator
-    if island.mc_host:
-        mc_client = Client((island.mc_host,island.mc_port))
-    else:
-        mc_client = None
 
     # TODO: configure pop size
     i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size)
 
-    if mc_client is not None:
-        mc_client.set(island.domain_qualifier('island', str(island.id), 'status'), 'Running', 10000)
-        mc_client.set(island.domain_qualifier('island', str(island.id), 'n_cores'), str(cpu_count()), 10000)
+    if monitor is not None:
+        monitor.update('Running', 'island', island.id, 'status')
+        monitor.update(cpu_count(), 'island', island.id, 'n_cores')
 
     migration_log = []
     for x in range(rounds):
-        if mc_client is not None:
-            mc_client.set(island.domain_qualifier('island', str(island.id), 'round'), str(x), 10000)
+        if monitor is not None:
+            monitor.update(x, 'island', island.id, 'round')
 
         i.evolve()
         i.wait()
@@ -108,9 +104,10 @@ def run_island(island, topology, migrator, udp, rounds, metric=None):
     return i.get_population().champion_f[0]
 
 class Archipelago:
-    def __init__(self, topology, metric=None):
+    def __init__(self, topology, metric=None, monitor=None):
         self.topology = topology
         self.metric = metric
+        self.monitor=monitor
 
         self.mc_host = None
         self.mc_port = None
@@ -127,5 +124,5 @@ class Archipelago:
 
     def run(self, sc, migrator, udp, rounds):
         def worker(island):
-            return run_island(island,self.topology,migrator,udp,rounds,self.metric)
+            return run_island(island,self.topology,migrator,udp,rounds,self.metric,self.monitor)
         return sc.parallelize(self.topology.islands, numSlices=len(self.topology.islands)).map(worker).collect()

@@ -39,6 +39,9 @@ class TimecourseModel(Evaluator):
         '''
         self.sbml = sbml
         self.r = RoadRunner(sbml)
+        # self.r.integrator.stiff = False
+        # self.r.integrator.minimum_time_step = 0.0001
+        # self.r.integrator.maximum_time_step = 1.
         self.residuals = []
         #print(self.r.getFloatingSpeciesIds())
 

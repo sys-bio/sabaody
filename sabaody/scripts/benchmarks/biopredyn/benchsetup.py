@@ -21,7 +21,7 @@ class BiopredynMCMonitor(MemcachedMonitor):
     def getNameQualifier(self):
         from toolz import partial
         from sabaody import getQualifiedName
-        return partial(getQualifiedName, 'biopredyn', self.getName(), str(self.run_id))
+        return partial(getQualifiedName, 'biopredyn', self.getName(), str(self.run))
 
 class BiopredynConfiguration(TimecourseRunConfiguration):
     @classmethod
@@ -118,6 +118,7 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
                     migrator.defineMigrantPools(a.topology, 116)
 
                 a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
+                a.monitor = monitor
                 champion_scores = a.run(self.spark_context, migrator, self.udp, self.rounds)
 
                 min_score = min(champion_scores)

@@ -16,12 +16,12 @@ from pprint import PrettyPrinter
 from time import time
 
 def domainJoin(s,*args):
-    return '.'.join(['com.how2cell.sabaody.biopredyn.b2-driver',s,*args])
+    return '.'.join(['com.how2cell.sabaody.biopredyn.b2-driver',str(s),*list(str(a) for a in args)])
 
 def app(screen):
     while True:
         run = int(client.get(domainJoin('run')))
-        run_id = client.get(domainJoin('runId')).decode('utf8')
+        # run_id = client.get(domainJoin('runId')).decode('utf8')
         status = client.get(domainJoin('run.status')).decode('utf8').lower()
         started = float((client.get(domainJoin('run.startTime')) or b'0').decode('utf8'))
         stopped = float((client.get(domainJoin('run.endTime')) or b'0').decode('utf8'))
@@ -30,8 +30,8 @@ def app(screen):
             runtime = time()-started
         else:
             runtime = stopped-started
-        if run_id:
-            domain_qualifier = partial(getQualifiedName, 'biopredyn', 'b2-driver', str(run_id))
+        if run:
+            domain_qualifier = partial(getQualifiedName, 'biopredyn', 'b2-driver', run)
             def get(*args):
                 return client.get(domain_qualifier(*args))
             island_ids = [i for i in loads(get('islandIds') or '[]')]
@@ -39,7 +39,7 @@ def app(screen):
             pp = PrettyPrinter(indent=2)
 
             v = int(screen.height/2)-10
-            screen.print_at('Run {}   /   {}    '.format(run, run_id),
+            screen.print_at('Run {}   /   {}    '.format(run, run),
                             int(screen.width/2)-65, v,
                             Screen.COLOUR_WHITE)
             v += 1
@@ -57,7 +57,7 @@ def app(screen):
             v += 1
             for i in island_ids:
                 screen.print_at(i, int(screen.width/2)-55, v, Screen.COLOUR_WHITE)
-                round = (client.get(domainJoin(run_id,'island',i,'round')) or b'-1').decode('utf8')
+                round = (client.get(domainJoin(run,'island',i,'round')) or b'-1').decode('utf8')
                 screen.print_at('   ', int(screen.width/2)+15, v, Screen.COLOUR_WHITE)
                 screen.print_at(round, int(screen.width/2)+15, v, Screen.COLOUR_WHITE)
                 v+=1
