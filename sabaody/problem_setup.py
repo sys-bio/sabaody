@@ -194,6 +194,7 @@ class TimecourseRunConfiguration:
         config.suite_run_id = args.suite_run_id
         config.rounds = args.rounds
         config.description = args.description
+        config.generations = None
         config.command = args.command
 
         config._initialize_spark(app_name, spark_files, py_files)
@@ -229,7 +230,8 @@ class TimecourseRunConfiguration:
                 migrant_pool_size = m.group(8),
                 generations = m.group(9))
             self.topology_set_id = id
-            self.topology_id=topology['id']
+            self.topology_id = topology['id']
+            self.generations = topology['generations']
             return topology['archipelago']
         else:
             # generate the topology from available presets via command line arguments

@@ -28,6 +28,7 @@ class TopologyGenerator:
             'description': desc,
             'archipelago': archipelago,
             'id': uuid4(),
+            'generations': self.generations,
             }
         if category is not None:
             t['category'] = category

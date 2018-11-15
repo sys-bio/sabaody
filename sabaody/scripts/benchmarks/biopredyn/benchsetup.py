@@ -67,7 +67,7 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
             return json.load(f)
 
 
-    def commit_results_to_database(self, host, user, database, password, champion_scores, min_score, average_score, time_start, time_end):
+    def commit_results_to_database(self, host, user, database, password, rounds, generations, champion_scores, min_score, average_score, time_start, time_end):
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host,user,password,database)
         cursor = mariadb_connection.cursor()
@@ -80,12 +80,14 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
             ))
         mariadb_connection.commit()
         cursor.execute('\n'.join([
-            'INSERT INTO benchmark_runs (Benchmark, SuiteRunID, Description, TopologyID, ChampionScores, MinScore, AverageScore, TimeStart, TimeEnd)',
-            "VALUES ('{benchmark}',{suite_run_id},'{description}','{topologyid}',{champion_scores},{min_score},{average_score},'{time_start}','{time_end}');".format(
+            'INSERT INTO benchmark_runs (Benchmark, SuiteRunID, Description, TopologyID, Rounds, Generations, ChampionScores, MinScore, AverageScore, TimeStart, TimeEnd)',
+            "VALUES ('{benchmark}',{suite_run_id},'{description}','{topologyid}',{rounds},{generations},{champion_scores},{min_score},{average_score},'{time_start}','{time_end}');".format(
                 benchmark=self.app_name,
                 suite_run_id=self.suite_run_id,
                 description=self.description,
                 topologyid=self.topology_id,
+                rounds=rounds,
+                generations=generations,
                 champion_scores='0x{}'.format(dumps(champion_scores).hex()),
                 min_score=min_score,
                 average_score=average_score,
@@ -131,6 +133,8 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
                     user='sabaody',
                     database='sabaody',
                     password='w00t',
+                    rounds=self.rounds,
+                    generations=self.generations,
                     champion_scores=champion_scores,
                     min_score=min_score,
                     average_score=average_score,
