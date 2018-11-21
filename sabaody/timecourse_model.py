@@ -14,6 +14,9 @@ from .pygmo_interf import Evaluator
 
 #raise RuntimeError('improt tc')
 
+class StalledSimulation(RuntimeError):
+    pass
+
 class MissingValue(Exception):
     pass
 
@@ -134,6 +137,8 @@ class TimecourseModel(Evaluator):
         stepsize = 0.1
         steps = int(max(100,delta/stepsize))
         self.r.simulate(0,delta,steps)
+        if self.divergent():
+            raise RuntimeError('Diverged at first time step')
         self.next_ti = 1
         if len(self.timepoints) < 2:
             raise RuntimeError('Expected at least two timepoints')
@@ -142,6 +147,8 @@ class TimecourseModel(Evaluator):
         # simulate to the rest of the timepoints
         while self.next_ti < self.timepoints.shape[0]:
             self.t = self.simulateToNextTime()
+            if self.divergent():
+                raise RuntimeError('Diverged at time step {}'.format(self.next_ti))
             self.calcResiduals(self.t)
             self.next_ti += 1
 
@@ -162,14 +169,31 @@ class TimecourseModel(Evaluator):
         """
         Evaluate and return the objective function.
         """
+        from interruptingcow import timeout
         self.reset()
         self.setParameterVector(x)
-        try:
+        self.isProcessComplete = False
+        def worker():
+            # wrapper around work function that can be used for timeout
             self.buildResidualList()
-        except RuntimeError:
+        if self.divergent():
+            return 1e9*self.penalty_scale
+        try:
+            with timeout(10, StalledSimulation):
+                worker()
+        except (RuntimeError, StalledSimulation):
             # if convergence fails, use a penalty score
             return 1e9*self.penalty_scale
         return self.MSE()
+
+    def divergent(self):
+        '''
+        Check whether the simulation has diverged (+-infinity).
+        '''
+        from .utils import divergent
+        reaction_rates = self.r.getReactionRates()
+        if divergent(reaction_rates):
+            return true
 
     def getUsageByQuantity(self):
         '''

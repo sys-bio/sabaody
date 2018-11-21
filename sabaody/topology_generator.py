@@ -121,7 +121,7 @@ class TopologyGenerator:
           desc='One-way ring, simulated_annealing',
           category='rings',
           algorithms=['simulated_annealing'],
-          archipelago=Archipelago(self.factory.createOneWayRing(simulated_annealing(),n)))
+          archipelago=Archipelago(self.factory.createOneWayRing(simulated_annealing(Ts=1.,Tf=.01),n)))
         self.new_topology(
           desc='One-way ring, bee_colony',
           category='rings',

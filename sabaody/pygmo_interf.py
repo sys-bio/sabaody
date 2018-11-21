@@ -87,8 +87,11 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
         if monitor is not None:
             monitor.update(x, 'island', island.id, 'round')
 
-        i.evolve()
-        i.wait()
+        from interruptingcow import timeout
+        from .timecourse_model import StalledSimulation
+        with timeout(10, StalledSimulation):
+            i.evolve()
+            i.wait()
 
         # perform migration
         migrator.sendMigrants(island.id, i, topology)

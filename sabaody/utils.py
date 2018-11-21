@@ -39,7 +39,7 @@ def getQualifiedName(*args):
     Gets a qualified RDNS name for this app.
     '''
     root = 'com.how2cell.sabaody'
-    return '.'.join((root, *args))
+    return '.'.join((root, *list(str(a) for a in args)))
 
 def arrays_equal(u,v):
     '''
@@ -50,3 +50,10 @@ def arrays_equal(u,v):
         if not array_equal(x,y):
             return False
     return True
+
+def divergent(a):
+    '''
+    Returns true if the array a contains a nan or +-inf value.
+    '''
+    from numpy import isfinite
+    return not isfinite(a).all()
