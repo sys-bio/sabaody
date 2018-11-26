@@ -131,6 +131,7 @@ class TimecourseModel(Evaluator):
         # next time index
         self.next_ti = 0
 
+
     def buildResidualList(self):
         # simulate to the first timepoint (not necessarily zero)
         delta = self.timepoints[0]
@@ -152,9 +153,9 @@ class TimecourseModel(Evaluator):
             self.calcResiduals(self.t)
             self.next_ti += 1
 
-    def setParameterVector(self, x, param_list, exponential=True):
+
+    def _setParameterVector(self, x, param_list, exponential=True):
         # type: (array, List) -> None
-        # TODO: sample in log space
         expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
         if exponential:
             from math import exp
@@ -163,6 +164,23 @@ class TimecourseModel(Evaluator):
         else:
             for i,v in enumerate(x):
                 self.r[param_list[i]] = v
+
+
+    def _getParametersDict(self, param_list, use_log=True):
+        # type: (List, bool) -> Dict
+        '''
+        Returns the current values of the parameters as a dictionary.
+        '''
+        expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
+        result = {}
+        if use_log:
+            from math import log
+            for p in param_list:
+                result[p] = log(self.r[p])
+        else:
+            for p in param_list:
+                result[p] = self.r[p]
+
 
     def evaluate(self, x):
         # type: (array) -> SupportsFloat
@@ -179,12 +197,13 @@ class TimecourseModel(Evaluator):
         if self.divergent():
             return 1e9*self.penalty_scale
         try:
-            with timeout(10, StalledSimulation):
-                worker()
+            # with timeout(10, StalledSimulation):
+            worker()
         except (RuntimeError, StalledSimulation):
             # if convergence fails, use a penalty score
             return 1e9*self.penalty_scale
         return self.MSE()
+
 
     def divergent(self):
         '''
@@ -194,6 +213,7 @@ class TimecourseModel(Evaluator):
         reaction_rates = self.r.getReactionRates()
         if divergent(reaction_rates):
             return true
+
 
     def getUsageByQuantity(self):
         '''
@@ -215,6 +235,7 @@ class TimecourseModel(Evaluator):
 
         return (total,total_used,usage_for_quantity)
 
+
     def printDatapointUsage(self):
         ''' For debugging. Make sure every data point is
         used.'''
@@ -224,3 +245,26 @@ class TimecourseModel(Evaluator):
             n = a.shape[0]
             print('Usage for {}: {}/{}'.format(q,used,n))
         print('*** Total usage: {}/{} ({:.1f}%)'.format(total_used,total,100.*total_used/total))
+
+
+    def setParameterVector(self, x):
+        '''
+        Set the entire parameter vector (x can be a 1d array).
+        '''
+        # type: (ndarray) -> None
+        self._setParameterVector(x, self.param_list)
+
+
+    def getParametersDict(self):
+        '''
+        Get the parameter names and current values as a dictionary.
+        '''
+        # type: () -> Dict
+        return self._getParametersDict(x, self.param_list, use_log=True)
+
+
+    def getParameterNames(self):
+        '''
+        Get the parameter names (SBML ids).
+        '''
+        return self.param_list

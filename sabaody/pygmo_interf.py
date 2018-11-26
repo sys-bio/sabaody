@@ -13,7 +13,7 @@ from json import dumps, loads
 class Evaluator(ABC):
     '''
     Evaluates an objective function.
-    Required to implement at least the functino evaluate,
+    Required to implement at least the function evaluate,
     which returns a double precision float.
     '''
     @abstractmethod
@@ -89,9 +89,9 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
 
         from interruptingcow import timeout
         from .timecourse_model import StalledSimulation
-        with timeout(10, StalledSimulation):
-            i.evolve()
-            i.wait()
+        # with timeout(10, StalledSimulation):
+        i.evolve()
+        i.wait()
 
         # perform migration
         migrator.sendMigrants(island.id, i, topology)

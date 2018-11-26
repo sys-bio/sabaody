@@ -51,9 +51,44 @@ def arrays_equal(u,v):
             return False
     return True
 
+
 def divergent(a):
     '''
     Returns true if the array a contains a nan or +-inf value.
     '''
     from numpy import isfinite
     return not isfinite(a).all()
+
+
+def create_solo_benchmark_table(host, user, database, password, table):
+    import MySQLdb
+    mariadb_connection = MySQLdb.connect(host,user,password,database)
+    cursor = mariadb_connection.cursor()
+    from pickle import dumps
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS {table} (
+            PrimaryKey INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            Description TEXT NOT NULL,
+            FinalScore DOUBLE NOT NULL,
+            FinalParams BLOB NOT NULL,
+            TimeStart DATETIME NOT NULL,
+            TimeEnd DATETIME NOT NULL);'''.format(table=table))
+    mariadb_connection.commit()
+
+
+def commit_solo_benchmark_run(host, user, database, password, table, description, final_score, final_params, time_start, time_end):
+    import MySQLdb
+    mariadb_connection = MySQLdb.connect(host,user,password,database)
+    cursor = mariadb_connection.cursor()
+    from pickle import dumps
+    cursor.execute('\n'.join([
+        'INSERT INTO {table} (Description, FinalScore, FinalParams, TimeStart, TimeEnd)',
+        "VALUES ('{description}',{final_score},{final_params},'{time_start}','{time_end}');".format(
+            table=table,
+            description=description,
+            final_score=final_score,
+            final_params='0x{}'.format(dumps(final_params).hex()),
+            time_start=time_start.format('YYYY-MM-DD HH:mm:ss'),
+            time_end=time_end.format('YYYY-MM-DD HH:mm:ss'),
+            )]))
+    mariadb_connection.commit()

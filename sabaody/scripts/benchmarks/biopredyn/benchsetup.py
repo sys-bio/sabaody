@@ -165,3 +165,54 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
         p = self.udp.getParameterNames())))
         else:
             return super().run_command(command)
+
+
+
+class BioPreDynUDP:
+    def __init__(self, lb, ub, sbml_file):
+        # type: (Evaluator, array, array) -> None
+        '''
+        Inits the problem with an objective evaluator
+        (implementing the method evaluate), the parameter
+        vector lower bound (a numpy array) and upper bound.
+        Both bounds must have the same dimension.
+        '''
+        from sabaody.utils import check_vector, expect
+        check_vector(lb)
+        check_vector(ub)
+        expect(len(lb) == len(ub), 'Bounds mismatch')
+        self.lb = lb
+        self.ub = ub
+        # delay loading until we're on the worker node
+        self.evaluator = None
+        self.sbml_file = sbml_file
+
+
+    # derived classes need method 'fitness'
+
+
+    def get_bounds(self):
+        return (self.lb,self.ub)
+
+
+    def get_name(self):
+        return 'Sabaody udp'
+
+
+    def get_extra_info(self):
+        return 'Sabaody extra info'
+
+
+    def __getstate__(self):
+        return {
+          'lb': self.lb,
+          'ub': self.ub,
+          'sbml_file': self.sbml_file}
+
+
+    def __setstate__(self, state):
+        self.lb = state['lb']
+        self.ub = state['ub']
+        self.sbml_file = state['sbml_file']
+        # lazy init
+        self.evaluator = None
