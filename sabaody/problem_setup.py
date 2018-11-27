@@ -210,7 +210,7 @@ class TimecourseRunConfiguration:
     def generate_archipelago(self, topology_name, metric, monitor):
         from os.path import isfile
         from re import compile
-        db_regex = compile(r'sql:(\w+)@([\w:]+),pw=([^,]+),db=([\w]+),version=([0-9.]+)\(n_islands=(\d+),island_size=(\d+),migrant_pool_size=(\d+),generations=(\d+)\):(.*)')
+        db_regex = compile(r'sql:(\w+)@([\w:]+),pw=([^,]+),db=([\w]+)\(n_islands=(\d+),island_size=(\d+),migrant_pool_size=(\d+),generations=(\d+)\):(.*)')
         if isfile(topology_name):
             import pickle
             with open(topology_name) as f:
@@ -218,17 +218,17 @@ class TimecourseRunConfiguration:
         elif db_regex.match(topology_name) is not None:
             m = db_regex.match(topology_name)
             from sabaody import TopologyGenerator
-            topology,id = TopologyGenerator.find_in_database(
-                desc = m.group(10),
+            generator = TopologyGenerator(
+                n_islands = m.group(5),
+                island_size = m.group(6),
+                migrant_pool_size = m.group(7),
+                generations = m.group(8))
+            topology,id = generator.find_in_database(
+                desc = m.group(9),
                 user = m.group(1),
                 host = m.group(2),
                 pw   = m.group(3),
-                db   = m.group(4),
-                version = tuple(int(i) for i in m.group(5).split('.')),
-                n_islands = m.group(6),
-                island_size = m.group(7),
-                migrant_pool_size = m.group(8),
-                generations = m.group(9))
+                db   = m.group(4))
             self.topology_set_id = id
             self.topology_id = topology['id']
             self.generations = topology['generations']

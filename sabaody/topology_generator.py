@@ -15,12 +15,13 @@ class TopologyGenerator:
     Generates a set of topologies used for benchmarks.
     '''
 
-    def __init__(self, island_size=20, migrant_pool_size=5, generations=10):
+    def __init__(self, n_islands, island_size=20, migrant_pool_size=5, generations=10):
         self.topologies = []
         from sabaody.topology import TopologyFactory
         self.factory =  TopologyFactory(island_size=island_size,
                                         migrant_pool_size=migrant_pool_size)
         self.generations = generations
+        self._generate_all()
 
 
     def new_topology(self, desc, archipelago, category=None, algorithms=None):
@@ -36,6 +37,10 @@ class TopologyGenerator:
             t['algorithms'] = algorithms
         self.topologies.append(t)
         return t
+
+
+    def get_checksum(self):
+        hash(dumps(self.topologies))
 
 
     @classmethod
@@ -64,18 +69,15 @@ class TopologyGenerator:
         raise RuntimeError('No such topology "{}"'.format(desc))
 
 
-    @classmethod
-    def find_in_database(cls, desc, user, host, pw, db, version, n_islands, island_size, migrant_pool_size, generations):
+    def find_in_database(cls, desc, user, host, pw, db):
         major,minor,patch = version
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host=host,user=user,passwd=pw,db=db)
         cursor = mariadb_connection.cursor()
         cursor.execute('SELECT PrimaryKey,Content FROM topology_sets WHERE '+\
-            '(VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
-            '({major}, {minor}, {patch}, {n_islands}, {island_size}, {migrant_pool_size},{generations});'.format(
-            major=major,
-            minor=minor,
-            patch=patch,
+            '(Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
+            '({checksum}, {n_islands}, {island_size}, {migrant_pool_size},{generations});'.format(
+            checksum=self.get_checksum(),
             n_islands=n_islands,
             island_size=island_size,
             migrant_pool_size=migrant_pool_size,
@@ -88,7 +90,7 @@ class TopologyGenerator:
         return (cls.find(desc,topologies),key)
 
 
-    def generate_all(self, n):
+    def _generate_all(self, n):
         '''
         Generate a set of benchmark topologies.
 
@@ -117,11 +119,11 @@ class TopologyGenerator:
           category='rings',
           algorithms=['pso'],
           archipelago=Archipelago(self.factory.createOneWayRing(pso(gen=g),n)))
-        self.new_topology(
-          desc='One-way ring, simulated_annealing',
-          category='rings',
-          algorithms=['simulated_annealing'],
-          archipelago=Archipelago(self.factory.createOneWayRing(simulated_annealing(Ts=1.,Tf=.01),n)))
+        # self.new_topology(
+        #   desc='One-way ring, simulated_annealing',
+        #   category='rings',
+        #   algorithms=['simulated_annealing'],
+        #   archipelago=Archipelago(self.factory.createOneWayRing(simulated_annealing(Ts=1.,Tf=.01),n)))
         self.new_topology(
           desc='One-way ring, bee_colony',
           category='rings',
@@ -166,11 +168,11 @@ class TopologyGenerator:
           category='rings',
           algorithms=['pso'],
           archipelago=Archipelago(self.factory.createBidirRing(pso(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional ring, simulated_annealing',
-          category='rings',
-          algorithms=['simulated_annealing'],
-          archipelago=Archipelago(self.factory.createBidirRing(simulated_annealing(),n)))
+        # self.new_topology(
+        #   desc='Bidirectional ring, simulated_annealing',
+        #   category='rings',
+        #   algorithms=['simulated_annealing'],
+        #   archipelago=Archipelago(self.factory.createBidirRing(simulated_annealing(),n)))
         self.new_topology(
           desc='Bidirectional ring, bee_colony',
           category='rings',
@@ -215,11 +217,11 @@ class TopologyGenerator:
           category='rings',
           algorithms=['pso'],
           archipelago=Archipelago(self.factory.createBidirChain(de1220(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional chain, simulated_annealing',
-          category='rings',
-          algorithms=['simulated_annealing'],
-          archipelago=Archipelago(self.factory.createBidirChain(simulated_annealing(),n)))
+        # self.new_topology(
+        #   desc='Bidirectional chain, simulated_annealing',
+        #   category='rings',
+        #   algorithms=['simulated_annealing'],
+        #   archipelago=Archipelago(self.factory.createBidirChain(simulated_annealing(),n)))
         self.new_topology(
           desc='Bidirectional chain, bee_colony',
           category='rings',
@@ -239,6 +241,6 @@ class TopologyGenerator:
         return self.topologies
 
 
-    def serialize(self, n):
+    def serialize(self):
         from pickle import dumps
-        return dumps(self.generate_all(n))
+        return dumps(self.topologies)

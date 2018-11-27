@@ -22,8 +22,7 @@ def test_topology_generator():
     Make sure that combo topologies contain both algorithms.
     '''
     from sabaody.topology_generator import TopologyGenerator
-    g = TopologyGenerator(island_size = 10, migrant_pool_size=5)
-    g.generate_all(10) # 10 islands
+    g = TopologyGenerator(n_islands = 10, island_size = 10, migrant_pool_size=5)
 
     from pygmo import de, nlopt
 

@@ -13,14 +13,12 @@ def topology_generator(n_islands, island_size, migrant_pool_size, generations):
             mariadb_connection = MySQLdb.connect('luna','sabaody','w00t','sabaody')
             cursor = mariadb_connection.cursor()
 
-            generator = TopologyGenerator(island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
-            major,minor,patch = generator.get_version()
+            generator = TopologyGenerator(n_islands=n_islands, island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
+            checksum = generator.get_checksum()
             cursor.execute('SELECT COUNT(*) FROM topology_sets WHERE '+\
-                '(VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
-                '({major}, {minor}, {patch}, {n_islands}, {island_size}, {migrant_pool_size},{generations});'.format(
-                major=major,
-                minor=minor,
-                patch=patch,
+                '(Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
+                "({checksum}, {n_islands}, {island_size}, {migrant_pool_size},{generations});".format(
+                checksum=checksum,
                 n_islands=n_islands,
                 island_size=island_size,
                 migrant_pool_size=migrant_pool_size,
@@ -35,12 +33,10 @@ def topology_generator(n_islands, island_size, migrant_pool_size, generations):
                 serialized_topologies = generator.serialize(n_islands)
                 # store in database
                 cursor.execute('\n'.join([
-                    'INSERT INTO topology_sets (TopologySetID, VersionMajor, VersionMinor, VersionPatch, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
-                    'VALUES ({id},{major},{minor},{patch},{n_islands},{island_size},{migrant_pool_size},{generations},{content});'.format(
+                    'INSERT INTO topology_sets (TopologySetID, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
+                    'VALUES ({id},{checksum},{n_islands},{island_size},{migrant_pool_size},{generations},{content});'.format(
                         id="'topology_set({})'".format(generator.get_version_string()),
-                        major=major,
-                        minor=minor,
-                        patch=patch,
+                        checksum=checksum,
                         n_islands=n_islands,
                         island_size=island_size,
                         migrant_pool_size=migrant_pool_size,
@@ -80,9 +76,7 @@ class TaskFactory():
                 CREATE TABLE IF NOT EXISTS topology_sets (
                     PrimaryKey INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
                     TopologySetID VARCHAR(255) NOT NULL,
-                    VersionMajor INT NOT NULL,
-                    VersionMinor INT NOT NULL,
-                    VersionPatch INT NOT NULL,
+                    Checksum INT NOT NULL,
                     NumIslands INT NOT NULL,
                     IslandSize INT NOT NULL,
                     MigrantPoolSize INT NOT NULL,
@@ -127,8 +121,7 @@ class TaskFactory():
         # for each topology, create a benchmark task
         self.benchmarks = []
         from sabaody import TopologyGenerator
-        generator = TopologyGenerator(island_size=island_size, migrant_pool_size=migrant_pool_size)
-        topologies = generator.generate_all(n_islands)
+        generator = TopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size)
 
         for topology in topologies:
             # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param

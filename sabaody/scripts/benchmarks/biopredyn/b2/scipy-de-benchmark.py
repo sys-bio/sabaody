@@ -30,8 +30,7 @@ time_start = arrow.utcnow()
 
 r = differential_evolution(
     func=lambda x: float(problem.fitness(x)[0]),
-    bounds=[(lb,ub) for lb,ub in zip(getLowerBound(),getUpperBound())],
-    maxiter=0)
+    bounds=[(lb,ub) for lb,ub in zip(getLowerBound(),getUpperBound())])
 
 time_end = arrow.utcnow()
 
