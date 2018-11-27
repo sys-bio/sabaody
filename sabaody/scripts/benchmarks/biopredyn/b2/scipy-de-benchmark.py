@@ -37,7 +37,7 @@ time_end = arrow.utcnow()
 
 values = r.x
 parameters_dict = {}
-for p,v in problem.evaluator.param_list,values:
+for p,v in zip(problem.evaluator.param_list,values):
     parameters_dict[p] = v
 
 pprint(parameters_dict)
@@ -49,7 +49,7 @@ commit_solo_benchmark_run(
     password='w00t',
     table=table,
     description='scipy de b2',
-    final_score=x.fun,
+    final_score=r.fun,
     final_params=parameters_dict,
     time_start=time_start,
     time_end=time_end)

@@ -82,9 +82,8 @@ def commit_solo_benchmark_run(host, user, database, password, table, description
     cursor = mariadb_connection.cursor()
     from pickle import dumps
     cursor.execute('\n'.join([
-        'INSERT INTO {table} (Description, FinalScore, FinalParams, TimeStart, TimeEnd)',
+        'INSERT INTO {table} (Description, FinalScore, FinalParams, TimeStart, TimeEnd)'.format(table=table),
         "VALUES ('{description}',{final_score},{final_params},'{time_start}','{time_end}');".format(
-            table=table,
             description=description,
             final_score=final_score,
             final_params='0x{}'.format(dumps(final_params).hex()),
