@@ -197,8 +197,8 @@ class TimecourseModel(Evaluator):
         if self.divergent():
             return 1e9*self.penalty_scale
         try:
-            # with timeout(10, StalledSimulation):
-            worker()
+            with timeout(10, StalledSimulation):
+                worker()
         except (RuntimeError, StalledSimulation):
             # if convergence fails, use a penalty score
             return 1e9*self.penalty_scale
