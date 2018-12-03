@@ -26,13 +26,21 @@ create_solo_benchmark_table(
 
 problem = B2_UDP(getLowerBound(),getUpperBound(),'../../../../../sbml/b2.xml')
 
+print('initial score: {}'.format(problem.fitness(getDefaultParamValues())[0]))
+
 time_start = arrow.utcnow()
 
+N = 1000
 r = differential_evolution(
     func=lambda x: float(problem.fitness(x)[0]),
-    bounds=[(lb,ub) for lb,ub in zip(getLowerBound(),getUpperBound())])
+    bounds=[(lb,ub) for lb,ub in zip(getLowerBound(),getUpperBound())],
+    maxiter=N)
 
 time_end = arrow.utcnow()
+
+print('final score: {}'.format(problem.fitness(r.x)[0]))
+print('max iterations: {}'.format(N))
+print('duration: {}'.format(time_end-time_start))
 
 values = r.x
 parameters_dict = {}

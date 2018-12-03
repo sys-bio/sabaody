@@ -190,7 +190,7 @@ class TimecourseModel(Evaluator):
         from interruptingcow import timeout
         self.reset()
         self.setParameterVector(x)
-        self.isProcessComplete = False
+        # self.isProcessComplete = False
         def worker():
             # wrapper around work function that can be used for timeout
             self.buildResidualList()

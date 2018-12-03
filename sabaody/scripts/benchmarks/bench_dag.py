@@ -30,7 +30,7 @@ def topology_generator(n_islands, island_size, migrant_pool_size, generations):
 
             # if this version is already stored, do nothing
             if n_matches == 0:
-                serialized_topologies = generator.serialize(n_islands)
+                serialized_topologies = generator.serialize()
                 # store in database
                 cursor.execute('\n'.join([
                     'INSERT INTO topology_sets (TopologySetID, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
@@ -123,7 +123,7 @@ class TaskFactory():
         from sabaody import TopologyGenerator
         generator = TopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size)
 
-        for topology in topologies:
+        for topology in generator.topologies:
             # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param
             self.benchmarks.append(SparkSubmitOperator(
                 task_id=legalize_name(topology['description']),

@@ -20,8 +20,11 @@ class TopologyGenerator:
         from sabaody.topology import TopologyFactory
         self.factory =  TopologyFactory(island_size=island_size,
                                         migrant_pool_size=migrant_pool_size)
+        self.n_islands = n_islands
+        self.island_size = island_size
+        self.migrant_pool_size = migrant_pool_size
         self.generations = generations
-        self._generate_all()
+        self._generate_all(n_islands)
 
 
     def new_topology(self, desc, archipelago, category=None, algorithms=None):
@@ -40,7 +43,9 @@ class TopologyGenerator:
 
 
     def get_checksum(self):
-        hash(dumps(self.topologies))
+        # from pickle import dumps
+        # return hash(dumps(self.topologies)) % 16777216
+        return hash(self.get_version()) % 16777216
 
 
     @classmethod
@@ -69,8 +74,7 @@ class TopologyGenerator:
         raise RuntimeError('No such topology "{}"'.format(desc))
 
 
-    def find_in_database(cls, desc, user, host, pw, db):
-        major,minor,patch = version
+    def find_in_database(self, desc, user, host, pw, db):
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host=host,user=user,passwd=pw,db=db)
         cursor = mariadb_connection.cursor()
@@ -78,16 +82,16 @@ class TopologyGenerator:
             '(Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
             '({checksum}, {n_islands}, {island_size}, {migrant_pool_size},{generations});'.format(
             checksum=self.get_checksum(),
-            n_islands=n_islands,
-            island_size=island_size,
-            migrant_pool_size=migrant_pool_size,
-            generations=generations,
+            n_islands=self.n_islands,
+            island_size=self.island_size,
+            migrant_pool_size=self.migrant_pool_size,
+            generations=self.generations,
         ))
         from pickle import loads
         t = cursor.fetchone()
         key = int(t[0])
         topologies = loads(t[1])
-        return (cls.find(desc,topologies),key)
+        return (self.find(desc,topologies),key)
 
 
     def _generate_all(self, n):

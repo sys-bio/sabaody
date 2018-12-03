@@ -219,10 +219,11 @@ class TimecourseRunConfiguration:
             m = db_regex.match(topology_name)
             from sabaody import TopologyGenerator
             generator = TopologyGenerator(
-                n_islands = m.group(5),
-                island_size = m.group(6),
-                migrant_pool_size = m.group(7),
-                generations = m.group(8))
+                n_islands = int(m.group(5)),
+                island_size = int(m.group(6)),
+                migrant_pool_size = int(m.group(7)),
+                generations = int(m.group(8)))
+            print(m.group(4))
             topology,id = generator.find_in_database(
                 desc = m.group(9),
                 user = m.group(1),
