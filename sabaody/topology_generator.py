@@ -61,9 +61,21 @@ class TopologyGenerator:
 
     def make_nelder_mead(self):
         nm = nlopt('neldermead')
-        nm.selection = 'random'
+        print(dir(nm))
+        nm.selection = 'best'
         nm.replacement = 'random'
+        nm.maxtime = 1
+        nm.maxeval = 10
         return nm
+
+
+    def make_praxis(self):
+        praxis = nlopt('praxis')
+        praxis.selection = 'best'
+        praxis.replacement = 'random'
+        praxis.maxtime = 1
+        praxis.maxeval = 10
+        return praxis
 
 
     @classmethod
@@ -78,7 +90,7 @@ class TopologyGenerator:
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host=host,user=user,passwd=pw,db=db)
         cursor = mariadb_connection.cursor()
-        cursor.execute('SELECT PrimaryKey,Content FROM topology_sets WHERE '+\
+        query_string = 'SELECT PrimaryKey,Content FROM topology_sets WHERE '+\
             '(Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
             '({checksum}, {n_islands}, {island_size}, {migrant_pool_size},{generations});'.format(
             checksum=self.get_checksum(),
@@ -86,9 +98,12 @@ class TopologyGenerator:
             island_size=self.island_size,
             migrant_pool_size=self.migrant_pool_size,
             generations=self.generations,
-        ))
+            )
+        cursor.execute(query_string)
         from pickle import loads
         t = cursor.fetchone()
+        if t is None:
+            raise RuntimeError('Entry not found for query {}'.format(query_string))
         key = int(t[0])
         topologies = loads(t[1])
         return (self.find(desc,topologies),key)
@@ -149,6 +164,12 @@ class TopologyGenerator:
           category='rings',
           algorithms=['de','neldermead'],
           archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=g),n)), self.make_nelder_mead()))
+        # de + praxis combo
+        self.de_nm_oring = self.new_topology(
+          desc='One-way ring, de+praxis',
+          category='rings',
+          algorithms=['de','praxis'],
+          archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=g),n)), self.make_praxis()))
         # de + nsga2 combo
         self.new_topology(
           desc='One-way ring, de+nsga2',

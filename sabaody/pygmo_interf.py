@@ -76,6 +76,14 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
     from sabaody.migration_central import CentralMigrator
 
     # TODO: configure pop size
+    # print('algorithm ', island.algorithm)
+    # print(dir(island.algorithm))
+    if hasattr(island.algorithm, 'maxeval'):
+        # print('maxeval ', island.algorithm.maxeval)
+        island.algorithm.maxeval = 1000
+    if hasattr(island.algorithm, 'maxtime'):
+        # print('maxtime ', island.algorithm.maxtime)
+        island.algorithm.maxtime = 10
     i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size)
 
     if monitor is not None:
@@ -90,8 +98,10 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
         from interruptingcow import timeout
         from .timecourse_model import StalledSimulation
         # with timeout(10, StalledSimulation):
+        print('island {} begin evolve'.format(island.id))
         i.evolve()
         i.wait()
+        print('island {} evolve finished'.format(island.id))
 
         # perform migration
         migrator.sendMigrants(island.id, i, topology)

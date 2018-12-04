@@ -133,8 +133,7 @@ class TaskFactory():
                 },
                 application='/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b2/b2-driver.py',
                 application_args=[
-                    '--topology',  'sql:sabaody@luna,pw=w00t,db=sabaody,version={version}(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):{desc}'.format(
-                        version=TopologyGenerator.get_version_string(),
+                    '--topology',  'sql:sabaody@luna,pw=w00t,db=sabaody(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):{desc}'.format(
                         n_islands=n_islands,
                         island_size=island_size,
                         migrant_pool_size=migrant_pool_size,
@@ -143,7 +142,7 @@ class TaskFactory():
                     ),
                     '--migration', 'central',
                     '--migration-policy', 'uniform',
-                    '--rounds', '20',
+                    '--rounds', '50',
                     '--description', '{}'.format(topology['description']),
                     '--host', 'luna',
                     '--selection-policy', 'best',
