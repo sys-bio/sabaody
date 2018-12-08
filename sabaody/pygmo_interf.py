@@ -60,7 +60,7 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
             monitor.update(x, 'island', island.id, 'round')
 
         from interruptingcow import timeout
-        from .timecourse_model import StalledSimulation
+        from .timecourse.timecourse_sim import StalledSimulation
         # with timeout(10, StalledSimulation):
         print('island {} begin evolve'.format(island.id))
         i.evolve()

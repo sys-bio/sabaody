@@ -10,7 +10,7 @@ import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
 from sabaody.utils import expect
 
-from .pygmo_interf import Evaluator
+from sabaody.pygmo_interf import Evaluator
 
 #raise RuntimeError('improt tc')
 
@@ -30,7 +30,7 @@ def valueAtTime(a,t):
         print(argwhere(a[:,0] == t))
         raise MissingValue
 
-class TimecourseModel(Evaluator):
+class TimecourseSim(Evaluator):
     ''' Class that performs a timecourse simulation
     and calculates the residuals for b4.'''
 
@@ -209,7 +209,7 @@ class TimecourseModel(Evaluator):
         '''
         Check whether the simulation has diverged (+-infinity).
         '''
-        from .utils import divergent
+        from sabaody.utils import divergent
         reaction_rates = self.r.getReactionRates()
         if divergent(reaction_rates):
             return true

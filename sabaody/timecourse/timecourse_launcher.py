@@ -6,7 +6,7 @@ from __future__ import print_function, division, absolute_import
 from sabaody import getQualifiedName, Archipelago
 
 from pymemcache.client.base import Client
-from .metrics import InfluxDBMetric
+from sabaody.metrics import InfluxDBMetric
 
 from pyspark import SparkContext, SparkConf
 
@@ -30,7 +30,7 @@ class MemcachedMonitor:
 
 
     def __enter__(self):
-        from .diagnostics import test_memcached
+        from sabaody.diagnostics import test_memcached
         test_memcached(self.mc_host, self.mc_port)
         self.setupMonitoringVariables()
         return self
@@ -82,7 +82,7 @@ class MemcachedMonitor:
     def update(self, value, *key):
         self.mc_client.set(self.getNameQualifier()(*list(str(k) for k in key)), str(value), 10000)
 
-class TimecourseRunConfiguration:
+class TimecourseSimLauncher:
     '''
     A class to handle initialization of the configuration of the problem run
     and algorithmic parameters, including the island topology, migration settings,
@@ -300,6 +300,26 @@ class TimecourseRunConfiguration:
 
     def create_metric(self, prefix):
         return InfluxDBMetric(host='luna', database_prefix=prefix) # FIXME: hardcoded
+
+
+    def calculateInitialScore(self):
+        with open(self.sbmlfile) as f:
+            sbml = f.read()
+
+            # show initial score
+            self.initial_score = self.udp.evaluate(self.getDefaultParamValues())
+            print('Initial score: {}'.format(self.initial_score))
+
+
+    def run_command(self, command):
+        if command == 'count-params':
+            with open(self.sbmlfile) as f:
+                sbml = f.read()
+                from b2problem import B2Problem
+                print('Number of parameters: {}'.format(len(
+        p = self.udp.getParameterNames())))
+        else:
+            return super().run_command(command)
 
 
     def run_command(self, command):

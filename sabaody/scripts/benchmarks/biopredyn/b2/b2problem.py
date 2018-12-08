@@ -3,7 +3,7 @@
 
 from __future__ import print_function, division, absolute_import
 
-from sabaody.timecourse_model import TimecourseModel
+from sabaody.timecourse.timecourse_sim import TimecourseSim
 from sabaody.scripts.benchmarks.biopredyn.benchsetup import BioPreDynUDP
 
 # try:
@@ -13,7 +13,7 @@ from data import *
 #     from .params import param_list, getUpperBound, getLowerBound
 #     from .data import *
 
-class B2Problem(TimecourseModel):
+class B2Problem(TimecourseSim):
     ''' Class that performs a timecourse simulation
     and calculates the residuals for b4.'''
 

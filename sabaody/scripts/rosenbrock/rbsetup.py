@@ -1,4 +1,4 @@
-from sabaody.problem_setup import ProblemSetup
+from sabaody.timecourse.timecourse_launcher import ProblemSetup
 
 class RBRun(ProblemSetup):
     '''

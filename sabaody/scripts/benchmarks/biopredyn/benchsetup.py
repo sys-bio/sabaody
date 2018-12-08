@@ -1,6 +1,6 @@
 from __future__ import print_function, division, absolute_import
 
-from sabaody.problem_setup import MemcachedMonitor, TimecourseRunConfiguration
+from sabaody.timecourse.timecourse_launcher import MemcachedMonitor, TimecourseSimLauncher
 
 import json
 
@@ -23,7 +23,7 @@ class BiopredynMCMonitor(MemcachedMonitor):
         from sabaody import getQualifiedName
         return partial(getQualifiedName, 'biopredyn', self.getName(), str(self.run))
 
-class BiopredynConfiguration(TimecourseRunConfiguration):
+class BiopredynConfiguration(TimecourseSimLauncher):
     @classmethod
     def from_cmdline_args(cls, app_name, sbmlfile, script_dir, udp, getDefaultParamValues):
         from os.path import join, abspath
@@ -145,26 +145,6 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
                 print('min champion score {}'.format(min_score))
                 print('mean champion score {}'.format(average_score))
                 print('Total run time: {}'.format(time_start.humanize()))
-
-
-    def calculateInitialScore(self):
-        with open(self.sbmlfile) as f:
-            sbml = f.read()
-
-        # show initial score
-        self.initial_score = self.udp.evaluate(self.getDefaultParamValues())
-        print('Initial score: {}'.format(self.initial_score))
-
-
-    def run_command(self, command):
-        if command == 'count-params':
-            with open(self.sbmlfile) as f:
-                sbml = f.read()
-                from b2problem import B2Problem
-                print('Number of parameters: {}'.format(len(
-        p = self.udp.getParameterNames())))
-        else:
-            return super().run_command(command)
 
 
 
