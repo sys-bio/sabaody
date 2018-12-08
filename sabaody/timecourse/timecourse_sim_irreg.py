@@ -10,7 +10,7 @@ import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
 from sabaody.utils import expect
 
-from sabaody.pygmo_interf import Evaluator
+from .timecourse_sim_base import TimecourseSimBase
 
 #raise RuntimeError('improt tc')
 
@@ -30,9 +30,8 @@ def valueAtTime(a,t):
         print(argwhere(a[:,0] == t))
         raise MissingValue
 
-class TimecourseSim(Evaluator):
-    ''' Class that performs a timecourse simulation
-    and calculates the residuals for b4.'''
+class TimecourseSimIrreg(TimecourseSimBase):
+    ''' Performs a timecourse simulation on an irregular grid.'''
 
     def __init__(self, sbml, data_quantities, measurement_map):
         '''
@@ -86,36 +85,6 @@ class TimecourseSim(Evaluator):
             # no measurement at this timepoint, do nothing
             return
 
-    def plotQuantity(self, identifier, bars=True):
-        ''' Plot a simulated quantity vs its data points using Tellurium.
-        The residuals should already be calculated.'''
-        data = self.measurement_map[identifier]
-        # data contains one column of time and one column of values
-        import tellurium as te
-        te.plot(data[:,0], data[:,1], scatter=True, name=identifier+' data', show=False, error_y_pos=maximum(array(self.quantity_residuals[identifier]),0), error_y_neg=-minimum(array(self.quantity_residuals[identifier]),0))
-        # simulate and plot the model
-        r = RoadRunner(self.sbml)
-        s = r.simulate(0,self.timepoints[-1],1000,['time',identifier])
-        te.plot(s[:,0], s[:,1], name=identifier+' sim')
-
-    def RMSE_quantity(self, identifier):
-        ''' Calc the RMSE of a quantity.'''
-        from math import sqrt
-        return sqrt(float((array(self.quantity_residuals[identifier])**2).mean()))
-
-    def MSE(self):
-        ''' Calc the MSE for all residuals.
-        Call this after calculating all residuals.'''
-        r = array(self.residuals)
-        return (r**2).mean()
-
-    def RMSE(self):
-        ''' Calc the RMSE for all residuals.
-        Call this after calculating all residuals.'''
-        from math import sqrt
-        r = sqrt(float(array(self.residuals)))
-        return (r**2).mean()
-
     def simulateToNextTime(self):
         t_begin = self.t
         t_end = self.timepoints[self.next_ti]
@@ -154,34 +123,6 @@ class TimecourseSim(Evaluator):
             self.next_ti += 1
 
 
-    def _setParameterVector(self, x, param_list, exponential=True):
-        # type: (array, List) -> None
-        expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
-        if exponential:
-            from math import exp
-            for i,v in enumerate(x):
-                self.r[param_list[i]] = exp(v)
-        else:
-            for i,v in enumerate(x):
-                self.r[param_list[i]] = v
-
-
-    def _getParametersDict(self, param_list, use_log=True):
-        # type: (List, bool) -> Dict
-        '''
-        Returns the current values of the parameters as a dictionary.
-        '''
-        expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
-        result = {}
-        if use_log:
-            from math import log
-            for p in param_list:
-                result[p] = log(self.r[p])
-        else:
-            for p in param_list:
-                result[p] = self.r[p]
-
-
     def evaluate(self, x):
         # type: (array) -> SupportsFloat
         """
@@ -203,16 +144,6 @@ class TimecourseSim(Evaluator):
             # if convergence fails, use a penalty score
             return 1e9*self.penalty_scale
         return self.MSE()
-
-
-    def divergent(self):
-        '''
-        Check whether the simulation has diverged (+-infinity).
-        '''
-        from sabaody.utils import divergent
-        reaction_rates = self.r.getReactionRates()
-        if divergent(reaction_rates):
-            return true
 
 
     def getUsageByQuantity(self):
@@ -245,26 +176,3 @@ class TimecourseSim(Evaluator):
             n = a.shape[0]
             print('Usage for {}: {}/{}'.format(q,used,n))
         print('*** Total usage: {}/{} ({:.1f}%)'.format(total_used,total,100.*total_used/total))
-
-
-    def setParameterVector(self, x):
-        '''
-        Set the entire parameter vector (x can be a 1d array).
-        '''
-        # type: (ndarray) -> None
-        self._setParameterVector(x, self.param_list)
-
-
-    def getParametersDict(self):
-        '''
-        Get the parameter names and current values as a dictionary.
-        '''
-        # type: () -> Dict
-        return self._getParametersDict(x, self.param_list, use_log=True)
-
-
-    def getParameterNames(self):
-        '''
-        Get the parameter names (SBML ids).
-        '''
-        return self.param_list
