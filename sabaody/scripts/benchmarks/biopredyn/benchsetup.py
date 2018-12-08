@@ -72,13 +72,13 @@ class BiopredynConfiguration(TimecourseRunConfiguration):
         mariadb_connection = MySQLdb.connect(host,user,password,database)
         cursor = mariadb_connection.cursor()
         from pickle import dumps
-        cursor.execute(
-            "DELETE FROM benchmark_runs WHERE (Benchmark, SuiteRunID, Description)=('{benchmark}',{suite_run_id},'{description}');".format(
-                benchmark=self.app_name,
-                suite_run_id=self.suite_run_id,
-                description=self.description,
-            ))
-        mariadb_connection.commit()
+        # cursor.execute(
+        #     "DELETE FROM benchmark_runs WHERE (Benchmark, SuiteRunID, Description)=('{benchmark}',{suite_run_id},'{description}');".format(
+        #         benchmark=self.app_name,
+        #         suite_run_id=self.suite_run_id,
+        #         description=self.description,
+        #     ))
+        # mariadb_connection.commit()
         cursor.execute('\n'.join([
             'INSERT INTO benchmark_runs (Benchmark, SuiteRunID, Description, TopologyID, Rounds, Generations, ChampionScores, MinScore, AverageScore, TimeStart, TimeEnd)',
             "VALUES ('{benchmark}',{suite_run_id},'{description}','{topologyid}',{rounds},{generations},{champion_scores},{min_score},{average_score},'{time_start}','{time_end}');".format(

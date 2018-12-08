@@ -37,7 +37,7 @@ def benchmark_differential_evolution():
         prob=problem(B2_UDP(getLowerBound(),getUpperBound(),'../../../../../sbml/b2.xml')),
         size=10)
 
-    N = 10
+    N = 50
     import arrow
     time_start = arrow.utcnow()
     print('Differential Evolution (pop. size {})'.format(island.get_population().get_f().size))
@@ -52,4 +52,4 @@ def benchmark_differential_evolution():
 
 if __name__ == "__main__":
     benchmark_differential_evolution()
-    benchmark_simulated_annealing()
+    # benchmark_simulated_annealing()

@@ -26,7 +26,6 @@ def topology_generator(n_islands, island_size, migrant_pool_size, generations):
             ))
             x = cursor.fetchone()
             n_matches = int(x[0])
-            # print('n_matches', n_matches)
 
             # if this version is already stored, do nothing
             if n_matches == 0:
@@ -81,7 +80,7 @@ class TaskFactory():
                     IslandSize INT NOT NULL,
                     MigrantPoolSize INT NOT NULL,
                     Generations INT NOT NULL,
-                    Content BLOB NOT NULL);''',
+                    Content MEDIUMBLOB NOT NULL);''',
             dag=dag)
 
         # first, make sure the SQL tables exist
