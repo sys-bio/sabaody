@@ -1,7 +1,7 @@
 # Sabaody
 # Copyright 2018 Shaik Asifullah and J Kyle Medley
 
-from numpy import array, zeros
+from numpy import array
 from typing import SupportsFloat
 from builtins import super
 import os
@@ -16,12 +16,12 @@ class TimecourseSimValidate(TimecourseSimBase):
     ''' Validates convergence to a given set of parameters.
     Generates datapoints on a grid for measured_quantities.'''
 
-    def __init__(self, sbml, measured_quantities, reference_params, time_start, time_end, n):
+    def __init__(self, sbml, measured_quantities, param_list, reference_param_values, time_start, time_end, n):
         '''
         Constructor.
 
         :param measured_quantities: A list of the measured quantities.
-        :param reference_params: The vector of parameter values in the reference state.
+        :param reference_param_values: The vector of parameter values in the reference state.
         :param time_start: Start time of the simulation.
         :param time_end: End time of the simulation.
         :param n: Number of intervals/points in simulation.
@@ -32,10 +32,9 @@ class TimecourseSimValidate(TimecourseSimBase):
         self.time_end = time_end
         self.n = n
         self.r.selections = ['time'] + measured_quantities
-        self.param_list = measured_quantities
-        self.setParameterVector(reference_params)
-        self.reference_values = array(self.r.simulate(time_start, time_end, n)[:,1:])
-        # self.reference_params = reference_params
+        self.param_list = param_list
+        self.setParameterVector(reference_param_values)
+        self.reference_quantities = array(self.r.simulate(time_start, time_end, n)[:,1:])
 
 
     def evaluate(self, x):
@@ -48,7 +47,7 @@ class TimecourseSimValidate(TimecourseSimBase):
         self.setParameterVector(x)
         def worker():
             values = self.r.simulate(self.time_start, self.time_end, self.n)
-            residuals = values[:,1:] - self.reference_values
+            residuals = values[:,1:] - self.reference_quantities
             return (residuals**2).mean()
         if self.divergent():
             return 1e9*self.penalty_scale

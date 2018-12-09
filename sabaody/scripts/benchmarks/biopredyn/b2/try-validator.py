@@ -13,8 +13,9 @@ from os.path import abspath
 
 sim = TimecourseSimValidate(
     sbml = abspath('../../../../../sbml/b2.xml'),
-    measured_quantities = param_list,
-    reference_params = getBestKnownValues(),
+    measured_quantities = ['cpep', 'cg6p', 'cpyr', 'cf6p', 'cglcex', 'cg1p', 'cpg', 'cfdp', 'cgap'],
+    param_list = param_list,
+    reference_param_values = getBestKnownValues(),
     time_start = 0.,
     time_end = 300.,
     n=100)
