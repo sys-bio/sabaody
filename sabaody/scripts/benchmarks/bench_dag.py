@@ -96,7 +96,7 @@ class TaskFactory():
                     TopologyID VARCHAR(255) NOT NULL,
                     Rounds INT,
                     Generations INT,
-                    ChampionScores BLOB NOT NULL,
+                    Champions BLOB NOT NULL,
                     MinScore DOUBLE NOT NULL,
                     AverageScore DOUBLE NOT NULL,
                     TimeStart DATETIME NOT NULL,

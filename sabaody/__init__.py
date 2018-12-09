@@ -5,7 +5,8 @@ __version__ = '0.1.0'
 
 #from .diffevo import differential_evolution
 from .pygmo_interf import Evaluator, Archipelago, Island, run_island
-from .timecourse.timecourse_sim import TimecourseSim
+from .timecourse.timecourse_sim_base import TimecourseSimBase
+from .timecourse.timecourse_sim_irreg import TimecourseSimIrreg
 from .topology import TopologyFactory
 from .topology_generator import TopologyGenerator
 from .utils import getQualifiedName

@@ -1,3 +1,6 @@
+# Sabaody
+# Copyright 2018 Shaik Asifullah and J Kyle Medley
+
 from __future__ import print_function, division, absolute_import
 
 from collections import OrderedDict
@@ -12,23 +15,8 @@ from sabaody.utils import expect
 
 from sabaody.pygmo_interf import Evaluator
 
-#raise RuntimeError('improt tc')
-
 class StalledSimulation(RuntimeError):
     pass
-
-class MissingValue(Exception):
-    pass
-
-def valueAtTime(a,t):
-    ''' Find a value in a matching the measurement time t. '''
-    try:
-        return float(a[argwhere(a[:,0] == t)[0],1])
-    except IndexError:
-        raise MissingValue
-    except TypeError:
-        print(argwhere(a[:,0] == t))
-        raise MissingValue
 
 class TimecourseSimBase(Evaluator):
     ''' Base class for timecourse simulations.'''

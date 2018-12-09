@@ -1,3 +1,6 @@
+# Sabaody
+# Copyright 2018 Shaik Asifullah and J Kyle Medley
+
 from __future__ import print_function, division, absolute_import
 
 from collections import OrderedDict
@@ -10,12 +13,7 @@ import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
 from sabaody.utils import expect
 
-from .timecourse_sim_base import TimecourseSimBase
-
-#raise RuntimeError('improt tc')
-
-class StalledSimulation(RuntimeError):
-    pass
+from .timecourse_sim_base import TimecourseSimBase, StalledSimulation
 
 class MissingValue(Exception):
     pass
@@ -131,9 +129,7 @@ class TimecourseSimIrreg(TimecourseSimBase):
         from interruptingcow import timeout
         self.reset()
         self.setParameterVector(x)
-        # self.isProcessComplete = False
         def worker():
-            # wrapper around work function that can be used for timeout
             self.buildResidualList()
         if self.divergent():
             return 1e9*self.penalty_scale
