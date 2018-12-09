@@ -10,7 +10,7 @@ import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
 from sabaody.utils import expect
 
-from .timecourse_sim_base import TimecourseSimBase
+from .timecourse_sim_base import TimecourseSimBase, StalledSimulation
 
 class TimecourseSimValidate(TimecourseSimBase):
     ''' Validates convergence to a given set of parameters.
@@ -32,7 +32,7 @@ class TimecourseSimValidate(TimecourseSimBase):
         self.time_end = time_end
         self.n = n
         self.r.selections = ['time'] + measured_quantities
-        # self.measured_quantities = measured_quantities
+        self.param_list = measured_quantities
         self.setParameterVector(reference_params)
         self.reference_values = array(self.r.simulate(time_start, time_end, n)[:,1:])
         # self.reference_params = reference_params
