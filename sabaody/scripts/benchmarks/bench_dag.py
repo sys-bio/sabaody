@@ -99,6 +99,8 @@ class TaskFactory():
                     Champions BLOB NOT NULL,
                     MinScore DOUBLE NOT NULL,
                     AverageScore DOUBLE NOT NULL,
+                    ValidationMode BOOLEAN NOT NULL,
+                    ValidationPoints INT NOT NULL,
                     TimeStart DATETIME NOT NULL,
                     TimeEnd DATETIME NOT NULL);''',
             dag=dag)

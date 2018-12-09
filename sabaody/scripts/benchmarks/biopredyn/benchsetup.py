@@ -25,7 +25,7 @@ class BiopredynMCMonitor(MemcachedMonitor):
 
 class BiopredynConfiguration(TimecourseSimLauncher):
     @classmethod
-    def from_cmdline_args(cls, app_name, sbmlfile, script_dir, udp, getDefaultParamValues):
+    def from_cmdline_args(cls, app_name, sbmlfile, script_dir, udp_constructor, getDefaultParamValues):
         from os.path import join, abspath
 
         # set files to be copied to the cwd of each executor
@@ -35,6 +35,7 @@ class BiopredynConfiguration(TimecourseSimLauncher):
         py_files = ','.join(join(script_dir,p) for p in [
             'data.py',
             'b2problem.py',
+            'b2problem_validator.py',
             'params.py',
             ])
         py_files += ','+join(script_dir,'..','benchsetup.py')
@@ -42,7 +43,7 @@ class BiopredynConfiguration(TimecourseSimLauncher):
         result = super(BiopredynConfiguration,cls).from_cmdline_args(app_name, spark_files, py_files)
         result.app_name = app_name
         result.sbmlfile = sbmlfile
-        result.udp = udp
+        result.udp_constructor = udp_constructor
         result.getDefaultParamValues = getDefaultParamValues
         return result
 
@@ -67,7 +68,7 @@ class BiopredynConfiguration(TimecourseSimLauncher):
             return json.load(f)
 
 
-    def commit_results_to_database(self, host, user, database, password, rounds, generations, champions, min_score, average_score, time_start, time_end):
+    def commit_results_to_database(self, host, user, database, password, rounds, generations, champions, min_score, average_score, validation_mode, validation_points, time_start, time_end):
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host,user,password,database)
         cursor = mariadb_connection.cursor()
@@ -80,8 +81,8 @@ class BiopredynConfiguration(TimecourseSimLauncher):
         #     ))
         # mariadb_connection.commit()
         cursor.execute('\n'.join([
-            'INSERT INTO benchmark_runs (Benchmark, SuiteRunID, Description, TopologyID, Rounds, Generations, Champions, MinScore, AverageScore, TimeStart, TimeEnd)',
-            "VALUES ('{benchmark}',{suite_run_id},'{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},'{time_start}','{time_end}');".format(
+            'INSERT INTO benchmark_runs (Benchmark, SuiteRunID, Description, TopologyID, Rounds, Generations, Champions, MinScore, ValidationMode, ValidationPoints, AverageScore, TimeStart, TimeEnd)',
+            "VALUES ('{benchmark}',{suite_run_id},'{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
                 benchmark=self.app_name,
                 suite_run_id=self.suite_run_id,
                 description=self.description,
@@ -91,6 +92,8 @@ class BiopredynConfiguration(TimecourseSimLauncher):
                 champions='0x{}'.format(dumps(champions).hex()),
                 min_score=min_score,
                 average_score=average_score,
+                validation_mode=validation_mode,
+                validation_points=validation_points,
                 time_start=time_start.format('YYYY-MM-DD HH:mm:ss'),
                 time_end=time_end.format('YYYY-MM-DD HH:mm:ss'),
                 )]))
@@ -140,6 +143,8 @@ class BiopredynConfiguration(TimecourseSimLauncher):
                     champions=champions,
                     min_score=best_score,
                     average_score=average_score,
+                    validation_mode=self.validation_mode,
+                    validation_points=self.validation_points,
                     time_start=time_start,
                     time_end=time_end)
 

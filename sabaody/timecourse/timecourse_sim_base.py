@@ -21,18 +21,6 @@ class StalledSimulation(RuntimeError):
 class TimecourseSimBase(Evaluator):
     ''' Base class for timecourse simulations.'''
 
-    def plotQuantity(self, identifier, bars=True):
-        ''' Plot a simulated quantity vs its data points using Tellurium.
-        The residuals should already be calculated.'''
-        data = self.measurement_map[identifier]
-        # data contains one column of time and one column of values
-        import tellurium as te
-        te.plot(data[:,0], data[:,1], scatter=True, name=identifier+' data', show=False, error_y_pos=maximum(array(self.quantity_residuals[identifier]),0), error_y_neg=-minimum(array(self.quantity_residuals[identifier]),0))
-        # simulate and plot the model
-        r = RoadRunner(self.sbml)
-        s = r.simulate(0,self.timepoints[-1],1000,['time',identifier])
-        te.plot(s[:,0], s[:,1], name=identifier+' sim')
-
 
     def RMSE_quantity(self, identifier):
         ''' Calc the RMSE of a quantity.'''
@@ -59,16 +47,16 @@ class TimecourseSimBase(Evaluator):
         self.r.resetAll()
 
 
-    def _setParameterVector(self, x, param_list, exponential=True):
+    def _setParameterVector(self, x, param_list, rr_instance, exponential=True):
         # type: (array, List) -> None
         expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
         if exponential:
             from math import exp
             for i,v in enumerate(x):
-                self.r[param_list[i]] = exp(v)
+                rr_instance[param_list[i]] = exp(v)
         else:
             for i,v in enumerate(x):
-                self.r[param_list[i]] = v
+                rr_instance[param_list[i]] = v
 
 
     def _getParametersDict(self, param_list, use_log=True):
@@ -102,7 +90,7 @@ class TimecourseSimBase(Evaluator):
         Set the entire parameter vector (x can be a 1d array).
         '''
         # type: (ndarray) -> None
-        self._setParameterVector(x, self.param_list)
+        self._setParameterVector(x, self.param_list, self.r)
 
 
     def getParametersDict(self):

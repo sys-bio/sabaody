@@ -4,15 +4,10 @@
 from __future__ import print_function, division, absolute_import
 
 from sabaody.timecourse.timecourse_sim_irreg import TimecourseSimIrreg
-from sabaody.timecourse.timecourse_sim_validate import TimecourseSimValidate
 from sabaody.scripts.benchmarks.biopredyn.benchsetup import BioPreDynUDP
 
-# try:
 from params import param_list, getUpperBound, getLowerBound
 from data import *
-# except ImportError:
-#     from .params import param_list, getUpperBound, getLowerBound
-#     from .data import *
 
 class B2Problem(TimecourseSimIrreg):
     ''' Class that performs a timecourse simulation

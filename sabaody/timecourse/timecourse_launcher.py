@@ -159,6 +159,10 @@ class TimecourseSimLauncher:
                             help='A description of the topology used.')
         #parser.add_argument('--num-islands', type=int, required=True,
                             #help='The migration scheme to use')
+        parser.add_argument('--validation-mode', type=bool, default=False,
+                            help='If true, run in validation mode.')
+        parser.add_argument('--validation-points', type=int, default=0,
+                            help='If in validation mode, the number of points for the reference simulation.')
         return parser
 
 
@@ -195,6 +199,8 @@ class TimecourseSimLauncher:
         config.rounds = args.rounds
         config.description = args.description
         config.generations = None
+        config.validation_mode = args.validation_mode
+        config.validation_points = args.validation_points
         config.command = args.command
 
         config._initialize_spark(app_name, spark_files, py_files)
@@ -324,6 +330,7 @@ class TimecourseSimLauncher:
 
     def run_command(self, command):
         if command == 'run' or command == 'run-islands':
+            self.udp = self.udp_constructor(self.validation_mode, self.validation_points)
             return self.run_islands()
         else:
             raise RuntimeError('Unrecognized command: {}'.format(command))

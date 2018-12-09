@@ -39,3 +39,6 @@ champions = retrieve('sabaody', 'luna', 'w00t', 'sabaody')
 best_f, best_x = champions[0]
 print('champ score {}'.format(best_f))
 pprint(best_x)
+print('diff with best known:')
+from params import getBestKnownValues
+pprint(best_x-getBestKnownValues())

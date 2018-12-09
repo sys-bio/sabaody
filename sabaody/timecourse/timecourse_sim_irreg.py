@@ -56,6 +56,22 @@ class TimecourseSimIrreg(TimecourseSimBase):
         self.quantity_residuals = dict((quantity,list()) for quantity in self.measurement_map)
         self.penalty_scale = 1.
 
+
+    def plotQuantity(self, identifier, param_values, bars=True):
+        ''' Plot a simulated quantity vs its data points using Tellurium.
+        The residuals should already be calculated.'''
+        data = self.measurement_map[identifier]
+        # data contains one column of time and one column of values
+        import tellurium as te
+        te.plot(data[:,0], data[:,1], scatter=True, name=identifier+' data', show=False, error_y_pos=maximum(array(self.quantity_residuals[identifier]),0), error_y_neg=-minimum(array(self.quantity_residuals[identifier]),0))
+        # simulate and plot the model
+        r = RoadRunner(self.sbml)
+        if param_values is not None:
+            self._setParameterVector(param_values, self.param_list, r)
+        s = r.simulate(0,self.timepoints[-1],1000,['time',identifier])
+        te.plot(s[:,0], s[:,1], name=identifier+' sim')
+
+
     def calcResiduals(self,t):
         ''' Try to calculate residuals at the current time t
         and add them to self.residuals.
