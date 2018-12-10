@@ -80,7 +80,7 @@ class BiopredynConfiguration(TimecourseSimLauncher):
         #         description=self.description,
         #     ))
         # mariadb_connection.commit()
-        cursor.execute('\n'.join([
+        query = '\n'.join([
             'INSERT INTO benchmark_runs (Benchmark, SuiteRunID, Description, TopologyID, Rounds, Generations, Champions, MinScore, ValidationMode, ValidationPoints, AverageScore, TimeStart, TimeEnd)',
             "VALUES ('{benchmark}',{suite_run_id},'{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
                 benchmark=self.app_name,
@@ -96,7 +96,9 @@ class BiopredynConfiguration(TimecourseSimLauncher):
                 validation_points=validation_points,
                 time_start=time_start.format('YYYY-MM-DD HH:mm:ss'),
                 time_end=time_end.format('YYYY-MM-DD HH:mm:ss'),
-                )]))
+                )])
+        print(query)
+        cursor.execute(query)
         mariadb_connection.commit()
 
 

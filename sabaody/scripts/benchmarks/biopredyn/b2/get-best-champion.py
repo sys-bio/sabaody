@@ -5,12 +5,19 @@ from __future__ import print_function, division, absolute_import
 
 import sabaody
 from pprint import pprint
+import sys
+query_key = None
+if len(sys.argv) > 1:
+    query_key = sys.argv[1]
 
 def retrieve(user, host, pw, db):
     import MySQLdb
     mariadb_connection = MySQLdb.connect(host=host,user=user,passwd=pw,db=db)
     cursor = mariadb_connection.cursor()
-    query_string = 'SELECT PrimaryKey, Champions, Benchmark, Description, Rounds, Generations, MinScore, timediff(TimeEnd, TimeStart) FROM benchmark_runs ORDER BY MinScore;'
+    if query_key is None:
+        query_string = 'SELECT PrimaryKey, Champions, Benchmark, Description, Rounds, Generations, MinScore, timediff(TimeEnd, TimeStart) FROM benchmark_runs ORDER BY MinScore;'
+    else:
+        query_string = 'SELECT PrimaryKey, Champions, Benchmark, Description, Rounds, Generations, MinScore, timediff(TimeEnd, TimeStart) FROM benchmark_runs WHERE PrimaryKey={} ORDER BY MinScore;'.format(query_key)
     cursor.execute(query_string)
     from pickle import loads
     t = cursor.fetchone()
