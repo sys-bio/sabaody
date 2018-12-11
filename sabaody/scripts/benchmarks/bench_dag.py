@@ -64,8 +64,8 @@ class TaskFactory():
     def create(self, dag):
         n_islands = 10
         island_size = 10
-        migrant_pool_size = 2
-        generations = 10 # ideally same as island_size
+        migrant_pool_size = 4
+        generations = 1000 # ideally same as island_size
 
         # first, make sure the SQL tables exist
         self.setup_topology_sets_table = MySqlOperator(

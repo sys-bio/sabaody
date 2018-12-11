@@ -12,8 +12,8 @@ mc_port = 11211
 client = Client((mc_host,mc_port))
 
 def domainJoin(s,*args):
-    return '.'.join(['com.how2cell.sabaody.biopredyn.b2-driver',str(s),*list(str(a) for a in args)])
+    return '.'.join(['com.how2cell.sabaody.rb-driver',str(s),*list(str(a) for a in args)])
 
-domain_qualifier = partial(getQualifiedName, 'biopredyn', 'b2-driver')
+domain_qualifier = partial(getQualifiedName, 'rb-driver')
 
 Screen.wrapper(partial(print_out_status, client, domainJoin, domain_qualifier))

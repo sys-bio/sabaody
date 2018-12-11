@@ -10,3 +10,4 @@ from .timecourse.timecourse_sim_irreg import TimecourseSimIrreg
 from .topology import TopologyFactory
 from .topology_generator import TopologyGenerator
 from .utils import getQualifiedName
+from .migration import MigrationPolicyUniform, MigrationPolicyEachToAll, BestSPolicy, FairRPolicy

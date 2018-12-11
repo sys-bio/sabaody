@@ -10,6 +10,7 @@ Logger.setLevel(Logger.LOG_FATAL)
 from sabaody.utils import create_solo_benchmark_table, commit_solo_benchmark_run
 from params import getDefaultParamValues, getUpperBound, getLowerBound
 from b2problem import B2_UDP
+from b2problem_validator import B2Validator_UDP
 
 import arrow
 from scipy.optimize import differential_evolution
@@ -24,7 +25,7 @@ create_solo_benchmark_table(
     password='w00t',
     table=table)
 
-problem = B2_UDP(getLowerBound(),getUpperBound(),'../../../../../sbml/b2.xml')
+problem = B2Validator_UDP(getLowerBound(),getUpperBound(),'../../../../../sbml/b2.xml')
 
 print('initial score: {}'.format(problem.fitness(getDefaultParamValues())[0]))
 

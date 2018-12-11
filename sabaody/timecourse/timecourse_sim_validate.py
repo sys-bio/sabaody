@@ -40,7 +40,7 @@ class TimecourseSimValidate(TimecourseSimBase):
         self.reference_time = array(sim[:,0])
         self.reference_quantities = array(sim[:,1:])
         self.reference_quantity_means_squared = mean(self.reference_quantities, axis=0)**2
-        print(self.reference_quantity_means_squared)
+        # print(self.reference_quantity_means_squared)
 
         self.penalty_scale = 1.
 
@@ -78,13 +78,13 @@ class TimecourseSimValidate(TimecourseSimBase):
         def worker():
             values = self.r.simulate(self.time_start, self.time_end, self.n)
             residuals = array(values[:,1:] - self.reference_quantities)
-            residuals *= 10.
+            # residuals *= 100.
             # print('residuals:')
             # print(residuals)
             # print(array(residuals**2))
             quantity_mse = mean(residuals**2,axis=0)/self.reference_quantity_means_squared
-            print('quantity_mse')
-            print(quantity_mse)
+            # print('quantity_mse')
+            # print(quantity_mse)
             return sqrt(mean(quantity_mse))
         if self.divergent():
             return 1e9*self.penalty_scale

@@ -48,7 +48,7 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
     if hasattr(island.algorithm, 'maxtime'):
         print('maxtime ', island.algorithm.maxtime)
         island.algorithm.maxtime = 1
-    i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size)
+    i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size, udi=pg.mp_island(use_pool=False))
 
     if monitor is not None:
         monitor.update('Running', 'island', island.id, 'status')
@@ -64,10 +64,10 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
         from interruptingcow import timeout
         from .timecourse.timecourse_sim_irreg import StalledSimulation
         # with timeout(10, StalledSimulation):
-        print('island {} begin evolve'.format(island.id))
+        # print('island {} begin evolve'.format(island.id))
         i.evolve()
         i.wait()
-        print('island {} evolve finished'.format(island.id))
+        # print('island {} evolve finished'.format(island.id))
 
         # perform migration
         migrator.sendMigrants(island.id, i, topology)
@@ -77,6 +77,8 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
         if best_f is None or f[0] < best_f[0]:
             best_f = f
             best_x = x
+        if monitor is not None:
+            monitor.update('{:6.4}'.format(float(best_f[0])), 'island', island.id, 'best_f')
 
         if metric is not None:
             metric.process_deltas(deltas,src_ids,float(i.get_population().champion_f[0]))
