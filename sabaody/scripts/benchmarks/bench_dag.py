@@ -63,9 +63,9 @@ def legalize_name(name):
 class TaskFactory():
     def create(self, dag):
         n_islands = 10
-        island_size = 10
+        island_size = 100
         migrant_pool_size = 4
-        generations = 1000 # ideally same as island_size
+        generations = 1000
 
         # first, make sure the SQL tables exist
         self.setup_topology_sets_table = MySqlOperator(
