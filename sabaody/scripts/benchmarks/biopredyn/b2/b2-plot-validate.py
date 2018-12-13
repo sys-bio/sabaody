@@ -39,6 +39,13 @@ values = \
 
 
 n=100
+
+from numpy import mean, abs, exp, min, max
+print('parameter variation')
+print('  average: {:.2f} ({:.0f}%)'.format(mean(abs(values-getBestKnownValues())), exp(mean(abs(values-getBestKnownValues())))*100.-100.))
+print('  min: {:.4f} ({:.0f}%)'.format(min(abs(values-getBestKnownValues())), exp(min(abs(values-getBestKnownValues())))*100.-100.))
+print('  max: {:.2f} ({:.0f}%)'.format(max(abs(values-getBestKnownValues())), exp(max(abs(values-getBestKnownValues())))*100.-100.))
+
 with open('../../../../../sbml/b2.xml') as f:
     sbml = f.read()
 m = B2ProblemValidator(sbml, n)

@@ -1,7 +1,7 @@
 # Sabaody
 # Copyright 2018 Shaik Asifullah and J Kyle Medley
 
-from numpy import array, maximum, minimum, mean, sqrt
+from numpy import array, maximum, minimum, mean, sqrt, abs
 from typing import SupportsFloat
 from builtins import super
 import os
@@ -56,6 +56,10 @@ class TimecourseSimValidate(TimecourseSimBase):
         s = r.simulate(0,float(self.reference_time[-1]),n,['time',identifier])
         simulated_quantity = s[:,1]
         residuals = simulated_quantity - reference_quantity
+        # relative residuals
+        # print('avg relative deviation for ', identifier, ': {:.1f}'.format(mean(abs(residuals/reference_quantity))*100.), '%')
+        # residuals normalized to overall mean
+        print('avg relative deviation for ', identifier, ': {:.1f}'.format(mean(abs(residuals))/mean(abs(reference_quantity))*100.), '%')
         r.reset()
         s = r.simulate(0,float(self.reference_time[-1]),1000,['time',identifier])
 

@@ -63,7 +63,7 @@ def legalize_name(name):
 class TaskFactory():
     def create(self, dag):
         n_islands = 10
-        island_size = 100
+        island_size = 500
         migrant_pool_size = 4
         generations = 1000
 

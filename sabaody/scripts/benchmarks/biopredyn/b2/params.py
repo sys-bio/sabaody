@@ -160,7 +160,7 @@ d = {
 # sort by name and make ordered dict
 params = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
 from math import log
-param_array = array(list(log(float(v)) for v in params.values()))
+param_array = array(list(log(float(v), 10.) for v in params.values()))
 
 param_list = list(params.keys())
 

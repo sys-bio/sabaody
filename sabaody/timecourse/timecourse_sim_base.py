@@ -51,9 +51,9 @@ class TimecourseSimBase(Evaluator):
         # type: (array, List) -> None
         expect(len(x) == len(param_list), 'Wrong length for parameter vector - expected {} but got {}'.format(len(param_list), len(x)))
         if exponential:
-            from math import exp
+            from math import pow
             for i,v in enumerate(x):
-                rr_instance[param_list[i]] = exp(v)
+                rr_instance[param_list[i]] = pow(10., v)
         else:
             for i,v in enumerate(x):
                 rr_instance[param_list[i]] = v
@@ -69,7 +69,7 @@ class TimecourseSimBase(Evaluator):
         if use_log:
             from math import log
             for p in param_list:
-                result[p] = log(self.r[p])
+                result[p] = log(self.r[p], 10.)
         else:
             for p in param_list:
                 result[p] = self.r[p]

@@ -81,6 +81,8 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
             monitor.update('{:6.4}'.format(float(best_f[0])), 'island', island.id, 'best_f')
 
         if metric is not None:
+            # TODO: send objective function value over time to metric
+            # TODO: send objective function evaluations to metric
             metric.process_deltas(deltas,src_ids,float(i.get_population().champion_f[0]))
         migration_log.append((float(i.get_population().champion_f[0]),deltas,src_ids))
 
