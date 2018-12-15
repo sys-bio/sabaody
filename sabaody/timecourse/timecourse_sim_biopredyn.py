@@ -10,12 +10,12 @@ import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
 from sabaody.utils import expect
 
-from .timecourse_sim_aligned import TimecourseSimAligned, StalledSimulation
+from .timecourse_sim_base import TimecourseSimBase, StalledSimulation
 
-class TimecourseSimBiopredyn(TimecourseSimAligned):
+class TimecourseSimBiopredyn(TimecourseSimBase):
     ''' Evaluates objective function for aligned timecourses. '''
 
-    def __init__(self, sbml, measured_quantities, scaled_data, scaled_error):
+    def __init__(self, sbml, time_values, measured_quantities, param_ids, scaled_data, scaled_error):
         '''
         Constructor.
 
@@ -26,15 +26,12 @@ class TimecourseSimBiopredyn(TimecourseSimAligned):
         self.sbml = sbml
         self.r = RoadRunner(sbml)
         self.r.selections = ['time'] + measured_quantities
+        self.time_values = time_values
+        assert self.time_values[0] == 0.
         self.measured_quantities = measured_quantities
-        self.param_list = param_list
-        self.setParameterVector(reference_param_values)
-
-        sim = self.r.simulate(time_start, time_end, n)
-        self.reference_time = array(sim[:,0])
-        self.reference_quantities = array(sim[:,1:])
-        self.reference_quantity_means_squared = mean(self.reference_quantities, axis=0)**2
-        # print(self.reference_quantity_means_squared)
+        self.param_list = param_ids
+        self.scaled_data = scaled_data
+        self.scaled_error = scaled_error
 
         self.penalty_scale = 1.
 
@@ -48,18 +45,16 @@ class TimecourseSimBiopredyn(TimecourseSimAligned):
         self.reset()
         self.setParameterVector(x)
         def worker():
-            values = self.r.simulate(self.time_start, self.time_end, self.n)
-            residuals = array(values[:,1:] - self.reference_quantities)
-            # residuals *= 100.
-            # print('residuals:')
-            # print(residuals)
-            # print(array(residuals**2))
-            quantity_mse = mean(residuals**2,axis=0)/self.reference_quantity_means_squared
-            # print('quantity_mse')
-            # print(quantity_mse)
-            return sqrt(mean(quantity_mse))
-        if self.divergent():
-            return 1e9*self.penalty_scale
+            t_now = 0.
+            scaled_residuals = zeros((len(self.time_values), len(self.measured_quantities)))
+            for it_next in range(1, len(self.time_values)):
+                t_now = self.r.simulate(t_now, self.time_values[it_next], 10)
+                t_now = self.time_values[it_next]
+                if self.divergent():
+                    return 1e9*self.penalty_scale
+                for iq,q in enumerate(self.measured_quantities):
+                    scaled_residuals[it_next-1,iq] = (self.r[q]-self.scaled_data[it_next-1,iq])/self.scaled_error[it_next-1,iq]
+            return sqrt(mean(scaled_residuals**.2))
         try:
             with timeout(10, StalledSimulation):
                 return worker()

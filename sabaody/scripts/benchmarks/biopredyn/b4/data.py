@@ -1,7 +1,7 @@
 # Sabaody
 # Copyright 2018 Shaik Asifullah and J Kyle Medley
 
-from numpy import array
+from numpy import array, zeros
 
 quantity_names = ['Product_protein', 'L-Methionine', 'L-Leucine', 'L-Lactate', 'beta-D-Glucose', 'L-Aspartate', 'L-Malate', 'Pyruvate', 'Oxaloacetate', 'ATP', 'ATP', 'ADP', 'ADP_c']
 
@@ -20,6 +20,8 @@ timecourse_data = array([
     [282.53, 39.16229127, 4223.934695, 4229.786474, 189350.8377, 350136.0051, 945.7524046, 2018.02482, 4965.805674, 459.569613, 3248.126308, 3303.223152, 634.2843344, 740.5121927],
     [300, 39.36873083, 3819.952372, 3226.591797, 170253.9838, 362466.0386, 962.815767, 2167.954632, 4922.316021, 461.1326466, 3189.167366, 3335.671338, 664.509921, 757.3732437],
     ])
+
+time_values = array(timecourse_data[:,0])
 
 n_obs = 13
 n_quantities = len(quantity_names)
@@ -77,44 +79,24 @@ css = array([
     1000,
 ])
 
-conc_indices = array(k-1 for k in [5, 4, 3, 2, 1, 29, 27, 21, 15, 13, 30, 32, 11])
+conc_indices = list(k for k in [5, 4, 3, 2, 1, 29, 27, 21, 15, 13, 30, 32, 11])
 
-scaled_data = hstack((timecourse_stddev[:,k+1]/css[k] for k in range(len(conc_indices))))
-    timecourse_stddev[:, 1]/css[ 5-1],
-    timecourse_stddev[:, 2]/css[ 4-1],
-    timecourse_stddev[:, 3]/css[ 3-1],
-    timecourse_stddev[:, 4]/css[ 2-1],
-    timecourse_stddev[:, 5]/css[ 1-1],
-    timecourse_stddev[:, 6]/css[29-1],
-    timecourse_stddev[:, 7]/css[27-1],
-    timecourse_stddev[:, 8]/css[21-1],
-    timecourse_stddev[:, 9]/css[15-1],
-    timecourse_stddev[:,10]/css[13-1],
-    timecourse_stddev[:,11]/css[30-1],
-    timecourse_stddev[:,12]/css[32-1],
-    timecourse_stddev[:,13]/css[11-1],
-    ))
+conc_ids = list('c_{:02d}'.format(i) for i in conc_indices)
+name_to_id_map = {name: conc_ids[k] for k,name in enumerate(quantity_names)}
 
-scaled_error = hstack((
-    timecourse_stddev[:, 1]/css[ 5-1],
-    timecourse_stddev[:, 2]/css[ 4-1],
-    timecourse_stddev[:, 3]/css[ 3-1],
-    timecourse_stddev[:, 4]/css[ 2-1],
-    timecourse_stddev[:, 5]/css[ 1-1],
-    timecourse_stddev[:, 6]/css[29-1],
-    timecourse_stddev[:, 7]/css[27-1],
-    timecourse_stddev[:, 8]/css[21-1],
-    timecourse_stddev[:, 9]/css[15-1],
-    timecourse_stddev[:,10]/css[13-1],
-    timecourse_stddev[:,11]/css[30-1],
-    timecourse_stddev[:,12]/css[32-1],
-    timecourse_stddev[:,13]/css[11-1],
-    ))
+scaled_data = zeros((n_obs, n_quantities))
+for k in range(len(conc_indices)):
+    scaled_data[:,k] = timecourse_data[:,k+1]/css[conc_indices[k]-1]
+
+scaled_error = zeros((n_obs, n_quantities))
+for k in range(len(conc_indices)):
+    scaled_error[:,k] = timecourse_stddev[:,k+1]/css[conc_indices[k]-1]
 
 # unfortunately both are the same, so this is useless
-assert scaled_error.shape == n_obs,n_quantities
+assert scaled_data.shape == (n_obs,n_quantities)
+assert scaled_error.shape == (n_obs,n_quantities)
 # instead test some of the values
-assert scaled_data[0,0] == timecourse_data[0,1]/css[5]
-assert scaled_data[n_obs-1,0] == timecourse_data[n_obs,1]/css[5]
-assert scaled_error[0,0] == timecourse_stddev[0,1]/css[5]
-assert scaled_error[n_obs-1,0] == timecourse_stddev[n_obs,1]/css[5]
+assert scaled_data[0,0] == timecourse_data[0,1]/css[5-1]
+assert scaled_data[n_obs-1,0] == timecourse_data[n_obs-1,1]/css[5-1]
+assert scaled_error[0,0] == timecourse_stddev[0,1]/css[5-1]
+assert scaled_error[n_obs-1,0] == timecourse_stddev[n_obs-1,1]/css[5-1]
