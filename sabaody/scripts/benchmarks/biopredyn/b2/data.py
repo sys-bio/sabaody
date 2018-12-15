@@ -1,3 +1,6 @@
+# Sabaody
+# Copyright 2018 Shaik Asifullah and J Kyle Medley
+
 import numpy as np
 
 def reshape(a):

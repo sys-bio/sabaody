@@ -10,9 +10,9 @@ import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
 from sabaody.utils import expect
 
-from .timecourse_sim_base import TimecourseSimBase, StalledSimulation
+from .timecourse_sim_base import TimecourseSimAligned, StalledSimulation
 
-class TimecourseSimValidate(TimecourseSimBase):
+class TimecourseSimValidate(TimecourseSimAligned):
     ''' Validates convergence to a given set of parameters.
     Generates datapoints on a grid for measured_quantities.'''
 
@@ -69,32 +69,3 @@ class TimecourseSimValidate(TimecourseSimBase):
             error_y_pos=maximum(residuals,0),
             error_y_neg=-minimum(residuals,0))
         te.plot(s[:,0], s[:,1], name=identifier+' sim')
-
-
-    def evaluate(self, x):
-        # type: (array) -> SupportsFloat
-        """
-        Evaluate and return the objective function.
-        """
-        from interruptingcow import timeout
-        self.reset()
-        self.setParameterVector(x)
-        def worker():
-            values = self.r.simulate(self.time_start, self.time_end, self.n)
-            residuals = array(values[:,1:] - self.reference_quantities)
-            # residuals *= 100.
-            # print('residuals:')
-            # print(residuals)
-            # print(array(residuals**2))
-            quantity_mse = mean(residuals**2,axis=0)/self.reference_quantity_means_squared
-            # print('quantity_mse')
-            # print(quantity_mse)
-            return sqrt(mean(quantity_mse))
-        if self.divergent():
-            return 1e9*self.penalty_scale
-        try:
-            with timeout(10, StalledSimulation):
-                return worker()
-        except (RuntimeError, StalledSimulation):
-            # if convergence fails, use a penalty score
-            return 1e9*self.penalty_scale
