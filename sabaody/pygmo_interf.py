@@ -43,10 +43,10 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
     print('algorithm ', island.algorithm)
     print(dir(island.algorithm))
     if hasattr(island.algorithm, 'maxeval'):
-        print('maxeval ', island.algorithm.maxeval)
+        # print('maxeval ', island.algorithm.maxeval)
         island.algorithm.maxeval = 1000
     if hasattr(island.algorithm, 'maxtime'):
-        print('maxtime ', island.algorithm.maxtime)
+        # print('maxtime ', island.algorithm.maxt.ime)
         island.algorithm.maxtime = 1
     i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size, udi=pg.mp_island(use_pool=False))
 
@@ -83,7 +83,8 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
         if metric is not None:
             # TODO: send objective function value over time to metric
             # TODO: send objective function evaluations to metric
-            metric.process_deltas(deltas,src_ids,float(i.get_population().champion_f[0]))
+            metric.process_champion(island.id, best_f, best_x)
+            metric.process_deltas(deltas,src_ids)
         migration_log.append((float(i.get_population().champion_f[0]),deltas,src_ids))
 
     #import socket

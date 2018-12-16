@@ -11,7 +11,7 @@ class Metric:
 
 class InfluxDBMetric(Metric):
     '''
-    Keeps metrics in an InfluxDB database.
+    InfluxDB metric processor.
     '''
     def __init__(self, host='localhost', port=8086, username='root', password='root', database=None, database_prefix=None, ssl=False, verify_ssl=False, timeout=None, retries=3, use_udp=False, udp_port=4444, proxies=None):
         self.client = InfluxDBClient(host=host, port=port, username=username, password=password, database=None, ssl=ssl, verify_ssl=verify_ssl, timeout=timeout, retries=retries, use_udp=use_udp, udp_port=udp_port, proxies=proxies)
@@ -22,7 +22,8 @@ class InfluxDBMetric(Metric):
                 database = database_prefix + str(uuid4())
         self.database = database
 
-    def process_deltas(self, deltas, src_ids, current_champ_score):
+
+    def process_deltas(self, deltas, src_ids):
         self.client.write_points([
             { 'measurement': 'delta',
               'time': arrow.utcnow().isoformat(),
@@ -33,8 +34,22 @@ class InfluxDBMetric(Metric):
               }
             } for delta,src_id in zip(deltas,src_ids)])
 
+
+    def process_champion(self, island_id, best_f, best_x):
+        self.client.write_points([
+            { 'measurement': 'champion',
+              'time': arrow.utcnow().isoformat(),
+              'fields': {
+                  'island_id': island_id,
+                  'best_f': best_f.tolist(),
+                  'best_x': best_x.tolist(),
+              }
+            } for delta,src_id in zip(deltas,src_ids)])
+
+
     def __enter__(self):
         self.client.create_database(self.database)
+
 
     def __exit__(self, exception_type, exception_val, trace):
         self.client.drop_database(self.database)

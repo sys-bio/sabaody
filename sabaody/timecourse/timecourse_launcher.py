@@ -188,6 +188,8 @@ class TimecourseSimLauncher:
                             help='The command. Can be "run" or "count-params".')
         parser.add_argument('--host', metavar='hostname', required=True,
                             help='The hostname of the master node of the spark cluster with optional port, e.g. localhost:7077')
+        parser.add_argument('--metric-host', required=True,
+                            help='The host of the metric processor (InfluxDB) with optional port, e.g. localhost:8086')
         parser.add_argument('--topology',
                             help='The topology to use.')
         parser.add_argument('--num-islands', type=int, # not used if reading from a database / file
@@ -251,6 +253,11 @@ class TimecourseSimLauncher:
             config.port = 7077
         else:
             config.hostname,config.port = args.host.split(':')
+        if not ':' in args.metric_host:
+            config.metric_host = args.metric_host
+            config.metric_port = 8086
+        else:
+            config.metric_host,config.metric_port = args.metric_port.split(':')
         config.topology_name = args.topology
         config.migrator_name = args.migration
         config.migration_policy = cls.select_migration_policy(args.migration_policy)
@@ -373,8 +380,9 @@ class TimecourseSimLauncher:
         else:
             raise RuntimeError('Migration scheme undefined')
 
+
     def create_metric(self, prefix):
-        return InfluxDBMetric(host='luna', database_prefix=prefix) # FIXME: hardcoded
+        return InfluxDBMetric(host=self.metric_host, port=self.metric_port, database_prefix=prefix)
 
 
     def calculateInitialScore(self):
