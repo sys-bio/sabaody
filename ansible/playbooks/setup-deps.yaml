@@ -6,6 +6,20 @@
       template: src=../configs/imodel-paths.j2 dest=~/.imodel-paths
 
 
+    - name: Check if imodel-deps repo exists.
+      stat:
+        path: ~/imodel-deps
+      register: imodel_deps_dir
+
+
+    - name: Clone imodel-deps repository
+      git:
+        repo: https://github.com/0u812/imodel-deps.git
+        version: master
+        dest: ~/imodel-deps
+      when: not imodel_deps_dir.stat.exists
+
+
     - name: Add paths to .profile
       lineinfile:
         path: ~/.profile
