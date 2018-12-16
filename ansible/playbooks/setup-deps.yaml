@@ -1,0 +1,24 @@
+---
+
+- hosts: all
+  tasks:
+    - name: Write Supervisor Config File
+      template: src=../configs/imodel-paths.j2 dest=~/.imodel-paths mode=0755
+
+    - name Add paths to .profile
+      - lineinfile:
+        path: ~/.profile
+        line: 'source ~/.imodel-paths'
+
+
+    - name: Create config directory
+      file:
+        path: "{{ item }}"
+        state: directory
+        with_items:
+          - ~/config
+          - ~/config/hadoop
+          - ~/config/spark
+          - ~/config/kafka
+          - ~/config/zookeeper
+          - ~/config/elasticsearch
