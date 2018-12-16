@@ -5,6 +5,7 @@
     - name: Write environment variables for Apache tool paths
       template: src=../configs/imodel-paths.j2 dest=~/.imodel-paths mode=0755
 
+
     - name: Add paths to .profile
       lineinfile:
         path: ~/.profile
@@ -22,3 +23,13 @@
         - ~/config/kafka
         - ~/config/zookeeper
         - ~/config/elasticsearch
+
+
+    - name: Create hadoop data directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - ~/data
+        - ~/data/dataNode
+        - ~/data/nameNode
