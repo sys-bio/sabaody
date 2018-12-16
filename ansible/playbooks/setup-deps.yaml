@@ -3,13 +3,19 @@
 - hosts: all
   tasks:
     - name: Write environment variables for Apache tool paths
-      template: src=../configs/imodel-paths.j2 dest=~/.imodel-paths mode=0755
+      template: src=../configs/imodel-paths.j2 dest=~/.imodel-paths
 
 
     - name: Add paths to .profile
       lineinfile:
         path: ~/.profile
         line: 'source ~/.imodel-paths'
+
+
+    - name: Add .profile to .zshrc
+      lineinfile:
+        path: ~/.zshrc
+        line: 'source ~/.profile'
 
 
     - name: Create config directory
@@ -33,3 +39,6 @@
         - ~/data
         - ~/data/dataNode
         - ~/data/nameNode
+
+    - name: Write hadoop config
+      template: src=../configs/hadoop/core-site.xml.j2 dest=~/config/hadoop/core-site.xml
