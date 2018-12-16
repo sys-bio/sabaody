@@ -54,11 +54,16 @@
         - ~/data/dataNode
         - ~/data/nameNode
 
+    - name: Get hadoop config files
+      shell   : ls ~/imodel-deps/hadoop-2.7.7/etc/hadoop/*
+      register: hadoop_config_files
+
     - name: Copy hadoop config files
       copy:
+        remote_src: True
         src: "{{ item }}"
         dest: ~/config/hadoop
-      with_items: "{{ lookup('fileglob', '~/imodel-deps/hadoop-2.7.7/etc/hadoop/*', wantlist=true) | reject('search', 'core-site.xml') | reject('search', 'hdfs-site.xml') | list }}"
+      with_items: "{{ hadoop_config_files.stdout_lines | reject('search', 'core-site.xml') | reject('search', 'hdfs-site.xml') | list }}"
 
     - name: Write hadoop config files
       template: src=../configs/hadoop/core-site.xml.j2 dest=~/config/hadoop/core-site.xml

@@ -1,10 +1,10 @@
 <configuration>
   <property>
    <name>dfs.namenode.name.dir</name>
-   <value>file://{{lookup('env','HOME')}}/data/nameNode</value>
+   <value>file://{{ansible_env.HOME}}/data/nameNode</value>
   </property>
   <property>
    <name>dfs.datanode.data.dir</name>
-   <value>file://{{lookup('env','HOME')}}/data/dataNode</value>
+   <value>file://{{ansible_env.HOME}}/data/dataNode</value>
   </property>
 </configuration>
