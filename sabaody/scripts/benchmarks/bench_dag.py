@@ -91,7 +91,7 @@ class TaskFactory():
                 CREATE TABLE IF NOT EXISTS benchmark_runs (
                     PrimaryKey INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
                     Benchmark VARCHAR(255) NOT NULL,
-                    SuiteRunID INT NOT NULL,
+                    RunID VARCHAR(255) NOT NULL,
                     Description TEXT NOT NULL,
                     TopologyID VARCHAR(255) NOT NULL,
                     Rounds INT,

@@ -18,9 +18,10 @@ class MemcachedMonitor:
     Abstracts some of the logic of setting up a parameter fitting problem.
     Provides information via MC for monitoring.
     '''
-    def __init__(self, name, mc_host, mc_port, run=None):
+    def __init__(self, name, mc_host, mc_port, run=None, run_id=None):
         self.name = name
         self.run = run
+        self.run_id = run_id
         self.mc_host = mc_host
         self.mc_port = mc_port
         self.mc_client = Client((self.mc_host,self.mc_port))
@@ -51,7 +52,8 @@ class MemcachedMonitor:
             self.run += 1
         self.mc_client.set(self.domainAppend('run'), self.run, 604800)
 
-        self.run_id = str(uuid4())
+        if self.run_id is None:
+            self.run_id = str(uuid4())
         # self.mc_client.set(self.domainAppend('runId'), self.run_id, 604800)
         self.mc_client.set(self.domainAppend('run.startTime'), str(time()), 604800)
         self.mc_client.set(self.domainAppend('run.status'), 'active', 604800)
@@ -153,6 +155,9 @@ class TimecourseSimLauncher:
     and Spark configs.
     This class takes a topology name and generates a corresponding topology.
     '''
+    def __init__(self):
+        self.run_id = str(uuid4())
+
     def _initialize_spark(self, app_name, spark_files, py_files):
         '''
         Sets up the Spark config to bundle all Python scripts and SBML files

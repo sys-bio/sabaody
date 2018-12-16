@@ -74,17 +74,17 @@ class BiopredynConfiguration(TimecourseSimLauncher):
         cursor = mariadb_connection.cursor()
         from pickle import dumps
         # cursor.execute(
-        #     "DELETE FROM benchmark_runs WHERE (Benchmark, SuiteRunID, Description)=('{benchmark}',{suite_run_id},'{description}');".format(
+        #     "DELETE FROM benchmark_runs WHERE (Benchmark, RunID, Description)=('{benchmark}',{suite_run_id},'{description}');".format(
         #         benchmark=self.app_name,
         #         suite_run_id=self.suite_run_id,
         #         description=self.description,
         #     ))
         # mariadb_connection.commit()
         query = '\n'.join([
-            'INSERT INTO benchmark_runs (Benchmark, SuiteRunID, Description, TopologyID, Rounds, Generations, Champions, MinScore, ValidationMode, ValidationPoints, AverageScore, TimeStart, TimeEnd)',
-            "VALUES ('{benchmark}',{suite_run_id},'{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
+            'INSERT INTO benchmark_runs (Benchmark, RunID, Description, TopologyID, Rounds, Generations, Champions, MinScore, ValidationMode, ValidationPoints, AverageScore, TimeStart, TimeEnd)',
+            "VALUES ('{benchmark}',{run_id},'{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
                 benchmark=self.app_name,
-                suite_run_id=self.suite_run_id,
+                run_id=self.run_id,
                 description=self.description,
                 topologyid=self.topology_id,
                 rounds=rounds,
