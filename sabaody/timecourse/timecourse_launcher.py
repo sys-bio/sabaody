@@ -382,7 +382,9 @@ class TimecourseSimLauncher:
 
 
     def create_metric(self, prefix):
-        return InfluxDBMetric(host=self.metric_host, port=self.metric_port, database=prefix+self.run_id)
+        metric = InfluxDBMetric(host=self.metric_host, port=self.metric_port, database=prefix+self.run_id)
+        print ('using influxdb database {}'.format(metric.database))
+        return metric
 
 
     def calculateInitialScore(self):
