@@ -44,7 +44,7 @@
         - ~/config/zookeeper
         - ~/config/elasticsearch
 
-
+    # Hadoop
     - name: Create hadoop data directories
       file:
         path: "{{ item }}"
@@ -63,10 +63,29 @@
         remote_src: True
         src: "{{ item }}"
         dest: ~/config/hadoop
-      with_items: "{{ hadoop_config_files.stdout_lines | reject('search', 'core-site.xml') | reject('search', 'hdfs-site.xml') | list }}"
+      with_items: "{{ hadoop_config_files.stdout_lines | reject('search', 'core-site.xml') | reject('search', 'hdfs-site.xml') | reject('search', 'slaves') | list }}"
 
     - name: Write hadoop config files
       template: src=../configs/hadoop/core-site.xml.j2 dest=~/config/hadoop/core-site.xml
 
     - name: Write hadoop config files
       template: src=../configs/hadoop/hdfs-site.xml.j2 dest=~/config/hadoop/hdfs-site.xml
+
+    - name: Write hadoop config files
+      template: src=../configs/hadoop/slaves.j2 dest=~/config/hadoop/slaves
+
+
+    # Spark
+    - name: Get spark config files
+      shell   : ls ~/imodel-deps/spark-2.4.0-bin-hadoop2.7/conf/*
+      register: spark_config_files
+
+    - name: Copy spark config files
+      copy:
+        remote_src: True
+        src: "{{ item }}"
+        dest: ~/config/spark
+      with_items: "{{ spark_config_files.stdout_lines | reject('search', 'spark-env.sh') | list }}"
+
+    - name: Write spark config files
+      template: src=../configs/spark/spark-env.sh.j2 dest=~/config/spark/spark-env.sh

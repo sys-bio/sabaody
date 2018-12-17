@@ -1,13 +1,10 @@
-# Hadoop 2.7.7
+# Hadoop
 export HADOOP_HOME={{lookup('env','HOME')}}/imodel-deps/hadoop-2.7.7
-
-export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
 export HADOOP_CONF_DIR={{lookup('env','HOME')}}/config/hadoop
-
-# spark
-export SPARK_HOME={{lookup('env','HOME')}}/imodel-deps/spark-2.4.0-bin-hadoop2.7
-export PATH=$SPARK_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native:$LD_LIBRARY_PATH
+export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
 
-# spark 2.4.0
+# Spark
+export SPARK_HOME={{lookup('env','HOME')}}/imodel-deps/spark-2.4.0-bin-hadoop2.7
+export SPARK_CONF_DIR={{lookup('env','HOME')}}/config/spark
 export PATH=$SPARK_HOME/bin:$SPARK_HOME/sbin:$PATH
