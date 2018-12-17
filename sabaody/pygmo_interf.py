@@ -80,9 +80,8 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
         if monitor is not None:
             monitor.update('{:6.4}'.format(float(best_f[0])), 'island', island.id, 'best_f')
 
+        # TODO: send objective function evaluations to metric
         if metric is not None:
-            # TODO: send objective function value over time to metric
-            # TODO: send objective function evaluations to metric
             metric.process_champion(island.id, best_f, best_x)
             metric.process_deltas(deltas,src_ids)
         migration_log.append((float(i.get_population().champion_f[0]),deltas,src_ids))
@@ -96,7 +95,7 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
 class Archipelago:
     def __init__(self, topology, metric=None, monitor=None):
         self.topology = topology
-        self.metric = metric
+        # self.metric = metric
         self.monitor=monitor
 
         self.mc_host = None
@@ -113,6 +112,12 @@ class Archipelago:
             mc_client.set(self.domain_qualifier('islandIds'), dumps(self.topology.island_ids), 10000)
 
     def run(self, sc, migrator, udp, rounds):
+        assert self.metric is not None
         def worker(island):
-            return run_island(island,self.topology,migrator,udp,rounds,self.metric,self.monitor)
+            return run_island(island,self.topology,
+                migrator=migrator,
+                udp=udp,
+                rounds=rounds,
+                metric=self.metric,
+                monitor=self.monitor)
         return sc.parallelize(self.topology.islands, numSlices=len(self.topology.islands)).map(worker).collect()

@@ -92,6 +92,7 @@ class TaskFactory():
                     PrimaryKey INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
                     Benchmark VARCHAR(255) NOT NULL,
                     RunID VARCHAR(255) NOT NULL,
+                    MetricID VARCHAR(255) NOT NULL,
                     Description TEXT NOT NULL,
                     TopologyID VARCHAR(255) NOT NULL,
                     Rounds INT,

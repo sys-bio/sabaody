@@ -68,7 +68,7 @@ class BiopredynConfiguration(TimecourseSimLauncher):
             return json.load(f)
 
 
-    def commit_results_to_database(self, host, user, database, password, rounds, generations, champions, min_score, average_score, validation_mode, validation_points, time_start, time_end):
+    def commit_results_to_database(self, host, user, database, password, rounds, generations, champions, min_score, average_score, validation_mode, validation_points, time_start, time_end, metric_id):
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host,user,password,database)
         cursor = mariadb_connection.cursor()
@@ -81,10 +81,11 @@ class BiopredynConfiguration(TimecourseSimLauncher):
         #     ))
         # mariadb_connection.commit()
         query = '\n'.join([
-            'INSERT INTO benchmark_runs (Benchmark, RunID, Description, TopologyID, Rounds, Generations, Champions, MinScore, ValidationMode, ValidationPoints, AverageScore, TimeStart, TimeEnd)',
-            "VALUES ('{benchmark}','{run_id}','{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
+            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, Rounds, Generations, Champions, MinScore, ValidationMode, ValidationPoints, AverageScore, TimeStart, TimeEnd)',
+            "VALUES ('{benchmark}','{run_id}','{metric_id}','{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
                 benchmark=self.app_name,
                 run_id=self.run_id,
+                metric_id=metric_id,
                 description=self.description,
                 topologyid=self.topology_id,
                 rounds=rounds,
@@ -126,6 +127,7 @@ class BiopredynConfiguration(TimecourseSimLauncher):
 
                 a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
                 a.monitor = monitor
+                a.metric = metric
                 results = a.run(self.spark_context, migrator, self.udp, self.rounds)
                 champions = sorted([(f[0],x) for f,x in results], key=lambda t: t[0])
                 champion_scores = [f for f,x in champions]
@@ -148,7 +150,8 @@ class BiopredynConfiguration(TimecourseSimLauncher):
                     validation_mode=self.validation_mode,
                     validation_points=self.validation_points,
                     time_start=time_start,
-                    time_end=time_end)
+                    time_end=time_end,
+                    metric_id = metric.database)
 
                 print('min champion score {}'.format(best_score))
                 print('mean champion score {}'.format(average_score))

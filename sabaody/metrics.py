@@ -3,6 +3,7 @@
 from __future__ import print_function, division, absolute_import
 
 from influxdb import InfluxDBClient
+import arrow
 
 from uuid import uuid4
 
@@ -20,7 +21,7 @@ class InfluxDBMetric(Metric):
                 raise RuntimeError('Expected a database name')
             else:
                 database = database_prefix + str(uuid4())
-        self.database = database
+        # self.database = database.replace('.','_').replace('-','_')
 
 
     def process_deltas(self, deltas, src_ids):
@@ -29,10 +30,10 @@ class InfluxDBMetric(Metric):
               'time': arrow.utcnow().isoformat(),
               'fields': {
                   'abs_delta': float(delta),
-                  'delta_rel_to_champ': float(delta)/current_champ_score,
+                  # 'delta_rel_to_champ': float(delta)/current_champ_score,
                   'src_id': src_id,
               }
-            } for delta,src_id in zip(deltas,src_ids)])
+            } for delta,src_id in zip(deltas,src_ids)], database=self.database)
 
 
     def process_champion(self, island_id, best_f, best_x):
@@ -41,15 +42,17 @@ class InfluxDBMetric(Metric):
               'time': arrow.utcnow().isoformat(),
               'fields': {
                   'island_id': island_id,
-                  'best_f': best_f.tolist(),
-                  'best_x': best_x.tolist(),
+                  'best_f': repr(best_f.tolist()),
+                  'best_x': repr(best_x.tolist()),
               }
-            } for delta,src_id in zip(deltas,src_ids)])
+            }], database=self.database)
 
 
     def __enter__(self):
         self.client.create_database(self.database)
+        return self
 
 
     def __exit__(self, exception_type, exception_val, trace):
-        self.client.drop_database(self.database)
+        pass
+        # self.client.drop_database(self.database)
