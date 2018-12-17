@@ -136,7 +136,9 @@ param_ids = [name_to_id_map[name] for name in parameter_list]
 default_values = [parameter_map[name][2] for name in parameter_list]
 from math import log
 default_log_values = [log(v, 10.) for v in default_values]
+assert len(default_log_values) == 117
 param_array = array(default_log_values)
+assert param_array.size == 117
 
 def getDefaultParamValues():
     # type: () -> array

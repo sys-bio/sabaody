@@ -6,7 +6,7 @@ from params import getDefaultParamValues, getUpperBound, getLowerBound
 from b2problem import B2_UDP
 from b2problem_validator import B2Validator_UDP
 
-from os.path import dirname, realpath
+from os.path import join, dirname, realpath
 
 def get_udp(validation_mode,n):
     if not validation_mode:
@@ -14,6 +14,13 @@ def get_udp(validation_mode,n):
     else:
         return B2Validator_UDP(getLowerBound(),getUpperBound(),n=n)
 
-config = BiopredynConfiguration.from_cmdline_args('b2-driver', '../../../../../sbml/b2.xml', dirname(realpath(__file__)), get_udp, getDefaultParamValues)
+script_dir = dirname(realpath(__file__))
+py_files = ','.join(join(script_dir,p) for p in [
+    'data.py',
+    'b2problem.py',
+    'b2problem_validator.py',
+    'params.py',
+    ])
+config = BiopredynConfiguration.from_cmdline_args('b2-driver', '../../../../../sbml/b2.xml', script_dir, get_udp, getDefaultParamValues, py_files)
 
 config.run_command(config.command)

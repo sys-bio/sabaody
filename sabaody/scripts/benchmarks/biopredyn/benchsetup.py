@@ -25,19 +25,23 @@ class BiopredynMCMonitor(MemcachedMonitor):
 
 class BiopredynConfiguration(TimecourseSimLauncher):
     @classmethod
-    def from_cmdline_args(cls, app_name, sbmlfile, script_dir, udp_constructor, getDefaultParamValues):
+    def from_cmdline_args(cls, app_name, sbmlfile, script_dir, udp_constructor, getDefaultParamValues, py_files):
         from os.path import join, abspath
 
         # set files to be copied to the cwd of each executor
+        # spark_files = ','.join(join(script_dir,p) for p in [
+        #     abspath(join('..','..','..','..','..','sbml','b2.xml')),
+        #     ])
         spark_files = ','.join(join(script_dir,p) for p in [
-            abspath(join('..','..','..','..','..','sbml','b2.xml')),
+            abspath(join('..','..','..','..','..','sbml','b4.xml')),
             ])
-        py_files = ','.join(join(script_dir,p) for p in [
-            'data.py',
-            'b2problem.py',
-            'b2problem_validator.py',
-            'params.py',
-            ])
+        # py_files = ','.join(join(script_dir,p) for p in [
+        #     'data.py',
+        #     'b2problem.py', # FIXME
+        #     'b4problem.py',
+        #     'b2problem_validator.py',
+        #     'params.py',
+        #     ])
         py_files += ','+join(script_dir,'..','benchsetup.py')
 
         result = super(BiopredynConfiguration,cls).from_cmdline_args(app_name, spark_files, py_files)
@@ -123,7 +127,7 @@ class BiopredynConfiguration(TimecourseSimLauncher):
                                                 self.replacement_policy)
                 from sabaody.migration_central import CentralMigrator
                 if isinstance(migrator, CentralMigrator):
-                    migrator.defineMigrantPools(a.topology, 116)
+                    migrator.defineMigrantPools(a.topology, 117) # FIXME
 
                 a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
                 a.monitor = monitor

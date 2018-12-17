@@ -1,7 +1,7 @@
 # Sabaody
 # Copyright 2018 Shaik Asifullah and J Kyle Medley
 
-from numpy import array, maximum, minimum, mean, sqrt, abs
+from numpy import array, maximum, minimum, mean, sqrt, abs, zeros
 from typing import SupportsFloat
 from builtins import super
 import os
@@ -54,7 +54,7 @@ class TimecourseSimBiopredyn(TimecourseSimBase):
                     return 1e9*self.penalty_scale
                 for iq,q in enumerate(self.measured_quantities):
                     scaled_residuals[it_next-1,iq] = (self.r[q]-self.scaled_data[it_next-1,iq])/self.scaled_error[it_next-1,iq]
-            return sqrt(mean(scaled_residuals**.2))
+            return sqrt(mean(scaled_residuals**2.))
         try:
             with timeout(10, StalledSimulation):
                 return worker()

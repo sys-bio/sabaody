@@ -229,7 +229,7 @@ class MigrationServiceHost:
         fitness_array = array(fitness_array)
         assert len(migrant_array.shape) == len(fitness_array.shape) == 2
         if migrant_array.shape[1] != self.param_vector_size:
-            raise RuntimeError('Expected migrant vector of length {} but received length {}'.format(self.param_vector_size, migrant_array.size))
+            raise RuntimeError('Expected migrant vector of length {} but received size {}'.format(self.param_vector_size, migrant_array.shape))
         for migrant_row,fitness_row in zip(migrant_array,fitness_array):
             self._migrant_pools[str(id)].push(migrant_row, fitness_row, src_island_id)
 

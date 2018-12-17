@@ -52,7 +52,7 @@ class B4Problem(TimecourseSimBiopredyn):
         te.plot(s[:,0], s[:,1], name=quantity+' sim')
 
 
-class B2_UDP(BioPreDynUDP):
+class B4_UDP(BioPreDynUDP):
     def __init__(self, lb, ub, sbml_file='b4.xml'):
         super().__init__(lb=lb, ub=ub, sbml_file=sbml_file)
 

@@ -291,4 +291,3 @@ class Migrator(ABC):
     def pull_migrants(self,island_id, buffer_length, generation=1):
         from sabaody.kafka_migration_service import KafkaMigrator
         return KafkaMigrator.welcome(island_id,buffer_length,generation)
-

@@ -21,6 +21,7 @@ class InfluxDBMetric(Metric):
                 raise RuntimeError('Expected a database name')
             else:
                 database = database_prefix + str(uuid4())
+        self.database = database
         # self.database = database.replace('.','_').replace('-','_')
 
 
