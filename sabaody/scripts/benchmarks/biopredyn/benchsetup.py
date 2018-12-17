@@ -97,7 +97,7 @@ class BiopredynConfiguration(TimecourseSimLauncher):
                 champions='0x{}'.format(dumps(champions).hex()),
                 min_score=min_score,
                 average_score=average_score,
-                validation_mode=validation_mode,
+                validation_mode=validation_mode*1,
                 validation_points=validation_points,
                 time_start=time_start.format('YYYY-MM-DD HH:mm:ss'),
                 time_end=time_end.format('YYYY-MM-DD HH:mm:ss'),

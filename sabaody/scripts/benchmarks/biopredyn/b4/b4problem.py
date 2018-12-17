@@ -31,17 +31,21 @@ class B4Problem(TimecourseSimBiopredyn):
 
         r = RoadRunner(self.sbml)
         self._setParameterVector(param_values, self.param_list, r)
+        r.reset()
         # r.selections = ['time', quantity_id]
         t_now = 0.
         simulated_quantity = zeros((len(self.time_values),))
         residuals = zeros((len(self.time_values),))
         for it_next in range(1, len(self.time_values)):
-            r.simulate(t_now, self.time_values[it_next], 10)
+            self._setParameterVector(param_values, self.param_list, r)
+            r.simulate(t_now, self.time_values[it_next], 100)
+            # r.reset(); r.simulate(0, 300, 100)
             t_now = self.time_values[it_next]
             simulated_quantity[it_next-1] = r[quantity_id]
+            # print('time: {}, r["{}"] = {}, c_29 = {}'.format(t_now, quantity_id, r[quantity_id], r.c_29))
             residuals[it_next-1] = r[quantity_id]-reference_data[it_next-1]
         r.reset()
-        self._setParameterVector(param_values, self.param_list, r)
+        # self._setParameterVector(param_values, self.param_list, r)
         s = r.simulate(0,float(self.time_values[-1]),1000,['time',quantity_id])
 
         import tellurium as te

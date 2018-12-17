@@ -44,11 +44,12 @@ class TimecourseSimBiopredyn(TimecourseSimBase):
         from interruptingcow import timeout
         self.reset()
         self.setParameterVector(x)
+        self.r.reset()
         def worker():
             t_now = 0.
             scaled_residuals = zeros((len(self.time_values), len(self.measured_quantities)))
             for it_next in range(1, len(self.time_values)):
-                t_now = self.r.simulate(t_now, self.time_values[it_next], 10)
+                t_now = self.r.simulate(t_now, self.time_values[it_next], 100)
                 t_now = self.time_values[it_next]
                 if self.divergent():
                     return 1e9*self.penalty_scale
