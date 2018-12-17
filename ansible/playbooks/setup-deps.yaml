@@ -63,13 +63,16 @@
         remote_src: True
         src: "{{ item }}"
         dest: ~/config/hadoop
-      with_items: "{{ hadoop_config_files.stdout_lines | reject('search', 'core-site.xml') | reject('search', 'hdfs-site.xml') | reject('search', 'slaves') | list }}"
+      with_items: "{{ hadoop_config_files.stdout_lines | reject('search', 'core-site.xml') | reject('search', 'hdfs-site.xml') | reject('search', 'slaves') | reject('search', 'hadoop-env.sh') | list }}"
 
     - name: Write hadoop config files
       template: src=../configs/hadoop/core-site.xml.j2 dest=~/config/hadoop/core-site.xml
 
     - name: Write hadoop config files
       template: src=../configs/hadoop/hdfs-site.xml.j2 dest=~/config/hadoop/hdfs-site.xml
+
+    - name: Write hadoop config files
+      template: src=../configs/hadoop/hadoop-env.sh.j2 dest=~/config/hadoop/hadoop-env.sh
 
     - name: Write hadoop config files
       template: src=../configs/hadoop/slaves.j2 dest=~/config/hadoop/slaves
