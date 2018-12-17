@@ -88,7 +88,13 @@
         remote_src: True
         src: "{{ item }}"
         dest: ~/config/spark
-      with_items: "{{ spark_config_files.stdout_lines | reject('search', 'spark-env.sh') | list }}"
+      with_items: "{{ spark_config_files.stdout_lines | reject('search', 'spark-env.sh') | reject('search', '.template') | list }}"
 
     - name: Write spark config files
       template: src=../configs/spark/spark-env.sh.j2 dest=~/config/spark/spark-env.sh
+
+    - name: Write spark config files
+      template: src=../configs/hadoop/slaves.j2 dest=~/config/spark/slaves
+
+    - name: Write spark config files
+      template: src=../configs/spark/log4j.properties.j2 dest=~/config/spark/log4j.properties

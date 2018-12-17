@@ -10,7 +10,7 @@ import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
 from sabaody.utils import expect
 
-from .timecourse_sim_base import TimecourseSimAligned, StalledSimulation
+from .timecourse_sim_aligned import TimecourseSimAligned, StalledSimulation
 
 class TimecourseSimValidate(TimecourseSimAligned):
     ''' Validates convergence to a given set of parameters.
