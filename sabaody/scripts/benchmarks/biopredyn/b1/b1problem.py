@@ -6,10 +6,7 @@ from __future__ import print_function, division, absolute_import
 from sabaody.timecourse.timecourse_sim_biopredyn import TimecourseSimBiopredyn
 from sabaody.scripts.benchmarks.biopredyn.benchsetup import BioPreDynUDP
 
-from params import getUpperBound, getLowerBound, param_ids
-from data import time_values, conc_ids, scaled_data, scaled_error
-
-from numpy import array, mean, sqrt
+from numpy import array, mean, sqrt, allclose
 
 import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
@@ -38,7 +35,6 @@ class B1Problem(TimecourseSimBiopredyn):
         Evaluate and return the objective function.
         """
         from interruptingcow import timeout
-        from data import time_values
         self.reset()
         self.setParameterVector(x)
         self.r.reset()
@@ -55,10 +51,30 @@ class B1Problem(TimecourseSimBiopredyn):
             return 1e9*self.penalty_scale
 
 
-    def getParameter(self,param_index):
+    def test_values(self):
+        self.reset()
+        self.r.reset()
+        self.r.resetAll()
+
+        print(self.getCurrentValues_matlab() - self.getCurrentValues())
+        assert allclose(self.getCurrentValues_matlab(), self.getCurrentValues())
+
+        self.r.simulate(0., 1., 10, self.measured_quantity_ids)
+        print(self.getCurrentValues_matlab() - self.getCurrentValues())
+        assert allclose(self.getCurrentValues_matlab(), self.getCurrentValues())
+
+        self.r.simulate(1., 10., 10, self.measured_quantity_ids)
+        assert allclose(self.getCurrentValues_matlab(), self.getCurrentValues())
+
+        self.r.simulate(10., 120., 100, self.measured_quantity_ids)
+        assert allclose(self.getCurrentValues_matlab(), self.getCurrentValues())
+
+
+
+    def getParameterValue(self,param_index):
         from params import param_index_to_name_map
         try:
-            return param_index_to_name_map[param_index-1]
+            return self.r[param_index_to_name_map[param_index-1]]
         except KeyError:
             raise KeyError('No such parameter for index {}, must be 0-1758 inclusive'.format(param_index))
 
@@ -103,12 +119,12 @@ class B1Problem(TimecourseSimBiopredyn):
             self.r.s_1543,
             self.r.s_1559,
             self.r.s_1565,
-            self.getParameter(1613-1) * (s_0565 - self.r.s_0563) / self.getParameter(1614-1) ./ (1 + s_0565 / self.getParameter(1614-1) + 1 + self.r.s_0563 / self.getParameter(1615-1) - 1),
-            self.getParameter(1628-1) * self.r.s_0456 / self.getParameter(1629-1) / (1 + self.r.s_0456 / self.getParameter(1629-1)),
-            self.getParameter(1642-1) * self.r.s_0680/ self.getParameter(1643-1) / (1 + self.r.s_0680/ self.getParameter(1643-1)),
-            self.getParameter(1608-1) * self.r.s_0362 / self.getParameter(1609-1) / (1 + self.r.s_0362 / self.getParameter(1609-1)),
-            self.getParameter(1616-1) * self.r.s_0765/ self.getParameter(1617-1) / (1 + self.r.s_0765/ self.getParameter(1617-1)),
-            self.getParameter(1657-1) * self.r.s_1520 / self.getParameter(1658-1) / (1 + self.r.s_1520 / self.getParameter(1658-1),
+            self.getParameterValue(1613-1) * (self.r.s_0565 - self.r.s_0563) / self.getParameterValue(1614-1) / (1 + self.r.s_0565 / self.getParameterValue(1614-1) + 1 + self.r.s_0563 / self.getParameterValue(1615-1) - 1),
+            self.getParameterValue(1628-1) * self.r.s_0456 / self.getParameterValue(1629-1) / (1 + self.r.s_0456 / self.getParameterValue(1629-1)),
+            self.getParameterValue(1642-1) * self.r.s_0680 / self.getParameterValue(1643-1) / (1 + self.r.s_0680 / self.getParameterValue(1643-1)),
+            self.getParameterValue(1608-1) * self.r.s_0362 / self.getParameterValue(1609-1) / (1 + self.r.s_0362 / self.getParameterValue(1609-1)),
+            self.getParameterValue(1616-1) * self.r.s_0765 / self.getParameterValue(1617-1) / (1 + self.r.s_0765 / self.getParameterValue(1617-1)),
+            self.getParameterValue(1657-1) * self.r.s_1520 / self.getParameterValue(1658-1) / (1 + self.r.s_1520 / self.getParameterValue(1658-1)),
             ])
 
     def getCurrentValues(self):
