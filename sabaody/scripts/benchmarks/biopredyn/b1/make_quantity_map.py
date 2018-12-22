@@ -40,12 +40,16 @@ chebi_root = 'http://identifiers.org/obo.chebi/'
 for quantity in measured_quantity_ids:
     s = model.getSpecies(quantity)
     if s is not None:
-        print(s.getId())
         for cvterm in (s.getCVTerm(k) for k in range(s.getNumCVTerms())):
             for uri in (cvterm.getResourceURI(j) for j in range(cvterm.getNumResources())):
                 if uri.startswith(chebi_root):
                     accession = uri.replace(chebi_root,'')
                     if accession in chebi_name_map:
-                        print("'{}': '{}',".format(s.getId(), chebi_name_map[accession]))
-    else:
-        print('?')
+                        print('"{}": "{}",'.format(s.getId(), chebi_name_map[accession]))
+
+print('"r_1166": "Glucose uptake",')
+print('"r_1697": "Carbon dioxide exchange",')
+print('"r_1762": "Ethanol exchange",')
+print('"r_1106": "Acetate exchange",')
+print('"r_1172": "Glycerol exchange",')
+print('"r_2079": "Trehalose exchange",')
