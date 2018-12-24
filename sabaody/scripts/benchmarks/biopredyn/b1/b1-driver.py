@@ -13,7 +13,7 @@ def get_udp(validation_mode,n):
     else:
         raise RuntimeError('No validation')
 
-sbmlfile = abspath(join('..','..','..','..','..','sbml','b1-fixed.xml'))
+sbmlfile = abspath(join('..','..','..','..','..','sbml','b1-copasi.xml'))
 script_dir = dirname(realpath(__file__))
 spark_files = ','.join(join(script_dir,p) for p in [
     sbmlfile,

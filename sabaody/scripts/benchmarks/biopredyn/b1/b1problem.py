@@ -6,7 +6,7 @@ from __future__ import print_function, division, absolute_import
 from sabaody.timecourse.timecourse_sim_biopredyn import TimecourseSimBiopredyn
 from sabaody.scripts.benchmarks.biopredyn.benchsetup import BioPreDynUDP
 
-from numpy import array, mean, sqrt, allclose
+from numpy import array, mean, sqrt
 
 import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
@@ -49,45 +49,6 @@ class B1Problem(TimecourseSimBiopredyn):
         except (RuntimeError, StalledSimulation):
             # if convergence fails, use a penalty score
             return 1e9*self.penalty_scale
-
-
-    def test_values(self):
-        self.reset()
-        self.r.reset()
-        self.r.resetAll()
-
-        print(self.getCurrentValues_matlab() - self.getCurrentValues())
-        print('rr: cell*Vmax_1166*(s_0565 - s_0563)/Km0565_1166/(1 + s_0565/Km0565_1166 + 1 + s_0563/Km0563_1166 - 1) = ')
-        print('  {cell}*{Vmax_1166:.2f}*({s_0565:.2f} - {s_0563:.2f})/{Km0565_1166}/(1 + {s_0565:.2f}/{Km0565_1166} + 1 + {s_0563:.2f}/{Km0563_1166} - 1) = '.format(
-            cell=self.r.cell,
-            Vmax_1166=self.r.Vmax_1166,
-            s_0565=self.r.s_0565,
-            s_0563=self.r.s_0563,
-            Km0565_1166=self.r.Km0565_1166,
-            Km0563_1166=self.r.Km0563_1166,
-        ))
-        print(' ', self.r.r_1166)
-
-        print('ml: self.getParameterValue(1613-1) * (self.r.s_0565 - self.r.s_0563) / self.getParameterValue(1614-1) / (1 + self.r.s_0565 / self.getParameterValue(1614-1) + 1 + self.r.s_0563 / self.getParameterValue(1615-1) - 1) = ')
-        print('ml: {p1613} * ({s_0565} - {s_0563}) / {p1614} / (1 + {s_0565} / {p1614} + 1 + {s_0563} / {p1615} - 1) = '.format(
-            p1613=self.getParameterValue(1613-1),
-            s_0565=self.r.s_0565,
-            s_0563=self.r.s_0563,
-            p1614=self.getParameterValue(1614-1),
-            p1615=self.getParameterValue(1615-1),
-        ))
-        assert allclose(self.getCurrentValues_matlab(), self.getCurrentValues())
-
-        self.r.simulate(0., 1., 10, self.measured_quantity_ids)
-        print(self.getCurrentValues_matlab() - self.getCurrentValues())
-        assert allclose(self.getCurrentValues_matlab(), self.getCurrentValues())
-
-        self.r.simulate(1., 10., 10, self.measured_quantity_ids)
-        assert allclose(self.getCurrentValues_matlab(), self.getCurrentValues())
-
-        self.r.simulate(10., 120., 100, self.measured_quantity_ids)
-        assert allclose(self.getCurrentValues_matlab(), self.getCurrentValues())
-
 
 
     def getParameterValue(self,param_index):
