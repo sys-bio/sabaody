@@ -62,16 +62,22 @@ class B1Problem(TimecourseSimBiopredyn):
         r = RoadRunner(self.sbml)
         self._setParameterVector(param_values, self.param_list, r)
         r.reset()
-        self.r.simulate(0., 1., 10, self.measured_quantity_ids)
-        sim = self.r.simulate(1., 120., 120, ['time', quantity_id])
+        r.resetAll()
+        r.resetToOrigin()
+        r.simulate(0., 1., 10, ['time', quantity_id])
+        sim = r.simulate(1., 120., 120, ['time', quantity_id])
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
 
-        s = r.simulate(0,float(time_values[-1]),1000,['time',quantity_id])
+        r.reset()
+        r.resetAll()
+        r.resetToOrigin()
+        s = r.simulate(0,float(time_values[-1]),121,['time',quantity_id])
 
         import tellurium as te
         te.plot(time_values, reference_data, scatter=True,
             name=quantity_name+' data', show=False,
+            title=quantity_name,
             error_y_pos=maximum(residuals,0),
             error_y_neg=-minimum(residuals,0))
         te.plot(s[:,0], s[:,1], name=quantity_name+' sim')
