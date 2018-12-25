@@ -7,7 +7,7 @@ from sabaody.timecourse.timecourse_sim_base import StalledSimulation
 from sabaody.timecourse.timecourse_sim_biopredyn import TimecourseSimBiopredyn
 from sabaody.scripts.benchmarks.biopredyn.benchsetup import BioPreDynUDP
 
-from numpy import array, mean, sqrt
+from numpy import array, mean, sqrt, maximum, minimum
 
 import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
@@ -50,6 +50,31 @@ class B1Problem(TimecourseSimBiopredyn):
         except (RuntimeError, StalledSimulation):
             # if convergence fails, use a penalty score
             return 1e9*self.penalty_scale
+
+
+    def plotQuantity(self, quantity_id, param_values):
+        ''' Plot a simulated quantity vs its data points using Tellurium.'''
+        from data import time_values, measured_quantity_ids, measured_quantity_id_to_name_map
+        quantity_name = measured_quantity_id_to_name_map[quantity_id]
+        iq = measured_quantity_ids.index(quantity_id)
+        reference_data = array(self.reference_values[:,iq])
+
+        r = RoadRunner(self.sbml)
+        self._setParameterVector(param_values, self.param_list, r)
+        r.reset()
+        self.r.simulate(0., 1., 10, self.measured_quantity_ids)
+        sim = self.r.simulate(1., 120., 120, ['time', quantity_id])
+        assert sim.shape[0] == reference_data.shape[0]
+        residuals = sim[:,1] - reference_data
+
+        s = r.simulate(0,float(time_values[-1]),1000,['time',quantity_id])
+
+        import tellurium as te
+        te.plot(time_values, reference_data, scatter=True,
+            name=quantity_name+' data', show=False,
+            error_y_pos=maximum(residuals,0),
+            error_y_neg=-minimum(residuals,0))
+        te.plot(s[:,0], s[:,1], name=quantity_name+' sim')
 
 
     def getParameterValue(self,param_index):
