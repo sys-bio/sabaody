@@ -3,6 +3,7 @@
 
 from __future__ import print_function, division, absolute_import
 
+from sabaody.timecourse.timecourse_sim_base import StalledSimulation
 from sabaody.timecourse.timecourse_sim_biopredyn import TimecourseSimBiopredyn
 from sabaody.scripts.benchmarks.biopredyn.benchsetup import BioPreDynUDP
 
@@ -42,7 +43,7 @@ class B1Problem(TimecourseSimBiopredyn):
             # skip the first timepoint
             self.r.simulate(0., 1., 10, self.measured_quantity_ids)
             sim = self.r.simulate(1., 120., 120, self.measured_quantity_ids)
-            return sqrt(mean((sim-self.reference_data)**2.))
+            return sqrt(mean((sim-self.reference_values)**2.))
         try:
             with timeout(10, StalledSimulation):
                 return worker()

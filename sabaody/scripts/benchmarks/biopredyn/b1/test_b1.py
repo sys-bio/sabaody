@@ -2,9 +2,14 @@
 
 from b1problem import B1Problem
 from os.path import join, dirname, abspath, realpath
-from numpy import allclose
+from numpy import allclose, isclose
 
-def test_values():
+def test_evaluate():
+    problem = B1Problem(abspath(join(dirname(realpath(__file__)), '..','..','..','..','..','sbml','b1-copasi.xml')))
+    from params import getDefaultParamValues
+    assert isclose(problem.evaluate(getDefaultParamValues()), 1.0, rtol =1e-2)
+
+def test_quantity_calculation():
     problem = B1Problem(abspath(join(dirname(realpath(__file__)), '..','..','..','..','..','sbml','b1-copasi.xml')))
     problem.reset()
     problem.r.reset()
