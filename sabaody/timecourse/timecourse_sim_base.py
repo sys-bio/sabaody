@@ -22,25 +22,25 @@ class TimecourseSimBase(Evaluator):
     ''' Base class for timecourse simulations.'''
 
 
-    def RMSE_quantity(self, identifier):
-        ''' Calc the RMSE of a quantity.'''
-        from math import sqrt
-        return sqrt(float((array(self.quantity_residuals[identifier])**2).mean()))
-
-
-    def MSE(self):
-        ''' Calc the MSE for all residuals.
-        Call this after calculating all residuals.'''
-        r = array(self.residuals)
-        return (r**2).mean()
-
-
-    def RMSE(self):
-        ''' Calc the RMSE for all residuals.
-        Call this after calculating all residuals.'''
-        from math import sqrt
-        r = sqrt(float(array(self.residuals)))
-        return (r**2).mean()
+    # def RMSE_quantity(self, identifier):
+    #     ''' Calc the RMSE of a quantity.'''
+    #     from math import sqrt
+    #     return sqrt(float((array(self.quantity_residuals[identifier])**2).mean()))
+    #
+    #
+    # def MSE(self):
+    #     ''' Calc the MSE for all residuals.
+    #     Call this after calculating all residuals.'''
+    #     r = array(self.residuals)
+    #     return (r**2).mean()
+    #
+    #
+    # def RMSE(self):
+    #     ''' Calc the RMSE for all residuals.
+    #     Call this after calculating all residuals.'''
+    #     from math import sqrt
+    #     r = sqrt(float(array(self.residuals)))
+    #     return (r**2).mean()
 
 
     def reset(self):

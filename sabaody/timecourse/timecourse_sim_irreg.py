@@ -42,18 +42,19 @@ class TimecourseSimIrreg(TimecourseSimBase):
         # self.r.integrator.stiff = False
         # self.r.integrator.minimum_time_step = 0.0001
         # self.r.integrator.maximum_time_step = 1.
-        self.residuals = []
+        # self.residuals = []
         #print(self.r.getFloatingSpeciesIds())
 
         self.timepoints = unique(hstack(a[:,0] for a in data_quantities))
         self.reset()
 
         self.measurement_map = measurement_map
+        # map a quantity to its mean measured value
+        self.mean_measurement_map = {quantity: mean(values) for quantity,values in self.measurement_map.items()}
 
         # keep track of the number of times a measurement is used
         # (check correct number of residuals)
         self.measurement_count = OrderedDict((quantity,0) for quantity in self.measurement_map)
-        self.quantity_residuals = dict((quantity,list()) for quantity in self.measurement_map)
         self.penalty_scale = 1.
 
 
@@ -90,7 +91,7 @@ class TimecourseSimIrreg(TimecourseSimBase):
         try:
             # if there is a measurement a this timepoint, append to list
             r = predicted_value - valueAtTime(a,t)
-            self.residuals.append(r)
+            # self.residuals.append(r)
             self.quantity_residuals[identifier].append(r)
             # increment the residual use count (check all measurements are used exactly once)
             self.measurement_count[identifier] += 1
@@ -145,6 +146,7 @@ class TimecourseSimIrreg(TimecourseSimBase):
         from interruptingcow import timeout
         self.reset()
         self.setParameterVector(x)
+        self.quantity_residuals = dict((quantity,list()) for quantity in self.measurement_map)
         def worker():
             self.buildResidualList()
         if self.divergent():
@@ -155,7 +157,10 @@ class TimecourseSimIrreg(TimecourseSimBase):
         except (RuntimeError, StalledSimulation):
             # if convergence fails, use a penalty score
             return 1e9*self.penalty_scale
-        return self.MSE()
+        return sqrt(mean(array([
+            array(residuals**2.)/self.mean_measurement_map[quantity]**2. \
+            for quantity,residuals in self.quantity_residuals \
+            ])))
 
 
     def getUsageByQuantity(self):

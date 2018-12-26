@@ -7,6 +7,46 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.mysql_operator import MySqlOperator
 from airflow.contrib.operators.spark_submit_operator import SparkSubmitOperator
 
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2018, 11, 1),
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 0,
+}
+
+all_benchmarks_dag = DAG(
+  'all_benchmarks',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+
+b1_dag = DAG(
+  'b1_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskFactory().generate(b1_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b1/b1-driver.py')
+TaskFactory().generate(all_benchmarks_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b1/b1-driver.py')
+
+b2_dag = DAG(
+  'b2_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskFactory().generate(b2_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b2/b2-driver.py')
+TaskFactory().generate(all_benchmarks_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b2/b2-driver.py')
+
+b4_dag = DAG(
+  'b4_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskFactory().generate(b4_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b4/b4-driver.py')
+TaskFactory().generate(all_benchmarks_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b4/b4-driver.py')
+
+
 def topology_generator(n_islands, island_size, migrant_pool_size, generations):
             from sabaody import TopologyGenerator
             import MySQLdb
@@ -60,13 +100,8 @@ def legalize_name(name):
     return result
 
 
-class TaskFactory():
-    def create(self, dag):
-        n_islands = 10
-        island_size = 500
-        migrant_pool_size = 4
-        generations = 1000
-
+class TaskGenerator():
+    def __init__(self):
         # first, make sure the SQL tables exist
         self.setup_topology_sets_table = MySqlOperator(
             task_id='setup_topology_sets_table',
@@ -120,6 +155,12 @@ class TaskFactory():
         self.setup_topology_sets_table >> self.generate_topologies
         self.setup_benchmark_results_table >> self.generate_topologies
 
+    def generate(self, dag, application):
+        n_islands = 10
+        island_size = 500
+        migrant_pool_size = 4
+        generations = 1000
+
         # for each topology, create a benchmark task
         self.benchmarks = []
         from sabaody import TopologyGenerator
@@ -133,7 +174,7 @@ class TaskFactory():
                     'spark.cores.max': 10,
                     'spark.executor.cores': 1,
                 },
-                application='/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b2/b2-driver.py',
+                application=application,
                 application_args=[
                     '--topology',  'sql:sabaody@luna,pw=w00t,db=sabaody(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):{desc}'.format(
                         n_islands=n_islands,
