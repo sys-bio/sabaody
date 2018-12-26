@@ -6,6 +6,7 @@ from __future__ import print_function, division, absolute_import
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.mysql_operator import MySqlOperator
 from airflow.contrib.operators.spark_submit_operator import SparkSubmitOperator
+from os.path import join
 
 default_args = {
     'owner': 'airflow',
@@ -22,29 +23,31 @@ all_benchmarks_dag = DAG(
   concurrency=1,
   schedule_interval=timedelta(10000))
 
+root_path = '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn'
+
 b1_dag = DAG(
   'b1_benchmark',
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskFactory().generate(b1_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b1/b1-driver.py')
-TaskFactory().generate(all_benchmarks_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b1/b1-driver.py')
+TaskFactory().generate(b1_dag, join(root_path,'b1','b1-driver.py'))
+TaskFactory().generate(all_benchmarks_dag, join(root_path,'b1','b1-driver.py'))
 
 b2_dag = DAG(
   'b2_benchmark',
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskFactory().generate(b2_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b2/b2-driver.py')
-TaskFactory().generate(all_benchmarks_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b2/b2-driver.py')
+TaskFactory().generate(b2_dag, join(root_path,'b2','b2-driver.py'))
+TaskFactory().generate(all_benchmarks_dag, join(root_path,'b2','b2-driver.py'))
 
 b4_dag = DAG(
   'b4_benchmark',
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskFactory().generate(b4_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b4/b4-driver.py')
-TaskFactory().generate(all_benchmarks_dag, '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn/b4/b4-driver.py')
+TaskFactory().generate(b4_dag, join(root_path,'b4','b4-driver.py'))
+TaskFactory().generate(all_benchmarks_dag, join(root_path,'b4','b4-driver.py'))
 
 
 def topology_generator(n_islands, island_size, migrant_pool_size, generations):
