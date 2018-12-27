@@ -41,6 +41,14 @@ b2_dag = DAG(
 TaskFactory().generate(b2_dag, join(root_path,'b2','b2-driver.py'))
 TaskFactory().generate(all_benchmarks_dag, join(root_path,'b2','b2-driver.py'))
 
+b3_dag = DAG(
+  'b3_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskFactory().generate(b2_dag, join(root_path,'b3','b3-driver.py'))
+TaskFactory().generate(all_benchmarks_dag, join(root_path,'b3','b3-driver.py'))
+
 b4_dag = DAG(
   'b4_benchmark',
   default_args=default_args,
