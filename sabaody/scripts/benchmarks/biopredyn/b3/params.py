@@ -70,12 +70,13 @@ param_id_to_index_map = {
     'e_Mdh_kcat': 64,
     'e_Mdh_n': 65,
     'e_Mdh_Kmal': 66,
-    'e_MaeAB_kcat': 67,
+    # MaeAB -> Me
+    'e_Me_kcat': 67,
     # 'e_MaeAB_n': 68, # not fitted
-    'e_MaeAB_L': 69,
-    'e_MaeAB_Kmal': 70,
-    'e_MaeAB_Kacoa': 71,
-    'e_MaeAB_Kcamp': 72,
+    'e_Me_L': 69,
+    'e_Me_Kmal': 70,
+    'e_Me_Kacoa': 71,
+    'e_Me_Kcamp': 72,
     'e_PckA_kcat': 73,
     'e_PckA_Koaa': 74,
     'e_PckA_Kpep': 75,
@@ -199,7 +200,8 @@ param_id_to_index_map = {
     'bm_ACT_PYR': 193,
 }
 
-param_ids = [id for index,id in sorted(param_index_to_name_map.items(), key=lambda x: x[1])]
+old_param_ids = [id for id,index in sorted(param_id_to_index_map.items(), key=lambda x: x[1])]
+assert len(old_param_ids) == 178
 
 param_id_to_default_value_map = {
     'env_M_ACT': 60.05,
@@ -213,7 +215,7 @@ param_id_to_default_value_map = {
     'e_AceA_Kpg3': 0.72,
     'e_AceA_Kakg': 0.827,
     'e_AceB_kcat': 47.8,
-    'e_AceB_Kglx': 0.95,%0.504,
+    'e_AceB_Kglx': 0.95,
     'e_AceB_Kacoa': 0.755,
     'e_AceB_Kglxacoa': 0.719,
     'e_AceK_kcat_ki': 3.4E+12,
@@ -332,37 +334,37 @@ param_id_to_default_value_map = {
     'g_aceBAK_vcrp_bound': 2.3E-10,
     'g_aceBAK_vcrp_unbound': 2.0E-08,
     'g_aceBAK_Kcrp': 0.341,
-    'g_acs_vcrp_unbound': 0,
+    'g_acs_vcrp_unbound': 0, # cannot fit
     'g_acs_vcrp_bound': 1.2E-06*0.000036201/0.001096222,
     'g_acs_n': 2.31,
     'g_acs_Kcrp': 4.7E-03,
-    'g_akg2mal_vcrp_unbound': 0,
+    'g_akg2mal_vcrp_unbound': 0, # cannot fit
     'g_akg2mal_vcrp_bound': 1.4E-06,
     'g_akg2mal_Kcrp': 0.091,
     'g_akg2mal_n': 0.74,
     'g_emp_vcra_unbound': 6.2E-07*0.011389032/0.011515593,
-    'g_emp_vcra_bound': 0,
+    # 'g_emp_vcra_bound': 0, # cannot fit
     'g_emp_Kcra': 0.09,
-    'g_emp_vcrp_unbound': 0,
+    'g_emp_vcrp_unbound': 0, # cannot fit
     'g_emp_vcrp_bound': 4.7E-07,
     'g_emp_Kcrp': 0.012,
     'g_eno_vcra_unbound': 6.8E-07*0.011389032/0.011552813,
-    'g_eno_vcra_bound': 0,
+    # 'g_eno_vcra_bound': 0, # cannot fit
     'g_eno_Kcra': 0.016,
-    'g_fdp_vcra_unbound': 0,
+    'g_fdp_vcra_unbound': 0, # cannot fit
     'g_fdp_vcra_bound': 4.5E-08*0.000074810/0.000157492,
     'g_fdp_Kcra': 1.18E-03,
-    'g_gltA_vcrp_unbound': 0,
+    'g_gltA_vcrp_unbound': 0, # cannot fit
     'g_gltA_vcrp_bound': 2.3E-06*0.000292771/0.001029612,
     'g_gltA_Kcrp': 0.04,
     'g_gltA_n': 1.07,
     'g_icd_vcra_unbound': 1.1E-07,
     'g_icd_vcra_bound': 8.5E-07,
     'g_icd_Kcra': 1.17E-03,
-    'g_mdh_vcrp_unbound': 0,
+    'g_mdh_vcrp_unbound': 0, # cannot fit
     'g_mdh_vcrp_bound': 9.1E-06*0.000491491/0.00345727,
     'g_mdh_Kcrp': 0.06,
-    'g_pckA_vcra_unbound': 0,
+    'g_pckA_vcra_unbound': 0, # cannot fit
     'g_pckA_vcra_bound': 2.5E-06*0.000336947/0.002290892,
     'g_pckA_Kcra': 5.35E-03,
     'g_pdh_vpdhr_unbound': 3.6E-07*0.001/0.004647401,
@@ -371,7 +373,7 @@ param_id_to_default_value_map = {
     'g_pfkA_vcra_unbound': 8.2E-07*0.000242131/0.000143816,
     'g_pfkA_vcra_bound': 6.6E-09*0.000242131/0.000143816,
     'g_pfkA_Kcra': 6.3E-07,
-    'g_ppsA_vcra_unbound': 0,
+    'g_ppsA_vcra_unbound': 0, # cannot fit
     'g_ppsA_vcra_bound': 3.3E-06,
     'g_ppsA_Kcra': 0.017,
     'g_pykF_vcra_unbound': 3.9E-07*0.002501893/0.005977168,
@@ -396,3 +398,47 @@ param_id_to_default_value_map = {
     'bm_ACT_PG3': 0.066,
     'bm_ACT_PYR': 5.185,
 }
+
+default_values = []
+new_param_ids = []
+# default_value_assigned = set()
+reverse_index_map = {}
+for id,value in param_id_to_default_value_map.items():
+    if id == 'e_PykF_Kfbp':
+        print('** e_PykF_Kfbp **')
+    if id in param_id_to_index_map and value != 0:
+        default_values.append(value)
+        reverse_index_map[len(default_values)-1] = id
+        new_param_ids.append(id)
+        # if id == 'e_PykF_Kfbp':
+            # print(' ', old_param_ids.index(id)-1)
+        # default_value_assigned.insert(id)
+    else:
+        if id not in param_id_to_index_map:
+            print('excluded {} because it was not in the index map'.format(id))
+        elif value == 0:
+            print('excluded {} because it had a default value of zero'.format(id))
+from math import log
+for k,v in enumerate(default_values):
+    if v == 0:
+        raise RuntimeError('Cannot fit parameter "{}" ({}) with default value 0'.format(param_ids[k], reverse_index_map.get(k,'?')))
+default_log_values = [log(v, 10.) for v in default_values]
+
+param_array = array(default_log_values)
+assert param_array.size == len(new_param_ids)
+
+def getDefaultParamValues():
+    # type: () -> array
+    return param_array
+
+def getUpperBound():
+    '''
+    10x original value.
+    '''
+    return getDefaultParamValues()+1
+
+def getLowerBound():
+    '''
+    1/10 original value.
+    '''
+    return getDefaultParamValues()-1

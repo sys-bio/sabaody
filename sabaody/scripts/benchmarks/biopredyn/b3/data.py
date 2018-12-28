@@ -4,7 +4,7 @@
 from numpy import array, arange, concatenate
 
 quantity_id_to_index_map = {
-    'OD': 1,
+    'BM': 1, # OD -> BM
     'ACT': 2,
     'GLC': 3,
     'ACoA': 4,
@@ -34,7 +34,7 @@ quantity_id_to_index_map = {
     'Icd': 28,
     'Icd_P': 29,
     'Mdh': 30,
-    'MaeAB': 31,
+    'Me': 31, # MaeAB
     'PckA': 32,
     'Pdh': 33,
     'PfkA': 34,
@@ -79,6 +79,8 @@ measured_quantity_id_to_name_map = {
 time_values = arange(0., 8.15 * 3600., 1000)
 time_values = concatenate((time_values, arange(time_values[-1], time_values[-1]+19.7 *3600., 1000)))
 time_values = concatenate((time_values, arange(time_values[-1], time_values[-1]+16.45*3600., 1000)))
+time_end = time_values[-1]
+n_points = time_values.size
 
 exp_data = array([
     [0.03, 0.0, 4.8, 0.351972298, 0.191190619, 0.202804098, 6.57504207, 1.908140784, 5.70593e-09, 0.001408116, 3.278779135, 0.050535354, 0.210455879, 5.720977255, 0.863278018, 0.00472323, 0.001416969, 0.000141697, 0.001, 3.6201e-05, 0.001026848, 0.001, 0.001, 0.011389032, 0.011389032, 7.481e-05, 0.000292771, 0.004290789, 0.000220477, 0.000491491, 0.000999714, 0.000336947, 0.001, 0.000242131, 0.000377962, 0.000987493, 0.002501893, 0.09647707, 0.00352292, 0.003, 0.000299098, 0.006990902, 0.005943273, 0.001346727, 0.00729, 0.001163813, 0.006126187],

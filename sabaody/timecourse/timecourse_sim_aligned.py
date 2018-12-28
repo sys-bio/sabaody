@@ -44,30 +44,30 @@ class TimecourseSimAligned(TimecourseSimBase):
         self.penalty_scale = 1.
 
 
-    def evaluate(self, x):
-        # type: (array) -> SupportsFloat
-        """
-        Evaluate and return the objective function.
-        """
-        from interruptingcow import timeout
-        self.reset()
-        self.setParameterVector(x)
-        def worker():
-            values = self.r.simulate(self.time_start, self.time_end, self.n)
-            residuals = array(values[:,1:] - self.reference_quantities)
-            # residuals *= 100.
-            # print('residuals:')
-            # print(residuals)
-            # print(array(residuals**2))
-            quantity_mse = mean(residuals**2,axis=0)/self.reference_quantity_means_squared
-            # print('quantity_mse')
-            # print(quantity_mse)
-            return sqrt(mean(quantity_mse))
-        if self.divergent():
-            return 1e9*self.penalty_scale
-        try:
-            with timeout(10, StalledSimulation):
-                return worker()
-        except (RuntimeError, StalledSimulation):
-            # if convergence fails, use a penalty score
-            return 1e9*self.penalty_scale
+    # def evaluate(self, x):
+    #     # type: (array) -> SupportsFloat
+    #     """
+    #     Evaluate and return the objective function.
+    #     """
+    #     from interruptingcow import timeout
+    #     self.reset()
+    #     self.setParameterVector(x)
+    #     def worker():
+    #         values = self.r.simulate(self.time_start, self.time_end, self.n)
+    #         residuals = array(values[:,1:] - self.reference_quantities)
+    #         # residuals *= 100.
+    #         # print('residuals:')
+    #         # print(residuals)
+    #         # print(array(residuals**2))
+    #         quantity_mse = mean(residuals**2,axis=0)/self.reference_quantity_means_squared
+    #         # print('quantity_mse')
+    #         # print(quantity_mse)
+    #         return sqrt(mean(quantity_mse))
+    #     if self.divergent():
+    #         return 1e9*self.penalty_scale
+    #     try:
+    #         with timeout(10, StalledSimulation):
+    #             return worker()
+    #     except (RuntimeError, StalledSimulation):
+    #         # if convergence fails, use a penalty score
+    #         return 1e9*self.penalty_scale
