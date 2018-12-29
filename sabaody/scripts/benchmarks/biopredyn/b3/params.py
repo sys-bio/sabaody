@@ -404,8 +404,8 @@ new_param_ids = []
 # default_value_assigned = set()
 reverse_index_map = {}
 for id,value in param_id_to_default_value_map.items():
-    if id == 'e_PykF_Kfbp':
-        print('** e_PykF_Kfbp **')
+    # if id == 'e_PykF_Kfbp':
+    #     print('** e_PykF_Kfbp **')
     if id in param_id_to_index_map and value != 0:
         default_values.append(value)
         reverse_index_map[len(default_values)-1] = id
@@ -413,11 +413,11 @@ for id,value in param_id_to_default_value_map.items():
         # if id == 'e_PykF_Kfbp':
             # print(' ', old_param_ids.index(id)-1)
         # default_value_assigned.insert(id)
-    else:
-        if id not in param_id_to_index_map:
-            print('excluded {} because it was not in the index map'.format(id))
-        elif value == 0:
-            print('excluded {} because it had a default value of zero'.format(id))
+    # else:
+    #     if id not in param_id_to_index_map:
+    #         print('excluded {} because it was not in the index map'.format(id))
+    #     elif value == 0:
+    #         print('excluded {} because it had a default value of zero'.format(id))
 from math import log
 for k,v in enumerate(default_values):
     if v == 0:
