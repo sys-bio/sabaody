@@ -1,0 +1,4653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model name="ecoliOK">
+    <listOfCompartments>
+      <compartment id="Environment" name="Environment" size="1"/>
+      <compartment id="Cell" name="Cell" size="1" outside="Environment"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="BM" name="BM" compartment="Environment" initialAmount="0.1" hasOnlySubstanceUnits="true"/>
+      <species id="ACT" name="ACT" compartment="Environment" initialAmount="0" hasOnlySubstanceUnits="true"/>
+      <species id="GLC" name="GLC" compartment="Environment" initialAmount="5" hasOnlySubstanceUnits="true"/>
+      <species id="ACoA" name="ACoA" compartment="Cell" initialAmount="0.351972298" hasOnlySubstanceUnits="true"/>
+      <species id="AKG" name="AKG" compartment="Cell" initialAmount="0.191190619" hasOnlySubstanceUnits="true"/>
+      <species id="cAMP" name="cAMP" compartment="Cell" initialAmount="0.202804098" hasOnlySubstanceUnits="true"/>
+      <species id="FBP" name="FBP" compartment="Cell" initialAmount="6.57504207" hasOnlySubstanceUnits="true"/>
+      <species id="G6P" name="G6P" compartment="Cell" initialAmount="1.908140784" hasOnlySubstanceUnits="true"/>
+      <species id="GLX" name="GLX" compartment="Cell" initialAmount="5.70593e-009" hasOnlySubstanceUnits="true"/>
+      <species id="ICT" name="ICT" compartment="Cell" initialAmount="0.001408116" hasOnlySubstanceUnits="true"/>
+      <species id="MAL" name="MAL" compartment="Cell" initialAmount="3.278779135" hasOnlySubstanceUnits="true"/>
+      <species id="OAA" name="OAA" compartment="Cell" initialAmount="0.050535354" hasOnlySubstanceUnits="true"/>
+      <species id="PEP" name="PEP" compartment="Cell" initialAmount="0.210455879" hasOnlySubstanceUnits="true"/>
+      <species id="PG3" name="PG3" compartment="Cell" initialAmount="5.720977255" hasOnlySubstanceUnits="true"/>
+      <species id="PYR" name="PYR" compartment="Cell" initialAmount="0.863278018" hasOnlySubstanceUnits="true"/>
+      <species id="AceA" name="AceA" compartment="Cell" initialAmount="0.00472323" hasOnlySubstanceUnits="true"/>
+      <species id="AceB" name="AceB" compartment="Cell" initialAmount="0.001416969" hasOnlySubstanceUnits="true"/>
+      <species id="AceK" name="AceK" compartment="Cell" initialAmount="0.000141697" hasOnlySubstanceUnits="true"/>
+      <species id="Acoa2act" name="Acoa2act" compartment="Cell" initialAmount="0.001" hasOnlySubstanceUnits="true"/>
+      <species id="Acs" name="Acs" compartment="Cell" initialAmount="0.001096222" hasOnlySubstanceUnits="true"/>
+      <species id="Akg2mal" name="Akg2mal" compartment="Cell" initialAmount="0.001026848" hasOnlySubstanceUnits="true"/>
+      <species id="CAMPdegr" name="CAMPdegr" compartment="Cell" initialAmount="0.001" hasOnlySubstanceUnits="true"/>
+      <species id="Cya" name="Cya" compartment="Cell" initialAmount="0.001" hasOnlySubstanceUnits="true"/>
+      <species id="Emp" name="Emp" compartment="Cell" initialAmount="0.011515593" hasOnlySubstanceUnits="true"/>
+      <species id="Eno" name="Eno" compartment="Cell" initialAmount="0.011552813" hasOnlySubstanceUnits="true"/>
+      <species id="Fdp" name="Fdp" compartment="Cell" initialAmount="0.000157492" hasOnlySubstanceUnits="true"/>
+      <species id="GltA" name="GltA" compartment="Cell" initialAmount="0.001029612" hasOnlySubstanceUnits="true"/>
+      <species id="Icd" name="Icd" compartment="Cell" initialAmount="0.004290789" hasOnlySubstanceUnits="true"/>
+      <species id="Icd_P" name="Icd_P" compartment="Cell" initialAmount="0.000220477" hasOnlySubstanceUnits="true"/>
+      <species id="Mdh" name="Mdh" compartment="Cell" initialAmount="0.00345727" hasOnlySubstanceUnits="true"/>
+      <species id="Me" name="Me" compartment="Cell" initialAmount="0.000999714" hasOnlySubstanceUnits="true"/>
+      <species id="PckA" name="PckA" compartment="Cell" initialAmount="0.002290892" hasOnlySubstanceUnits="true"/>
+      <species id="Pdh" name="Pdh" compartment="Cell" initialAmount="0.004647401" hasOnlySubstanceUnits="true"/>
+      <species id="PfkA" name="PfkA" compartment="Cell" initialAmount="0.000143816" hasOnlySubstanceUnits="true"/>
+      <species id="Ppc" name="Ppc" compartment="Cell" initialAmount="0.000999714" hasOnlySubstanceUnits="true"/>
+      <species id="PpsA" name="PpsA" compartment="Cell" initialAmount="0.000987493" hasOnlySubstanceUnits="true"/>
+      <species id="PykF" name="PykF" compartment="Cell" initialAmount="0.005977168" hasOnlySubstanceUnits="true"/>
+      <species id="Cra" name="Cra" compartment="Cell" initialAmount="0.000299098" hasOnlySubstanceUnits="true"/>
+      <species id="CraFBP" name="CraFBP" compartment="Cell" initialAmount="0.006990902" hasOnlySubstanceUnits="true"/>
+      <species id="Crp" name="Crp" compartment="Cell" initialAmount="0.005943273" hasOnlySubstanceUnits="true"/>
+      <species id="CrpcAMP" name="CrpcAMP" compartment="Cell" initialAmount="0.001346727" hasOnlySubstanceUnits="true"/>
+      <species id="IclR" name="IclR" compartment="Cell" initialAmount="0.00729" hasOnlySubstanceUnits="true"/>
+      <species id="PdhR" name="PdhR" compartment="Cell" initialAmount="0.001163813" hasOnlySubstanceUnits="true"/>
+      <species id="PdhRPYR" name="PdhRPYR" compartment="Cell" initialAmount="0.006126187" hasOnlySubstanceUnits="true"/>
+      <species id="EIIA" name="EIIA" compartment="Cell" initialAmount="0.09647707" hasOnlySubstanceUnits="true"/>
+      <species id="EIIA_P" name="EIIA_P" compartment="Cell" initialAmount="0.00352292" hasOnlySubstanceUnits="true"/>
+      <species id="EIICB" name="EIICB" compartment="Cell" initialAmount="0.003" hasOnlySubstanceUnits="true"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="env_M_ACT" name="env_M_ACT" value="60.05"/>
+      <parameter id="env_M_GLC" name="env_M_GLC" value="180.156"/>
+      <parameter id="env_uc" name="env_uc" value="9.5e-007"/>
+      <parameter id="e_AceA_kcat" name="e_AceA_kcat" value="614"/>
+      <parameter id="e_AceA_n" name="e_AceA_n" value="4"/>
+      <parameter id="e_AceA_L" name="e_AceA_L" value="50100"/>
+      <parameter id="e_AceA_Kict" name="e_AceA_Kict" value="0.022"/>
+      <parameter id="e_AceA_Kpep" name="e_AceA_Kpep" value="0.055"/>
+      <parameter id="e_AceA_Kpg3" name="e_AceA_Kpg3" value="0.72"/>
+      <parameter id="e_AceA_Kakg" name="e_AceA_Kakg" value="0.827"/>
+      <parameter id="e_AceB_kcat" name="e_AceB_kcat" value="47.8"/>
+      <parameter id="e_AceB_Kglx" name="e_AceB_Kglx" value="0.95"/>
+      <parameter id="e_AceB_Kacoa" name="e_AceB_Kacoa" value="0.755"/>
+      <parameter id="e_AceB_Kglxacoa" name="e_AceB_Kglxacoa" value="0.719"/>
+      <parameter id="e_AceK_kcat_ki" name="e_AceK_kcat_ki" value="3400000000000"/>
+      <parameter id="e_AceK_kcat_ph" name="e_AceK_kcat_ph" value="1700000000"/>
+      <parameter id="e_AceK_n" name="e_AceK_n" value="2"/>
+      <parameter id="e_AceK_L" name="e_AceK_L" value="100000000"/>
+      <parameter id="e_AceK_Kicd" name="e_AceK_Kicd" value="0.043"/>
+      <parameter id="e_AceK_Kicd_P" name="e_AceK_Kicd_P" value="0.643"/>
+      <parameter id="e_AceK_Kpep" name="e_AceK_Kpep" value="0.539"/>
+      <parameter id="e_AceK_Kpyr" name="e_AceK_Kpyr" value="0.038"/>
+      <parameter id="e_AceK_Koaa" name="e_AceK_Koaa" value="0.173"/>
+      <parameter id="e_AceK_Kglx" name="e_AceK_Kglx" value="0.866"/>
+      <parameter id="e_AceK_Kakg" name="e_AceK_Kakg" value="0.82"/>
+      <parameter id="e_AceK_Kpg3" name="e_AceK_Kpg3" value="1.57"/>
+      <parameter id="e_AceK_Kict" name="e_AceK_Kict" value="0.137"/>
+      <parameter id="e_Acoa2act_kcat" name="e_Acoa2act_kcat" value="3079"/>
+      <parameter id="e_Acoa2act_n" name="e_Acoa2act_n" value="2"/>
+      <parameter id="e_Acoa2act_L" name="e_Acoa2act_L" value="639000"/>
+      <parameter id="e_Acoa2act_Kacoa" name="e_Acoa2act_Kacoa" value="0.022"/>
+      <parameter id="e_Acoa2act_Kpyr" name="e_Acoa2act_Kpyr" value="0.022"/>
+      <parameter id="e_Acs_kcat" name="e_Acs_kcat" value="340"/>
+      <parameter id="e_Acs_Kact" name="e_Acs_Kact" value="0.001"/>
+      <parameter id="e_Akg2mal_kcat" name="e_Akg2mal_kcat" value="1530"/>
+      <parameter id="e_Akg2mal_Kakg" name="e_Akg2mal_Kakg" value="0.548"/>
+      <parameter id="e_CAMPdegr_kcat" name="e_CAMPdegr_kcat" value="1000"/>
+      <parameter id="e_CAMPdegr_KcAMP" name="e_CAMPdegr_KcAMP" value="0.1"/>
+      <parameter id="e_Cya_kcat" name="e_Cya_kcat" value="993"/>
+      <parameter id="e_Cya_KEIIA" name="e_Cya_KEIIA" value="0.0017"/>
+      <parameter id="e_Emp_kcat_f" name="e_Emp_kcat_f" value="1000"/>
+      <parameter id="e_Emp_kcat_r" name="e_Emp_kcat_r" value="848"/>
+      <parameter id="e_Emp_Kfbp" name="e_Emp_Kfbp" value="5.92"/>
+      <parameter id="e_Emp_Kpg3" name="e_Emp_Kpg3" value="16.6"/>
+      <parameter id="e_Eno_kcatf" name="e_Eno_kcatf" value="695"/>
+      <parameter id="e_Eno_kcatr" name="e_Eno_kcatr" value="522"/>
+      <parameter id="e_Eno_Kpg3" name="e_Eno_Kpg3" value="4.76"/>
+      <parameter id="e_Eno_Kpep" name="e_Eno_Kpep" value="1.11"/>
+      <parameter id="e_Fdp_kcat" name="e_Fdp_kcat" value="192"/>
+      <parameter id="e_Fdp_n" name="e_Fdp_n" value="4"/>
+      <parameter id="e_Fdp_L" name="e_Fdp_L" value="4000000"/>
+      <parameter id="e_Fdp_Kfbp" name="e_Fdp_Kfbp" value="0.003"/>
+      <parameter id="e_Fdp_Kpep" name="e_Fdp_Kpep" value="0.3"/>
+      <parameter id="e_GltA_kcat" name="e_GltA_kcat" value="1614"/>
+      <parameter id="e_GltA_Koaa" name="e_GltA_Koaa" value="0.029"/>
+      <parameter id="e_GltA_Kacoa" name="e_GltA_Kacoa" value="0.212"/>
+      <parameter id="e_GltA_Koaaacoa" name="e_GltA_Koaaacoa" value="0.029"/>
+      <parameter id="e_GltA_Kakg" name="e_GltA_Kakg" value="0.63"/>
+      <parameter id="e_Icd_kcat" name="e_Icd_kcat" value="695"/>
+      <parameter id="e_Icd_n" name="e_Icd_n" value="2"/>
+      <parameter id="e_Icd_L" name="e_Icd_L" value="127"/>
+      <parameter id="e_Icd_Kict" name="e_Icd_Kict" value="0.00016"/>
+      <parameter id="e_Icd_Kpep" name="e_Icd_Kpep" value="0.334"/>
+      <parameter id="e_Mdh_kcat" name="e_Mdh_kcat" value="773"/>
+      <parameter id="e_Mdh_n" name="e_Mdh_n" value="1.7"/>
+      <parameter id="e_Mdh_Kmal" name="e_Mdh_Kmal" value="10.1"/>
+      <parameter id="e_Me_kcat" name="e_Me_kcat" value="1879"/>
+      <parameter id="e_Me_n" name="e_Me_n" value="1.33"/>
+      <parameter id="e_Me_L" name="e_Me_L" value="104000"/>
+      <parameter id="e_Me_Kmal" name="e_Me_Kmal" value="0.00624"/>
+      <parameter id="e_Me_Kacoa" name="e_Me_Kacoa" value="3.64"/>
+      <parameter id="e_Me_Kcamp" name="e_Me_Kcamp" value="6.54"/>
+      <parameter id="e_PckA_kcat" name="e_PckA_kcat" value="55.5"/>
+      <parameter id="e_PckA_Koaa" name="e_PckA_Koaa" value="0.184"/>
+      <parameter id="e_PckA_Kpep" name="e_PckA_Kpep" value="1000"/>
+      <parameter id="e_Pdh_kcat" name="e_Pdh_kcat" value="1179"/>
+      <parameter id="e_Pdh_n" name="e_Pdh_n" value="2.65"/>
+      <parameter id="e_Pdh_L" name="e_Pdh_L" value="3.4"/>
+      <parameter id="e_Pdh_Kpyr" name="e_Pdh_Kpyr" value="0.128"/>
+      <parameter id="e_Pdh_KpyrI" name="e_Pdh_KpyrI" value="0.231"/>
+      <parameter id="e_Pdh_Kglx" name="e_Pdh_Kglx" value="0.218"/>
+      <parameter id="e_PfkA_kcat" name="e_PfkA_kcat" value="908000"/>
+      <parameter id="e_PfkA_n" name="e_PfkA_n" value="4"/>
+      <parameter id="e_PfkA_L" name="e_PfkA_L" value="95000000"/>
+      <parameter id="e_PfkA_Kg6p" name="e_PfkA_Kg6p" value="0.022"/>
+      <parameter id="e_PfkA_Kpep" name="e_PfkA_Kpep" value="0.138"/>
+      <parameter id="e_Ppc_kcat" name="e_Ppc_kcat" value="5635"/>
+      <parameter id="e_Ppc_n" name="e_Ppc_n" value="3"/>
+      <parameter id="e_Ppc_L" name="e_Ppc_L" value="5200000"/>
+      <parameter id="e_Ppc_Kpep" name="e_Ppc_Kpep" value="0.048"/>
+      <parameter id="e_Ppc_Kfbp" name="e_Ppc_Kfbp" value="0.408"/>
+      <parameter id="e_PpsA_kcat" name="e_PpsA_kcat" value="1.32"/>
+      <parameter id="e_PpsA_n" name="e_PpsA_n" value="2"/>
+      <parameter id="e_PpsA_L" name="e_PpsA_L" value="1e-079"/>
+      <parameter id="e_PpsA_Kpyr" name="e_PpsA_Kpyr" value="0.00177"/>
+      <parameter id="e_PpsA_Kpep" name="e_PpsA_Kpep" value="0.001"/>
+      <parameter id="e_PykF_kcat" name="e_PykF_kcat" value="5749"/>
+      <parameter id="e_PykF_n" name="e_PykF_n" value="4"/>
+      <parameter id="e_PykF_L" name="e_PykF_L" value="100000"/>
+      <parameter id="e_PykF_Kpep" name="e_PykF_Kpep" value="5"/>
+      <parameter id="e_PykF_Kfbp" name="e_PykF_Kfbp" value="0.413"/>
+      <parameter id="pts_k1" name="pts_k1" value="116"/>
+      <parameter id="pts_km1" name="pts_km1" value="46.3"/>
+      <parameter id="pts_k4" name="pts_k4" value="2520"/>
+      <parameter id="pts_KEIIA" name="pts_KEIIA" value="0.0085"/>
+      <parameter id="pts_Kglc" name="pts_Kglc" value="0.0012"/>
+      <parameter id="tf_Cra_scale" name="tf_Cra_scale" value="100"/>
+      <parameter id="tf_Cra_kfbp" name="tf_Cra_kfbp" value="1.36"/>
+      <parameter id="tf_Cra_n" name="tf_Cra_n" value="2"/>
+      <parameter id="tf_Crp_scale" name="tf_Crp_scale" value="100000000"/>
+      <parameter id="tf_Crp_kcamp" name="tf_Crp_kcamp" value="0.895"/>
+      <parameter id="tf_Crp_n" name="tf_Crp_n" value="1"/>
+      <parameter id="tf_PdhR_scale" name="tf_PdhR_scale" value="100"/>
+      <parameter id="tf_PdhR_kpyr" name="tf_PdhR_kpyr" value="0.164"/>
+      <parameter id="tf_PdhR_n" name="tf_PdhR_n" value="1"/>
+      <parameter id="g_aceBAK_vcra_unbound" name="g_aceBAK_vcra_unbound" value="1.9e-009"/>
+      <parameter id="g_aceBAK_vcra_bound" name="g_aceBAK_vcra_bound" value="2e-006"/>
+      <parameter id="g_aceBAK_Kcra" name="g_aceBAK_Kcra" value="0.00365"/>
+      <parameter id="g_aceBAK_aceBfactor" name="g_aceBAK_aceBfactor" value="0.3"/>
+      <parameter id="g_aceBAK_aceKfactor" name="g_aceBAK_aceKfactor" value="0.03"/>
+      <parameter id="g_aceBAK_KDNA" name="g_aceBAK_KDNA" value="2.19"/>
+      <parameter id="g_aceBAK_KP" name="g_aceBAK_KP" value="0.897"/>
+      <parameter id="g_aceBAK_KPprime" name="g_aceBAK_KPprime" value="0.00301"/>
+      <parameter id="g_aceBAK_KG" name="g_aceBAK_KG" value="0.00488"/>
+      <parameter id="g_aceBAK_L" name="g_aceBAK_L" value="923"/>
+      <parameter id="g_aceBAK_kcat_iclr" name="g_aceBAK_kcat_iclr" value="0.00093"/>
+      <parameter id="g_aceBAK_DNA" name="g_aceBAK_DNA" value="1"/>
+      <parameter id="g_aceBAK_vcrp_bound" name="g_aceBAK_vcrp_bound" value="2.3e-010"/>
+      <parameter id="g_aceBAK_vcrp_unbound" name="g_aceBAK_vcrp_unbound" value="2e-008"/>
+      <parameter id="g_aceBAK_Kcrp" name="g_aceBAK_Kcrp" value="0.341"/>
+      <parameter id="g_acs_vcrp_unbound" name="g_acs_vcrp_unbound" value="0"/>
+      <parameter id="g_acs_vcrp_bound" name="g_acs_vcrp_bound" value="1.2e-006"/>
+      <parameter id="g_acs_n" name="g_acs_n" value="2.31"/>
+      <parameter id="g_acs_Kcrp" name="g_acs_Kcrp" value="0.0047"/>
+      <parameter id="g_akg2mal_vcrp_unbound" name="g_akg2mal_vcrp_unbound" value="0"/>
+      <parameter id="g_akg2mal_vcrp_bound" name="g_akg2mal_vcrp_bound" value="1.4e-006"/>
+      <parameter id="g_akg2mal_Kcrp" name="g_akg2mal_Kcrp" value="0.091"/>
+      <parameter id="g_akg2mal_n" name="g_akg2mal_n" value="0.74"/>
+      <parameter id="g_emp_vcra_unbound" name="g_emp_vcra_unbound" value="6.2e-007"/>
+      <parameter id="g_emp_vcra_bound" name="g_emp_vcra_bound" value="0"/>
+      <parameter id="g_emp_Kcra" name="g_emp_Kcra" value="0.09"/>
+      <parameter id="g_emp_vcrp_unbound" name="g_emp_vcrp_unbound" value="0"/>
+      <parameter id="g_emp_vcrp_bound" name="g_emp_vcrp_bound" value="4.7e-007"/>
+      <parameter id="g_emp_Kcrp" name="g_emp_Kcrp" value="0.012"/>
+      <parameter id="g_eno_vcra_unbound" name="g_eno_vcra_unbound" value="6.8e-007"/>
+      <parameter id="g_eno_vcra_bound" name="g_eno_vcra_bound" value="0"/>
+      <parameter id="g_eno_Kcra" name="g_eno_Kcra" value="0.016"/>
+      <parameter id="g_fdp_vcra_unbound" name="g_fdp_vcra_unbound" value="0"/>
+      <parameter id="g_fdp_vcra_bound" name="g_fdp_vcra_bound" value="4.5e-008"/>
+      <parameter id="g_fdp_Kcra" name="g_fdp_Kcra" value="0.00118"/>
+      <parameter id="g_gltA_vcrp_unbound" name="g_gltA_vcrp_unbound" value="0"/>
+      <parameter id="g_gltA_vcrp_bound" name="g_gltA_vcrp_bound" value="2.3e-006"/>
+      <parameter id="g_gltA_Kcrp" name="g_gltA_Kcrp" value="0.04"/>
+      <parameter id="g_gltA_n" name="g_gltA_n" value="1.07"/>
+      <parameter id="g_icd_vcra_unbound" name="g_icd_vcra_unbound" value="1.1e-007"/>
+      <parameter id="g_icd_vcra_bound" name="g_icd_vcra_bound" value="8.5e-007"/>
+      <parameter id="g_icd_Kcra" name="g_icd_Kcra" value="0.00117"/>
+      <parameter id="g_mdh_vcrp_unbound" name="g_mdh_vcrp_unbound" value="0"/>
+      <parameter id="g_mdh_vcrp_bound" name="g_mdh_vcrp_bound" value="9.1e-006"/>
+      <parameter id="g_mdh_Kcrp" name="g_mdh_Kcrp" value="0.06"/>
+      <parameter id="g_pckA_vcra_unbound" name="g_pckA_vcra_unbound" value="0"/>
+      <parameter id="g_pckA_vcra_bound" name="g_pckA_vcra_bound" value="2.5e-006"/>
+      <parameter id="g_pckA_Kcra" name="g_pckA_Kcra" value="0.00535"/>
+      <parameter id="g_pdh_vpdhr_unbound" name="g_pdh_vpdhr_unbound" value="3.6e-007"/>
+      <parameter id="g_pdh_vpdhr_bound" name="g_pdh_vpdhr_bound" value="1.3e-009"/>
+      <parameter id="g_pdh_Kpdhr" name="g_pdh_Kpdhr" value="0.0034"/>
+      <parameter id="g_pfkA_vcra_unbound" name="g_pfkA_vcra_unbound" value="8.2e-007"/>
+      <parameter id="g_pfkA_vcra_bound" name="g_pfkA_vcra_bound" value="6.6e-009"/>
+      <parameter id="g_pfkA_Kcra" name="g_pfkA_Kcra" value="6.3e-007"/>
+      <parameter id="g_ppsA_vcra_unbound" name="g_ppsA_vcra_unbound" value="0"/>
+      <parameter id="g_ppsA_vcra_bound" name="g_ppsA_vcra_bound" value="3.3e-006"/>
+      <parameter id="g_ppsA_Kcra" name="g_ppsA_Kcra" value="0.017"/>
+      <parameter id="g_pykF_vcra_unbound" name="g_pykF_vcra_unbound" value="3.9e-007"/>
+      <parameter id="g_pykF_vcra_bound" name="g_pykF_vcra_bound" value="2.1e-009"/>
+      <parameter id="g_pykF_Kcra" name="g_pykF_Kcra" value="0.0023"/>
+      <parameter id="d_k_degr" name="d_k_degr" value="2.8e-005"/>
+      <parameter id="bm_k_expr" name="bm_k_expr" value="20000"/>
+      <parameter id="bm_muACT" name="bm_muACT" value="5.6e-005"/>
+      <parameter id="bm_muGLC" name="bm_muGLC" value="0.00018"/>
+      <parameter id="bm_GLC_ACoA" name="bm_GLC_ACoA" value="1.88"/>
+      <parameter id="bm_GLC_AKG" name="bm_GLC_AKG" value="0.978"/>
+      <parameter id="bm_GLC_G6P" name="bm_GLC_G6P" value="0.154"/>
+      <parameter id="bm_GLC_OAA" name="bm_GLC_OAA" value="6.4"/>
+      <parameter id="bm_GLC_PEP" name="bm_GLC_PEP" value="0.423"/>
+      <parameter id="bm_GLC_PG3" name="bm_GLC_PG3" value="0.049"/>
+      <parameter id="bm_GLC_PYR" name="bm_GLC_PYR" value="0.553"/>
+      <parameter id="bm_ACT_ACoA" name="bm_ACT_ACoA" value="0.108"/>
+      <parameter id="bm_ACT_AKG" name="bm_ACT_AKG" value="0.056"/>
+      <parameter id="bm_ACT_G6P" name="bm_ACT_G6P" value="0.076"/>
+      <parameter id="bm_ACT_OAA" name="bm_ACT_OAA" value="1.43"/>
+      <parameter id="bm_ACT_PEP" name="bm_ACT_PEP" value="0.047"/>
+      <parameter id="bm_ACT_PG3" name="bm_ACT_PG3" value="0.066"/>
+      <parameter id="bm_ACT_PYR" name="bm_ACT_PYR" value="5.185"/>
+      <parameter id="alphaGLC" name="alphaGLC" value="0" constant="false"/>
+      <parameter id="alphaACT" name="alphaACT" value="0" constant="false"/>
+      <parameter id="mu" name="mu" value="0" constant="false"/>
+      <parameter id="k_bm_ACoA" name="k_bm_ACoA" value="0" constant="false"/>
+      <parameter id="k_bm_AKG" name="k_bm_AKG" value="0" constant="false"/>
+      <parameter id="k_bm_G6P" name="k_bm_G6P" value="0" constant="false"/>
+      <parameter id="k_bm_OAA" name="k_bm_OAA" value="0" constant="false"/>
+      <parameter id="k_bm_PEP" name="k_bm_PEP" value="0" constant="false"/>
+      <parameter id="k_bm_PG3" name="k_bm_PG3" value="0" constant="false"/>
+      <parameter id="k_bm_PYR" name="k_bm_PYR" value="0" constant="false"/>
+      <parameter id="SS_Me" name="SS_Me" value="0" constant="false"/>
+      <parameter id="SS_Ppc" name="SS_Ppc" value="0" constant="false"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="alphaGLC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> GLC </ci>
+            <apply>
+              <plus/>
+              <ci> GLC </ci>
+              <ci> pts_Kglc </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alphaACT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> ACT </ci>
+              <apply>
+                <plus/>
+                <ci> ACT </ci>
+                <ci> e_Acs_Kact </ci>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> GLC </ci>
+                <apply>
+                  <plus/>
+                  <ci> GLC </ci>
+                  <ci> pts_Kglc </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="mu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <ci> bm_muGLC </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <ci> bm_muACT </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_bm_ACoA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <ci> bm_GLC_ACoA </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <ci> bm_ACT_ACoA </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_bm_AKG">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <ci> bm_GLC_AKG </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <ci> bm_ACT_AKG </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_bm_G6P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <ci> bm_GLC_G6P </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <ci> bm_ACT_G6P </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_bm_OAA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <ci> bm_GLC_OAA </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <ci> bm_ACT_OAA </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_bm_PEP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <ci> bm_GLC_PEP </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <ci> bm_ACT_PEP </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_bm_PG3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <ci> bm_GLC_PG3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <ci> bm_ACT_PG3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_bm_PYR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <ci> bm_GLC_PYR </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <ci> bm_ACT_PYR </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SS_Me">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <cn> 0.000999714 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <cn> 0.003399346 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SS_Ppc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> alphaGLC </ci>
+              <cn> 0.000999714 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alphaACT </ci>
+              <cn> 0.000279893 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+    <listOfReactions>
+      <reaction id="bm_ACoA" name="bm_ACoA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ACoA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_bm_ACoA </ci>
+              <ci> ACoA </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="bm_AKG" name="bm_AKG" reversible="false">
+        <listOfReactants>
+          <speciesReference species="AKG"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_bm_AKG </ci>
+              <ci> AKG </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="bm_G6P" name="bm_G6P" reversible="false">
+        <listOfReactants>
+          <speciesReference species="G6P"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_bm_G6P </ci>
+              <ci> G6P </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="bm_OAA" name="bm_OAA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="OAA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_bm_OAA </ci>
+              <ci> OAA </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="bm_PEP" name="bm_PEP" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PEP"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_bm_PEP </ci>
+              <ci> PEP </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="bm_PG3" name="bm_PG3" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PG3"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_bm_PG3 </ci>
+              <ci> PG3 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="bm_PYR" name="bm_PYR" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PYR"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_bm_PYR </ci>
+              <ci> PYR </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="pts_r1" name="pts_r1">
+        <listOfReactants>
+          <speciesReference species="PEP"/>
+          <speciesReference species="EIIA"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PYR"/>
+          <speciesReference species="EIIA_P"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> pts_k1 </ci>
+                <ci> PEP </ci>
+                <ci> EIIA </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> pts_km1 </ci>
+                <ci> PYR </ci>
+                <ci> EIIA_P </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="pts_r4" name="pts_r4" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EIIA_P"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="G6P"/>
+          <speciesReference species="EIIA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="EIICB"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> pts_k4 </ci>
+                <ci> EIICB </ci>
+                <ci> EIIA_P </ci>
+                <ci> GLC </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> pts_KEIIA </ci>
+                  <ci> EIIA_P </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> pts_Kglc </ci>
+                  <ci> GLC </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_AceK_Ki" name="e_AceK_Ki" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Icd"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Icd_P"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="AKG"/>
+          <modifierSpeciesReference species="AceK"/>
+          <modifierSpeciesReference species="GLX"/>
+          <modifierSpeciesReference species="ICT"/>
+          <modifierSpeciesReference species="OAA"/>
+          <modifierSpeciesReference species="PEP"/>
+          <modifierSpeciesReference species="PG3"/>
+          <modifierSpeciesReference species="PYR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> AceK </ci>
+                    <ci> e_AceK_kcat_ki </ci>
+                    <ci> Icd </ci>
+                  </apply>
+                  <ci> e_AceK_Kicd </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Icd </ci>
+                      <ci> e_AceK_Kicd </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_AceK_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Icd </ci>
+                      <ci> e_AceK_Kicd </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_AceK_n </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_AceK_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> ICT </ci>
+                        <ci> e_AceK_Kict </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> GLX </ci>
+                        <ci> e_AceK_Kglx </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> OAA </ci>
+                        <ci> e_AceK_Koaa </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> AKG </ci>
+                        <ci> e_AceK_Kakg </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> PEP </ci>
+                        <ci> e_AceK_Kpep </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> PG3 </ci>
+                        <ci> e_AceK_Kpg3 </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> PYR </ci>
+                        <ci> e_AceK_Kpyr </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_AceK_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_AceK_Ph" name="e_AceK_Ph" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Icd_P"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Icd"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="AKG"/>
+          <modifierSpeciesReference species="AceK"/>
+          <modifierSpeciesReference species="OAA"/>
+          <modifierSpeciesReference species="PEP"/>
+          <modifierSpeciesReference species="PG3"/>
+          <modifierSpeciesReference species="PYR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> AceK </ci>
+                    <ci> e_AceK_kcat_ph </ci>
+                    <ci> Icd_P </ci>
+                  </apply>
+                  <ci> e_AceK_Kicd_P </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Icd_P </ci>
+                      <ci> e_AceK_Kicd_P </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_AceK_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Icd_P </ci>
+                      <ci> e_AceK_Kicd_P </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_AceK_n </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> e_AceK_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> OAA </ci>
+                        <ci> e_AceK_Koaa </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> AKG </ci>
+                        <ci> e_AceK_Kakg </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> PEP </ci>
+                        <ci> e_AceK_Kpep </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> PG3 </ci>
+                        <ci> e_AceK_Kpg3 </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> PYR </ci>
+                        <ci> e_AceK_Kpyr </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_AceK_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="tf_Cra" name="tf_Cra">
+        <listOfReactants>
+          <speciesReference species="Cra"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="CraFBP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="FBP"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> tf_Cra_scale </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> CraFBP </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> FBP </ci>
+                      <ci> tf_Cra_n </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> FBP </ci>
+                      <ci> tf_Cra_n </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> tf_Cra_kfbp </ci>
+                      <ci> tf_Cra_n </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <ci> CraFBP </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="tf_Crp" name="tf_Crp">
+        <listOfReactants>
+          <speciesReference species="Crp"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="CrpcAMP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cAMP"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> tf_Crp_scale </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <plus/>
+                      <ci> Crp </ci>
+                      <ci> CrpcAMP </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> cAMP </ci>
+                      <ci> tf_Crp_n </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> cAMP </ci>
+                      <ci> tf_Crp_n </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> tf_Crp_kcamp </ci>
+                      <ci> tf_Crp_n </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <ci> CrpcAMP </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="tf_PdhR" name="tf_PdhR">
+        <listOfReactants>
+          <speciesReference species="PdhR"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PdhRPYR"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PYR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> tf_PdhR_scale </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <plus/>
+                      <ci> PdhR </ci>
+                      <ci> PdhRPYR </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> PYR </ci>
+                      <ci> tf_PdhR_n </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> PYR </ci>
+                      <ci> tf_PdhR_n </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> tf_PdhR_kpyr </ci>
+                      <ci> tf_PdhR_n </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <ci> PdhRPYR </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_AceA" name="e_AceA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ICT"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="AKG"/>
+          <speciesReference species="GLX"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="AceA"/>
+          <modifierSpeciesReference species="PEP"/>
+          <modifierSpeciesReference species="PG3"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> AceA </ci>
+                    <ci> e_AceA_kcat </ci>
+                    <ci> ICT </ci>
+                  </apply>
+                  <ci> e_AceA_Kict </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> ICT </ci>
+                      <ci> e_AceA_Kict </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_AceA_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> ICT </ci>
+                      <ci> e_AceA_Kict </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_AceA_n </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_AceA_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> PEP </ci>
+                        <ci> e_AceA_Kpep </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> PG3 </ci>
+                        <ci> e_AceA_Kpg3 </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> AKG </ci>
+                        <ci> e_AceA_Kakg </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_AceA_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_AceB" name="e_AceB" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ACoA"/>
+          <speciesReference species="GLX"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="MAL"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="AceB"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> AceB </ci>
+                <ci> e_AceB_kcat </ci>
+                <ci> GLX </ci>
+                <ci> ACoA </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> e_AceB_Kglxacoa </ci>
+                  <ci> e_AceB_Kacoa </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_AceB_Kacoa </ci>
+                  <ci> GLX </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_AceB_Kglx </ci>
+                  <ci> ACoA </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> GLX </ci>
+                  <ci> ACoA </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Acoa2act" name="e_Acoa2act" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ACoA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Acoa2act"/>
+          <modifierSpeciesReference species="PYR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Acoa2act </ci>
+                    <ci> e_Acoa2act_kcat </ci>
+                    <ci> ACoA </ci>
+                  </apply>
+                  <ci> e_Acoa2act_Kacoa </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> ACoA </ci>
+                      <ci> e_Acoa2act_Kacoa </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_Acoa2act_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> ACoA </ci>
+                      <ci> e_Acoa2act_Kacoa </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_Acoa2act_n </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> e_Acoa2act_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> PYR </ci>
+                        <ci> e_Acoa2act_Kpyr </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_Acoa2act_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Acs" name="e_Acs" reversible="false">
+        <listOfProducts>
+          <speciesReference species="ACoA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Acs"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Acs </ci>
+                <ci> e_Acs_kcat </ci>
+                <ci> ACT </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> ACT </ci>
+                <ci> e_Acs_Kact </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Akg2mal" name="e_Akg2mal" reversible="false">
+        <listOfReactants>
+          <speciesReference species="AKG"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="MAL"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Akg2mal"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Akg2mal </ci>
+                <ci> e_Akg2mal_kcat </ci>
+                <ci> AKG </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> AKG </ci>
+                <ci> e_Akg2mal_Kakg </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_CAMPdegr" name="e_CAMPdegr" reversible="false">
+        <listOfReactants>
+          <speciesReference species="cAMP"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="CAMPdegr"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> e_CAMPdegr_kcat </ci>
+                <ci> CAMPdegr </ci>
+                <ci> cAMP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> cAMP </ci>
+                <ci> e_CAMPdegr_KcAMP </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Cya" name="e_Cya" reversible="false">
+        <listOfProducts>
+          <speciesReference species="cAMP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Cya"/>
+          <modifierSpeciesReference species="EIIA_P"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> e_Cya_kcat </ci>
+                <ci> Cya </ci>
+                <ci> EIIA_P </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> EIIA_P </ci>
+                <ci> e_Cya_KEIIA </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Emp" name="e_Emp">
+        <listOfReactants>
+          <speciesReference species="FBP" stoichiometry="0.5"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PG3"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Emp"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Emp </ci>
+                    <ci> e_Emp_kcat_f </ci>
+                    <ci> FBP </ci>
+                  </apply>
+                  <ci> e_Emp_Kfbp </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Emp </ci>
+                    <ci> e_Emp_kcat_r </ci>
+                    <ci> PG3 </ci>
+                  </apply>
+                  <ci> e_Emp_Kpg3 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> FBP </ci>
+                  <ci> e_Emp_Kfbp </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> PG3 </ci>
+                  <ci> e_Emp_Kpg3 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Eno" name="e_Eno">
+        <listOfReactants>
+          <speciesReference species="PG3"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PEP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Eno"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Eno </ci>
+                    <ci> e_Eno_kcatf </ci>
+                    <ci> PG3 </ci>
+                  </apply>
+                  <ci> e_Eno_Kpg3 </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Eno </ci>
+                    <ci> e_Eno_kcatr </ci>
+                    <ci> PEP </ci>
+                  </apply>
+                  <ci> e_Eno_Kpep </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> PG3 </ci>
+                  <ci> e_Eno_Kpg3 </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> PEP </ci>
+                  <ci> e_Eno_Kpep </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Fdp" name="e_Fdp" reversible="false">
+        <listOfReactants>
+          <speciesReference species="FBP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="G6P"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Fdp"/>
+          <modifierSpeciesReference species="PEP"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Fdp </ci>
+                    <ci> e_Fdp_kcat </ci>
+                    <ci> FBP </ci>
+                  </apply>
+                  <ci> e_Fdp_Kfbp </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> FBP </ci>
+                      <ci> e_Fdp_Kfbp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_Fdp_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> FBP </ci>
+                      <ci> e_Fdp_Kfbp </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_Fdp_n </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> e_Fdp_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> PEP </ci>
+                        <ci> e_Fdp_Kpep </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_Fdp_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_GltA" name="e_GltA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ACoA"/>
+          <speciesReference species="OAA"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ICT"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="AKG"/>
+          <modifierSpeciesReference species="GltA"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> GltA </ci>
+                <ci> e_GltA_kcat </ci>
+                <ci> OAA </ci>
+                <ci> ACoA </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> AKG </ci>
+                      <ci> e_GltA_Kakg </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_GltA_Koaaacoa </ci>
+                  <ci> e_GltA_Kacoa </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_GltA_Kacoa </ci>
+                  <ci> OAA </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> AKG </ci>
+                      <ci> e_GltA_Kakg </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_GltA_Koaa </ci>
+                  <ci> ACoA </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> OAA </ci>
+                  <ci> ACoA </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Icd" name="e_Icd" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ICT"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="AKG"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Icd"/>
+          <modifierSpeciesReference species="PEP"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Icd </ci>
+                    <ci> e_Icd_kcat </ci>
+                    <ci> ICT </ci>
+                  </apply>
+                  <ci> e_Icd_Kict </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> ICT </ci>
+                      <ci> e_Icd_Kict </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_Icd_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> ICT </ci>
+                      <ci> e_Icd_Kict </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_Icd_n </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_Icd_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> PEP </ci>
+                        <ci> e_Icd_Kpep </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_Icd_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Mdh" name="e_Mdh" reversible="false">
+        <listOfReactants>
+          <speciesReference species="MAL"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="OAA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Mdh"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Mdh </ci>
+                <ci> e_Mdh_kcat </ci>
+                <apply>
+                  <power/>
+                  <ci> MAL </ci>
+                  <ci> e_Mdh_n </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> MAL </ci>
+                  <ci> e_Mdh_n </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> e_Mdh_Kmal </ci>
+                  <ci> e_Mdh_n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Me" name="e_Me" reversible="false">
+        <listOfReactants>
+          <speciesReference species="MAL"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PYR"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACoA"/>
+          <modifierSpeciesReference species="Me"/>
+          <modifierSpeciesReference species="cAMP"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Me </ci>
+                    <ci> e_Me_kcat </ci>
+                    <ci> MAL </ci>
+                  </apply>
+                  <ci> e_Me_Kmal </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> MAL </ci>
+                      <ci> e_Me_Kmal </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_Me_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> MAL </ci>
+                      <ci> e_Me_Kmal </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_Me_n </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_Me_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> ACoA </ci>
+                        <ci> e_Me_Kacoa </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> cAMP </ci>
+                        <ci> e_Me_Kcamp </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_Me_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_PckA" name="e_PckA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="OAA"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PEP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PckA"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> PckA </ci>
+                <ci> e_PckA_kcat </ci>
+                <ci> OAA </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> OAA </ci>
+                <apply>
+                  <times/>
+                  <ci> e_PckA_Koaa </ci>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PEP </ci>
+                      <ci> e_PckA_Kpep </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Pdh" name="e_Pdh" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PYR"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ACoA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="GLX"/>
+          <modifierSpeciesReference species="Pdh"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Pdh </ci>
+                    <ci> e_Pdh_kcat </ci>
+                    <ci> PYR </ci>
+                  </apply>
+                  <ci> e_Pdh_Kpyr </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PYR </ci>
+                      <ci> e_Pdh_Kpyr </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_Pdh_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PYR </ci>
+                      <ci> e_Pdh_Kpyr </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_Pdh_n </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_Pdh_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> GLX </ci>
+                        <ci> e_Pdh_Kglx </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> PYR </ci>
+                        <ci> e_Pdh_KpyrI </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_Pdh_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_PfkA" name="e_PfkA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="G6P"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="FBP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PEP"/>
+          <modifierSpeciesReference species="PfkA"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PfkA </ci>
+                    <ci> e_PfkA_kcat </ci>
+                    <ci> G6P </ci>
+                  </apply>
+                  <ci> e_PfkA_Kg6p </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> G6P </ci>
+                      <ci> e_PfkA_Kg6p </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_PfkA_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> G6P </ci>
+                      <ci> e_PfkA_Kg6p </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_PfkA_n </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_PfkA_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> PEP </ci>
+                        <ci> e_PfkA_Kpep </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_PfkA_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_Ppc" name="e_Ppc" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PEP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="OAA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="FBP"/>
+          <modifierSpeciesReference species="Ppc"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Ppc </ci>
+                    <ci> e_Ppc_kcat </ci>
+                    <ci> PEP </ci>
+                  </apply>
+                  <ci> e_Ppc_Kpep </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PEP </ci>
+                      <ci> e_Ppc_Kpep </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_Ppc_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PEP </ci>
+                      <ci> e_Ppc_Kpep </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_Ppc_n </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> e_Ppc_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> FBP </ci>
+                        <ci> e_Ppc_Kfbp </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_Ppc_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_PpsA" name="e_PpsA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PYR"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PEP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PpsA"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PpsA </ci>
+                    <ci> e_PpsA_kcat </ci>
+                    <ci> PYR </ci>
+                  </apply>
+                  <ci> e_PpsA_Kpyr </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PYR </ci>
+                      <ci> e_PpsA_Kpyr </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_PpsA_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PYR </ci>
+                      <ci> e_PpsA_Kpyr </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_PpsA_n </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> e_PpsA_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> PEP </ci>
+                        <ci> e_PpsA_Kpep </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_PpsA_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="e_PykF" name="e_PykF" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PEP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PYR"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="FBP"/>
+          <modifierSpeciesReference species="PykF"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PykF </ci>
+                    <ci> e_PykF_kcat </ci>
+                    <ci> PEP </ci>
+                  </apply>
+                  <ci> e_PykF_Kpep </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PEP </ci>
+                      <ci> e_PykF_Kpep </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_PykF_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PEP </ci>
+                      <ci> e_PykF_Kpep </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_PykF_n </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> e_PykF_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> FBP </ci>
+                        <ci> e_PykF_Kfbp </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_PykF_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_aceA" name="g_aceA" reversible="false">
+        <listOfProducts>
+          <speciesReference species="AceA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="CrpcAMP"/>
+          <modifierSpeciesReference species="GLC"/>
+          <modifierSpeciesReference species="GLX"/>
+          <modifierSpeciesReference species="IclR"/>
+          <modifierSpeciesReference species="PYR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_aceBAK_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_aceBAK_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcra_bound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> CrpcAMP </ci>
+                      <apply>
+                        <plus/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_aceBAK_Kcrp </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcrp_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> CrpcAMP </ci>
+                    <apply>
+                      <plus/>
+                      <ci> CrpcAMP </ci>
+                      <ci> g_aceBAK_Kcrp </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcrp_bound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> g_aceBAK_kcat_iclr </ci>
+                  <ci> IclR </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <apply>
+                          <divide/>
+                          <ci> g_aceBAK_DNA </ci>
+                          <ci> g_aceBAK_KDNA </ci>
+                        </apply>
+                        <apply>
+                          <plus/>
+                          <cn type="integer"> 1 </cn>
+                          <apply>
+                            <divide/>
+                            <ci> PYR </ci>
+                            <ci> g_aceBAK_KPprime </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <apply>
+                              <divide/>
+                              <ci> GLX </ci>
+                              <ci> g_aceBAK_KG </ci>
+                            </apply>
+                            <apply>
+                              <plus/>
+                              <cn type="integer"> 1 </cn>
+                              <apply>
+                                <divide/>
+                                <ci> GLX </ci>
+                                <ci> g_aceBAK_KG </ci>
+                              </apply>
+                            </apply>
+                          </apply>
+                          <ci> g_aceBAK_L </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> g_aceBAK_DNA </ci>
+                          <ci> g_aceBAK_KDNA </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> PYR </ci>
+                          <ci> g_aceBAK_KP </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <divide/>
+                            <apply>
+                              <times/>
+                              <ci> g_aceBAK_DNA </ci>
+                              <ci> PYR </ci>
+                            </apply>
+                            <ci> g_aceBAK_KDNA </ci>
+                          </apply>
+                          <ci> g_aceBAK_KPprime </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_aceB" name="g_aceB" reversible="false">
+        <listOfProducts>
+          <speciesReference species="AceB"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="CrpcAMP"/>
+          <modifierSpeciesReference species="GLC"/>
+          <modifierSpeciesReference species="GLX"/>
+          <modifierSpeciesReference species="IclR"/>
+          <modifierSpeciesReference species="PYR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> g_aceBAK_aceBfactor </ci>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_aceBAK_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_aceBAK_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcra_bound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> CrpcAMP </ci>
+                      <apply>
+                        <plus/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_aceBAK_Kcrp </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcrp_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> CrpcAMP </ci>
+                    <apply>
+                      <plus/>
+                      <ci> CrpcAMP </ci>
+                      <ci> g_aceBAK_Kcrp </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcrp_bound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> g_aceBAK_kcat_iclr </ci>
+                  <ci> IclR </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <apply>
+                          <divide/>
+                          <ci> g_aceBAK_DNA </ci>
+                          <ci> g_aceBAK_KDNA </ci>
+                        </apply>
+                        <apply>
+                          <plus/>
+                          <cn type="integer"> 1 </cn>
+                          <apply>
+                            <divide/>
+                            <ci> PYR </ci>
+                            <ci> g_aceBAK_KPprime </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <apply>
+                              <divide/>
+                              <ci> GLX </ci>
+                              <ci> g_aceBAK_KG </ci>
+                            </apply>
+                            <apply>
+                              <plus/>
+                              <cn type="integer"> 1 </cn>
+                              <apply>
+                                <divide/>
+                                <ci> GLX </ci>
+                                <ci> g_aceBAK_KG </ci>
+                              </apply>
+                            </apply>
+                          </apply>
+                          <ci> g_aceBAK_L </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> g_aceBAK_DNA </ci>
+                          <ci> g_aceBAK_KDNA </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> PYR </ci>
+                          <ci> g_aceBAK_KP </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <divide/>
+                            <apply>
+                              <times/>
+                              <ci> g_aceBAK_DNA </ci>
+                              <ci> PYR </ci>
+                            </apply>
+                            <ci> g_aceBAK_KDNA </ci>
+                          </apply>
+                          <ci> g_aceBAK_KPprime </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_aceK" name="g_aceK" reversible="false">
+        <listOfProducts>
+          <speciesReference species="AceK"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="CrpcAMP"/>
+          <modifierSpeciesReference species="GLC"/>
+          <modifierSpeciesReference species="GLX"/>
+          <modifierSpeciesReference species="IclR"/>
+          <modifierSpeciesReference species="PYR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> g_aceBAK_aceKfactor </ci>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_aceBAK_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_aceBAK_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcra_bound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> CrpcAMP </ci>
+                      <apply>
+                        <plus/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_aceBAK_Kcrp </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcrp_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> CrpcAMP </ci>
+                    <apply>
+                      <plus/>
+                      <ci> CrpcAMP </ci>
+                      <ci> g_aceBAK_Kcrp </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_aceBAK_vcrp_bound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> g_aceBAK_kcat_iclr </ci>
+                  <ci> IclR </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <apply>
+                          <divide/>
+                          <ci> g_aceBAK_DNA </ci>
+                          <ci> g_aceBAK_KDNA </ci>
+                        </apply>
+                        <apply>
+                          <plus/>
+                          <cn type="integer"> 1 </cn>
+                          <apply>
+                            <divide/>
+                            <ci> PYR </ci>
+                            <ci> g_aceBAK_KPprime </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <apply>
+                              <divide/>
+                              <ci> GLX </ci>
+                              <ci> g_aceBAK_KG </ci>
+                            </apply>
+                            <apply>
+                              <plus/>
+                              <cn type="integer"> 1 </cn>
+                              <apply>
+                                <divide/>
+                                <ci> GLX </ci>
+                                <ci> g_aceBAK_KG </ci>
+                              </apply>
+                            </apply>
+                          </apply>
+                          <ci> g_aceBAK_L </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> g_aceBAK_DNA </ci>
+                          <ci> g_aceBAK_KDNA </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> PYR </ci>
+                          <ci> g_aceBAK_KP </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <divide/>
+                            <apply>
+                              <times/>
+                              <ci> g_aceBAK_DNA </ci>
+                              <ci> PYR </ci>
+                            </apply>
+                            <ci> g_aceBAK_KDNA </ci>
+                          </apply>
+                          <ci> g_aceBAK_KPprime </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_acoa2act" name="g_acoa2act" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Acoa2act"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_acs" name="g_acs" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Acs"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="CrpcAMP"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <power/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_acs_n </ci>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <power/>
+                          <ci> CrpcAMP </ci>
+                          <ci> g_acs_n </ci>
+                        </apply>
+                        <apply>
+                          <power/>
+                          <ci> g_acs_Kcrp </ci>
+                          <ci> g_acs_n </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_acs_vcrp_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <power/>
+                      <ci> CrpcAMP </ci>
+                      <ci> g_acs_n </ci>
+                    </apply>
+                    <apply>
+                      <plus/>
+                      <apply>
+                        <power/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_acs_n </ci>
+                      </apply>
+                      <apply>
+                        <power/>
+                        <ci> g_acs_Kcrp </ci>
+                        <ci> g_acs_n </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_acs_vcrp_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_akg2mal" name="g_akg2mal" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Akg2mal"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="CrpcAMP"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <power/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_akg2mal_n </ci>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <power/>
+                          <ci> CrpcAMP </ci>
+                          <ci> g_akg2mal_n </ci>
+                        </apply>
+                        <apply>
+                          <power/>
+                          <ci> g_akg2mal_Kcrp </ci>
+                          <ci> g_akg2mal_n </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_akg2mal_vcrp_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <power/>
+                      <ci> CrpcAMP </ci>
+                      <ci> g_akg2mal_n </ci>
+                    </apply>
+                    <apply>
+                      <plus/>
+                      <apply>
+                        <power/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_akg2mal_n </ci>
+                      </apply>
+                      <apply>
+                        <power/>
+                        <ci> g_akg2mal_Kcrp </ci>
+                        <ci> g_akg2mal_n </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_akg2mal_vcrp_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_cAMPdegr" name="g_cAMPdegr" reversible="false">
+        <listOfProducts>
+          <speciesReference species="CAMPdegr"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_cra" name="g_cra" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Cra"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_crp" name="g_crp" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Crp"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_cya" name="g_cya" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Cya"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_emp" name="g_emp" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Emp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="CrpcAMP"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_emp_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_emp_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_emp_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_emp_vcra_bound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> CrpcAMP </ci>
+                      <apply>
+                        <plus/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_emp_Kcrp </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_emp_vcrp_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> CrpcAMP </ci>
+                    <apply>
+                      <plus/>
+                      <ci> CrpcAMP </ci>
+                      <ci> g_emp_Kcrp </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_emp_vcrp_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_eno" name="g_eno" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Eno"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_eno_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_eno_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_eno_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_eno_vcra_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_fdp" name="g_fdp" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Fdp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_fdp_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_fdp_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_fdp_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_fdp_vcra_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_gltA" name="g_gltA" reversible="false">
+        <listOfProducts>
+          <speciesReference species="GltA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="CrpcAMP"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <power/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_gltA_n </ci>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <power/>
+                          <ci> CrpcAMP </ci>
+                          <ci> g_gltA_n </ci>
+                        </apply>
+                        <apply>
+                          <power/>
+                          <ci> g_gltA_Kcrp </ci>
+                          <ci> g_gltA_n </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_gltA_vcrp_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <power/>
+                      <ci> CrpcAMP </ci>
+                      <ci> g_gltA_n </ci>
+                    </apply>
+                    <apply>
+                      <plus/>
+                      <apply>
+                        <power/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_gltA_n </ci>
+                      </apply>
+                      <apply>
+                        <power/>
+                        <ci> g_gltA_Kcrp </ci>
+                        <ci> g_gltA_n </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_gltA_vcrp_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_icd" name="g_icd" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Icd"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_icd_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_icd_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_icd_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_icd_vcra_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_iclr" name="g_iclr" reversible="false">
+        <listOfProducts>
+          <speciesReference species="IclR"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_mdh" name="g_mdh" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Mdh"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="CrpcAMP"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> CrpcAMP </ci>
+                      <apply>
+                        <plus/>
+                        <ci> CrpcAMP </ci>
+                        <ci> g_mdh_Kcrp </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_mdh_vcrp_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> CrpcAMP </ci>
+                    <apply>
+                      <plus/>
+                      <ci> CrpcAMP </ci>
+                      <ci> g_mdh_Kcrp </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_mdh_vcrp_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_me" name="g_me" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Me"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> SS_Me </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_pckA" name="g_pckA" reversible="false">
+        <listOfProducts>
+          <speciesReference species="PckA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_pckA_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_pckA_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_pckA_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_pckA_vcra_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_pdh" name="g_pdh" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Pdh"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+          <modifierSpeciesReference species="PdhR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> PdhR </ci>
+                      <apply>
+                        <plus/>
+                        <ci> PdhR </ci>
+                        <ci> g_pdh_Kpdhr </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_pdh_vpdhr_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> PdhR </ci>
+                    <apply>
+                      <plus/>
+                      <ci> PdhR </ci>
+                      <ci> g_pdh_Kpdhr </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_pdh_vpdhr_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_pdhr" name="g_pdhr" reversible="false">
+        <listOfProducts>
+          <speciesReference species="PdhR"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_pfkA" name="g_pfkA" reversible="false">
+        <listOfProducts>
+          <speciesReference species="PfkA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_pfkA_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_pfkA_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_pfkA_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_pfkA_vcra_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_ppc" name="g_ppc" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Ppc"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> SS_Ppc </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_ppsA" name="g_ppsA" reversible="false">
+        <listOfProducts>
+          <speciesReference species="PpsA"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_ppsA_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_ppsA_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_ppsA_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_ppsA_vcra_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_pykF" name="g_pykF" reversible="false">
+        <listOfProducts>
+          <speciesReference species="PykF"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="Cra"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> bm_k_expr </ci>
+              <ci> mu </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Cra </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Cra </ci>
+                        <ci> g_pykF_Kcra </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> g_pykF_vcra_unbound </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Cra </ci>
+                    <apply>
+                      <plus/>
+                      <ci> Cra </ci>
+                      <ci> g_pykF_Kcra </ci>
+                    </apply>
+                  </apply>
+                  <ci> g_pykF_vcra_bound </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_EIIA" name="g_EIIA" reversible="false">
+        <listOfProducts>
+          <speciesReference species="EIIA"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="g_EIICB" name="g_EIICB" reversible="false">
+        <listOfProducts>
+          <speciesReference species="EIICB"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_AceA" name="d_AceA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="AceA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> AceA </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_AceB" name="d_AceB" reversible="false">
+        <listOfReactants>
+          <speciesReference species="AceB"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> AceB </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_AceK" name="d_AceK" reversible="false">
+        <listOfReactants>
+          <speciesReference species="AceK"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> AceK </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Acoa2act" name="d_Acoa2act" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Acoa2act"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Acs" name="d_Acs" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Acs"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Acs </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Akg2mal" name="d_Akg2mal" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Akg2mal"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Akg2mal </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_CAMPdegr" name="d_CAMPdegr" reversible="false">
+        <listOfReactants>
+          <speciesReference species="CAMPdegr"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Cra" name="d_Cra" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Cra"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_CraFBP" name="d_CraFBP" reversible="false">
+        <listOfReactants>
+          <speciesReference species="CraFBP"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Crp" name="d_Crp" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Crp"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_CrpcAMP" name="d_CrpcAMP" reversible="false">
+        <listOfReactants>
+          <speciesReference species="CrpcAMP"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Cya" name="d_Cya" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Cya"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Emp" name="d_Emp" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Emp"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Emp </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Eno" name="d_Eno" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Eno"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Eno </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Fdp" name="d_Fdp" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Fdp"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Fdp </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_GltA" name="d_GltA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="GltA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> GltA </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Icd" name="d_Icd" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Icd"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Icd </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Icd_P" name="d_Icd_P" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Icd_P"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Icd_P </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_IclR" name="d_IclR" reversible="false">
+        <listOfReactants>
+          <speciesReference species="IclR"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Mdh" name="d_Mdh" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Mdh"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Mdh </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Me" name="d_Me" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Me"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Me </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_PckA" name="d_PckA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PckA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> PckA </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Pdh" name="d_Pdh" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Pdh"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Pdh </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_PdhR" name="d_PdhR" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PdhR"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_PdhRPYR" name="d_PdhRPYR" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PdhRPYR"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_PfkA" name="d_PfkA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PfkA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> PfkA </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_Ppc" name="d_Ppc" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Ppc"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> Ppc </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_PpsA" name="d_PpsA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PpsA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> PpsA </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_PykF" name="d_PykF" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PykF"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> mu </ci>
+                <ci> d_k_degr </ci>
+              </apply>
+              <ci> PykF </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_EIIA" name="d_EIIA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EIIA"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_EIIA_P" name="d_EIIA_P" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EIIA_P"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_EIICB" name="d_EIICB" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EIICB"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_ACoA" name="d_ACoA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ACoA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> ACoA </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_AKG" name="d_AKG" reversible="false">
+        <listOfReactants>
+          <speciesReference species="AKG"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> AKG </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_cAMP" name="d_cAMP" reversible="false">
+        <listOfReactants>
+          <speciesReference species="cAMP"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> cAMP </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_FBP" name="d_FBP" reversible="false">
+        <listOfReactants>
+          <speciesReference species="FBP"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> FBP </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_G6P" name="d_G6P" reversible="false">
+        <listOfReactants>
+          <speciesReference species="G6P"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> G6P </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_GLX" name="d_GLX" reversible="false">
+        <listOfReactants>
+          <speciesReference species="GLX"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> GLX </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_ICT" name="d_ICT" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ICT"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> ICT </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_MAL" name="d_MAL" reversible="false">
+        <listOfReactants>
+          <speciesReference species="MAL"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> MAL </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_OAA" name="d_OAA" reversible="false">
+        <listOfReactants>
+          <speciesReference species="OAA"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> OAA </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_PEP" name="d_PEP" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PEP"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> PEP </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_PG3" name="d_PG3" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PG3"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> PG3 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="d_PYR" name="d_PYR" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PYR"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mu </ci>
+              <ci> PYR </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="env_growth" name="env_growth" reversible="false">
+        <listOfProducts>
+          <speciesReference species="BM"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACT"/>
+          <modifierSpeciesReference species="GLC"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> BM </ci>
+              <ci> mu </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="env_GLCup" name="env_GLCup" reversible="false">
+        <listOfReactants>
+          <speciesReference species="GLC"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="BM"/>
+          <modifierSpeciesReference species="EIIA_P"/>
+          <modifierSpeciesReference species="EIICB"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> env_uc </ci>
+                <ci> env_M_GLC </ci>
+                <ci> BM </ci>
+                <ci> pts_k4 </ci>
+                <ci> EIICB </ci>
+                <ci> EIIA_P </ci>
+                <ci> GLC </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> pts_KEIIA </ci>
+                  <ci> EIIA_P </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> pts_Kglc </ci>
+                  <ci> GLC </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="env_ACTup" name="env_ACTup" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ACT"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Acs"/>
+          <modifierSpeciesReference species="BM"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> env_uc </ci>
+                <ci> env_M_ACT </ci>
+                <ci> BM </ci>
+                <ci> Acs </ci>
+                <ci> e_Acs_kcat </ci>
+                <ci> ACT </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> ACT </ci>
+                <ci> e_Acs_Kact </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="env_ACTex" name="env_ACTex" reversible="false">
+        <listOfProducts>
+          <speciesReference species="ACT"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ACoA"/>
+          <modifierSpeciesReference species="Acoa2act"/>
+          <modifierSpeciesReference species="BM"/>
+          <modifierSpeciesReference species="PYR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> env_uc </ci>
+                    <ci> env_M_ACT </ci>
+                    <ci> BM </ci>
+                    <ci> Acoa2act </ci>
+                    <ci> e_Acoa2act_kcat </ci>
+                    <ci> ACoA </ci>
+                  </apply>
+                  <ci> e_Acoa2act_Kacoa </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> ACoA </ci>
+                      <ci> e_Acoa2act_Kacoa </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> e_Acoa2act_n </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> ACoA </ci>
+                      <ci> e_Acoa2act_Kacoa </ci>
+                    </apply>
+                  </apply>
+                  <ci> e_Acoa2act_n </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> e_Acoa2act_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> PYR </ci>
+                        <ci> e_Acoa2act_Kpyr </ci>
+                      </apply>
+                    </apply>
+                    <ci> e_Acoa2act_n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

@@ -157,7 +157,7 @@
       </compartment>
     </listOfCompartments>
     <listOfSpecies>
-      <species id="BM" initialAmount="0.03" hasOnlySubstanceUnits="true" name="BM" metaid="metaid_0000210" substanceUnits="od" compartment="Environment"/>
+      <species id="BM" initialAmount="0.1" hasOnlySubstanceUnits="true" name="BM" metaid="metaid_0000210" substanceUnits="od" compartment="Environment"/>
       <species id="ACT" initialAmount="0" name="ACT" metaid="metaid_0000211" sboTerm="SBO:0000247" substanceUnits="gram" compartment="Environment">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
@@ -172,7 +172,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="GLC" initialAmount="4.8" name="GLC" metaid="metaid_0000212" sboTerm="SBO:0000247" substanceUnits="gram" compartment="Environment">
+      <species id="GLC" initialAmount="5" name="GLC" metaid="metaid_0000212" sboTerm="SBO:0000247" substanceUnits="gram" compartment="Environment">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000212">

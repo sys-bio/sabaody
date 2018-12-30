@@ -7,7 +7,7 @@ from sabaody.timecourse.timecourse_sim_base import StalledSimulation
 from sabaody.timecourse.timecourse_sim_biopredyn import TimecourseSimBiopredyn
 from sabaody.scripts.benchmarks.biopredyn.benchsetup import BioPreDynUDP
 
-from numpy import array, mean, sqrt, maximum, minimum
+from numpy import array, mean, sqrt, maximum, minimum, vstack
 
 import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
@@ -60,26 +60,32 @@ class B3Problem(TimecourseSimBiopredyn):
         # ))
         from params import getDefaultParamValues
         self.setParameterVector(getDefaultParamValues())
-        print('k_bm_PYR = alphaGLC*bm_GLC_PYR + alphaACT*bm_ACT_PYR')
-        print('  {k_bm_PYR} = {alphaGLC}*{bm_GLC_PYR} + {alphaACT}*{bm_ACT_PYR}'.format(
-            k_bm_PYR=self.r.k_bm_PYR,
-            alphaGLC=self.r.alphaGLC,
-            bm_GLC_PYR=self.r.bm_GLC_PYR,
-            alphaACT=self.r.alphaACT,
-            bm_ACT_PYR=self.r.bm_ACT_PYR,
-        ))
-        print('e_PykF:  (PykF*e_PykF_kcat*PEP/e_PykF_Kpep)*(1 + PEP/e_PykF_Kpep)^(e_PykF_n - 1)/((1 + PEP/e_PykF_Kpep)^e_PykF_n + e_PykF_L/(1 + FBP/e_PykF_Kfbp)^e_PykF_n)')
-        print('  {e_PykF}: ({PykF}*{e_PykF_kcat}*{PEP}/{e_PykF_Kpep})*(1 + {PEP}/{e_PykF_Kpep})^({e_PykF_n} - 1)/((1 + {PEP}/{e_PykF_Kpep})^{e_PykF_n} + {e_PykF_L}/(1 + {FBP}/{e_PykF_Kfbp})^e_PykF_n)'.format(
-            e_PykF=self.r.e_PykF,
-            PykF=self.r.PykF,
-            e_PykF_kcat=self.r.e_PykF_kcat,
-            PEP=self.r.PEP,
-            e_PykF_Kpep=self.r.e_PykF_Kpep,
-            e_PykF_n=self.r.e_PykF_n,
-            e_PykF_L=self.r.e_PykF_L,
-            FBP=self.r.FBP,
-            e_PykF_Kfbp=self.r.e_PykF_Kfbp,
-        ))
+        # print('k_bm_PYR = alphaGLC*bm_GLC_PYR + alphaACT*bm_ACT_PYR')
+        # print('  {k_bm_PYR} = {alphaGLC}*{bm_GLC_PYR} + {alphaACT}*{bm_ACT_PYR}'.format(
+        #     k_bm_PYR=self.r.k_bm_PYR,
+        #     alphaGLC=self.r.alphaGLC,
+        #     bm_GLC_PYR=self.r.bm_GLC_PYR,
+        #     alphaACT=self.r.alphaACT,
+        #     bm_ACT_PYR=self.r.bm_ACT_PYR,
+        # ))
+        # print('e_PykF:  (PykF*e_PykF_kcat*PEP/e_PykF_Kpep)*(1 + PEP/e_PykF_Kpep)^(e_PykF_n - 1)/((1 + PEP/e_PykF_Kpep)^e_PykF_n + e_PykF_L/(1 + FBP/e_PykF_Kfbp)^e_PykF_n)')
+        # print('  {e_PykF}: ({PykF}*{e_PykF_kcat}*{PEP}/{e_PykF_Kpep})*(1 + {PEP}/{e_PykF_Kpep})^({e_PykF_n} - 1)/((1 + {PEP}/{e_PykF_Kpep})^{e_PykF_n} + {e_PykF_L}/(1 + {FBP}/{e_PykF_Kfbp})^e_PykF_n)'.format(
+        #     e_PykF=self.r.e_PykF,
+        #     PykF=self.r.PykF,
+        #     e_PykF_kcat=self.r.e_PykF_kcat,
+        #     PEP=self.r.PEP,
+        #     e_PykF_Kpep=self.r.e_PykF_Kpep,
+        #     e_PykF_n=self.r.e_PykF_n,
+        #     e_PykF_L=self.r.e_PykF_L,
+        #     FBP=self.r.FBP,
+        #     e_PykF_Kfbp=self.r.e_PykF_Kfbp,
+        # ))
+        print('e_GltA = {}'.format(self.r.e_GltA))
+        print('e_Mdh = {}'.format(self.r.e_Mdh))
+        print('e_PckA = {}'.format(self.r.e_PckA))
+        print('e_Ppc = {}'.format(self.r.e_Ppc))
+        print('d_OAA = {}'.format(self.r.d_OAA))
+        print('OAA\' = {}'.format(self.r["OAA'"]))
 
         self.penalty_scale = 1.
 
@@ -110,7 +116,7 @@ class B3Problem(TimecourseSimBiopredyn):
     def plotQuantity(self, quantity_id, param_values):
         ''' Plot a simulated quantity vs its data points using Tellurium.'''
         from data import measured_quantity_ids, measured_quantity_id_to_name_map
-        from data import time_end, n_points
+        from data import t1, t2, time_end, n1, n2, n3
         quantity_name = measured_quantity_id_to_name_map.get(quantity_id,quantity_id)
         iq = measured_quantity_ids.index(quantity_id)
         reference_data = array(self.reference_values[:,iq])
@@ -120,7 +126,13 @@ class B3Problem(TimecourseSimBiopredyn):
         r.resetAll()
         r.resetToOrigin()
         self._setParameterVector(param_values, self.param_list, r)
-        sim = r.simulate(0., time_end, n_points, ['time', quantity_id])
+        # r.oneStep(0., 10)
+        # print('plotQuantity OAA\' = {}'.format(r["OAA'"]))
+        sim = vstack((
+            r.simulate(0., t1, n1, ['time', quantity_id]),
+            r.simulate(t1, t2, n2, ['time', quantity_id]),
+            r.simulate(t2, time_end, n3, ['time', quantity_id]),
+            ))
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
 

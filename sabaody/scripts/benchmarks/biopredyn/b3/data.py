@@ -124,9 +124,14 @@ GLC_ss_value_map = {
 }
 
 time_values = arange(0., 8.15 * 3600., 1000)
+t1 = time_values[-1]
+n1 = time_values.size
 time_values = concatenate((time_values, arange(time_values[-1], time_values[-1]+19.7 *3600., 1000)))
+t2 = time_values[-1]
+n2 = time_values.size-n1
 time_values = concatenate((time_values, arange(time_values[-1], time_values[-1]+16.45*3600., 1000)))
 time_end = time_values[-1]
+n3 = time_values.size-n2-n1
 n_points = time_values.size
 
 exp_data = array([
