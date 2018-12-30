@@ -947,8 +947,8 @@
       <parameter id="k_bm_PYR" constant="false" name="k_bm_PYR" metaid="metaid_0000205" value="0"/>
       <parameter id="SS_Me" constant="false" name="SS_Me" metaid="metaid_0000206" value="0"/>
       <parameter id="SS_Ppc" constant="false" name="SS_Ppc" metaid="metaid_0000207" value="0"/>
-      <parameter id="shift1" name="shift1" metaid="_533561" value="8.15" units="hours"/>
-      <parameter id="shift2" name="shift2" metaid="_533562" value="27.85" units="hours"/>
+      <parameter id="shift1" name="shift1" metaid="_533561" value="8.06" units="hours"/>
+      <parameter id="shift2" name="shift2" metaid="_533562" value="27.51" units="hours"/>
       <parameter id="GLC_1" name="GLC_1" metaid="_533565" value="0" units="gram_per_litre"/>
       <parameter id="GLC_2" name="GLC_2" metaid="_533568" value="3" units="gram_per_litre"/>
       <parameter id="ACT_1" name="ACT_1" metaid="_533571" value="5" units="gram_per_litre"/>
