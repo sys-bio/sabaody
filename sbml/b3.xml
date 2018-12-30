@@ -157,7 +157,7 @@
       </compartment>
     </listOfCompartments>
     <listOfSpecies>
-      <species id="BM" initialAmount="0.1" hasOnlySubstanceUnits="true" name="BM" metaid="metaid_0000210" substanceUnits="od" compartment="Environment"/>
+      <species id="BM" initialAmount="0.03" hasOnlySubstanceUnits="true" name="BM" metaid="metaid_0000210" substanceUnits="od" compartment="Environment"/>
       <species id="ACT" initialAmount="0" name="ACT" metaid="metaid_0000211" sboTerm="SBO:0000247" substanceUnits="gram" compartment="Environment">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
@@ -172,7 +172,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="GLC" initialAmount="5" name="GLC" metaid="metaid_0000212" sboTerm="SBO:0000247" substanceUnits="gram" compartment="Environment">
+      <species id="GLC" initialAmount="4.8" name="GLC" metaid="metaid_0000212" sboTerm="SBO:0000247" substanceUnits="gram" compartment="Environment">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000212">
@@ -394,7 +394,7 @@
         </annotation>
       </species>
       <species id="Acoa2act" initialAmount="0.001" hasOnlySubstanceUnits="true" name="Acoa2act" metaid="metaid_0000228" sboTerm="SBO:0000014" compartment="Cell"/>
-      <species id="Acs" initialAmount="0.000036201" hasOnlySubstanceUnits="true" name="Acs" metaid="metaid_0000229" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="Acs" initialAmount="0.001096222" hasOnlySubstanceUnits="true" name="Acs" metaid="metaid_0000229" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000229">
@@ -422,8 +422,8 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="Emp" initialAmount="0.011389032" hasOnlySubstanceUnits="true" name="Emp" metaid="metaid_0000233" sboTerm="SBO:0000014" compartment="Cell"/>
-      <species id="Eno" initialAmount="0.011389032" hasOnlySubstanceUnits="true" name="Eno" metaid="metaid_0000234" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="Emp" initialAmount="0.011515593" hasOnlySubstanceUnits="true" name="Emp" metaid="metaid_0000233" sboTerm="SBO:0000014" compartment="Cell"/>
+      <species id="Eno" initialAmount="0.011552813" hasOnlySubstanceUnits="true" name="Eno" metaid="metaid_0000234" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000234">
@@ -436,7 +436,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="Fdp" initialAmount="0.000074810" hasOnlySubstanceUnits="true" name="Fdp" metaid="metaid_0000235" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="Fdp" initialAmount="0.000157492" hasOnlySubstanceUnits="true" name="Fdp" metaid="metaid_0000235" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000235">
@@ -449,7 +449,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="GltA" initialAmount="0.000292771" hasOnlySubstanceUnits="true" name="GltA" metaid="metaid_0000236" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="GltA" initialAmount="0.001029612" hasOnlySubstanceUnits="true" name="GltA" metaid="metaid_0000236" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000236">
@@ -488,7 +488,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="Mdh" initialAmount="0.000491491" hasOnlySubstanceUnits="true" name="Mdh" metaid="metaid_0000239" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="Mdh" initialAmount="0.00345727" hasOnlySubstanceUnits="true" name="Mdh" metaid="metaid_0000239" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000239">
@@ -514,7 +514,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="PckA" initialAmount="0.000336947" hasOnlySubstanceUnits="true" name="PckA" metaid="metaid_0000241" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="PckA" initialAmount="0.002290892" hasOnlySubstanceUnits="true" name="PckA" metaid="metaid_0000241" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000241">
@@ -527,7 +527,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="Pdh" initialAmount="0.001" hasOnlySubstanceUnits="true" name="Pdh" metaid="metaid_0000242" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="Pdh" initialAmount="0.004647401" hasOnlySubstanceUnits="true" name="Pdh" metaid="metaid_0000242" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000242">
@@ -540,7 +540,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="PfkA" initialAmount="0.000242131" hasOnlySubstanceUnits="true" name="PfkA" metaid="metaid_0000243" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="PfkA" initialAmount="0.000143816" hasOnlySubstanceUnits="true" name="PfkA" metaid="metaid_0000243" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000243">
@@ -553,7 +553,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="Ppc" initialAmount="0.000377962" hasOnlySubstanceUnits="true" name="Ppc" metaid="metaid_0000244" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="Ppc" initialAmount="0.000999714" hasOnlySubstanceUnits="true" name="Ppc" metaid="metaid_0000244" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000244">
@@ -579,7 +579,7 @@
           </rdf:RDF>
         </annotation>
       </species>
-      <species id="PykF" initialAmount="0.002501893" hasOnlySubstanceUnits="true" name="PykF" metaid="metaid_0000246" sboTerm="SBO:0000014" compartment="Cell">
+      <species id="PykF" initialAmount="0.005977168" hasOnlySubstanceUnits="true" name="PykF" metaid="metaid_0000246" sboTerm="SBO:0000014" compartment="Cell">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
             <rdf:Description rdf:about="#metaid_0000246">
