@@ -33,9 +33,20 @@ class B3Problem(TimecourseSimBiopredyn):
             if self.r[id] != value:
                 print('discrepancy for {id}: {sbml} (sbml) vs {matlab} (matlab)'.format(id=id, sbml=self.r[id], matlab=value))
 
+        from params import getDefaultParamValues
+        self.setParameterVector(getDefaultParamValues())
+
         print('alphaGLC := GLC/(GLC + pts_Kglc)')
         print('  {alphaGLC} := {GLC}/({GLC} + {pts_Kglc})'.format(
             alphaGLC=self.r.alphaGLC,
+            GLC=self.r.GLC,
+            pts_Kglc=self.r.pts_Kglc,
+        ))
+        print('alphaACT := (ACT/(ACT + e_Acs_Kact))*(1 - GLC/(GLC + pts_Kglc))')
+        print('  {alphaACT} := ({ACT}/({ACT} + {e_Acs_Kact}))*(1 - {GLC}/({GLC} + {pts_Kglc})))'.format(
+            alphaACT=self.r.alphaACT,
+            ACT=self.r.ACT,
+            e_Acs_Kact=self.r.e_Acs_Kact,
             GLC=self.r.GLC,
             pts_Kglc=self.r.pts_Kglc,
         ))
@@ -58,8 +69,6 @@ class B3Problem(TimecourseSimBiopredyn):
         #     g_acs_vcrp_unbound=self.r.g_acs_vcrp_unbound,
         #     g_acs_vcrp_bound=self.r.g_acs_vcrp_bound,
         # ))
-        from params import getDefaultParamValues
-        self.setParameterVector(getDefaultParamValues())
         # print('k_bm_PYR = alphaGLC*bm_GLC_PYR + alphaACT*bm_ACT_PYR')
         # print('  {k_bm_PYR} = {alphaGLC}*{bm_GLC_PYR} + {alphaACT}*{bm_ACT_PYR}'.format(
         #     k_bm_PYR=self.r.k_bm_PYR,
@@ -80,12 +89,21 @@ class B3Problem(TimecourseSimBiopredyn):
         #     FBP=self.r.FBP,
         #     e_PykF_Kfbp=self.r.e_PykF_Kfbp,
         # ))
-        print('e_GltA = {}'.format(self.r.e_GltA))
-        print('e_Mdh = {}'.format(self.r.e_Mdh))
-        print('e_PckA = {}'.format(self.r.e_PckA))
-        print('e_Ppc = {}'.format(self.r.e_Ppc))
-        print('d_OAA = {}'.format(self.r.d_OAA))
-        print('OAA\' = {}'.format(self.r["OAA'"]))
+
+        # print('e_GltA = {}'.format(self.r.e_GltA))
+        # print('e_Mdh = {}'.format(self.r.e_Mdh))
+        # print('e_PckA = {}'.format(self.r.e_PckA))
+        # print('e_Ppc = {}'.format(self.r.e_Ppc))
+        # print('d_OAA = {}'.format(self.r.d_OAA))
+        # print('OAA\' = {}'.format(self.r["OAA'"]))
+
+        print('SS_Ppc := {SS_Ppc} = {alphaGLC}*0.000999714 + {alphaACT}*0.000279893'.format(
+            SS_Ppc=self.r.SS_Ppc,
+            alphaGLC=self.r.alphaGLC,
+            alphaACT=self.r.alphaACT,
+        ))
+        print('g_ppc = {}'.format(self.r.g_ppc))
+        print('d_Ppc = {}'.format(self.r.d_Ppc))
 
         self.penalty_scale = 1.
 
