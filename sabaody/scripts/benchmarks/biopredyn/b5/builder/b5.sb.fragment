@@ -1,0 +1,284 @@
+map3k7_fhill_nik=(pow(map3k7,map3k7_n_nik)/(pow(map3k7_k_nik,map3k7_n_nik)+pow(map3k7,map3k7_n_nik)))*(1+pow(map3k7_k_nik,map3k7_n_nik));
+
+//map3k7_nik_w 1
+
+dnik=(
+        0*(1-map3k7_fhill_nik)+
+        map3k7_nik_w * map3k7_fhill_nik
+        -nik)*tau_nik;
+
+map3k7_fhill_mkk4=(pow(map3k7,map3k7_n_mkk4)/(pow(map3k7_k_mkk4,map3k7_n_mkk4)+pow(map3k7,map3k7_n_mkk4)))*(1+pow(map3k7_k_mkk4,map3k7_n_mkk4));
+map3k1_fhill_mkk4=(pow(map3k1,map3k1_n_mkk4)/(pow(map3k1_k_mkk4,map3k1_n_mkk4)+pow(map3k1,map3k1_n_mkk4)))*(1+pow(map3k1_k_mkk4,map3k1_n_mkk4));
+
+    //Original is map3k7  AND mkk4
+    //map3k7_mkk4_w 0
+    //map3k1_mkk4_w 0
+    //map3k7_map3k1_mkk4_AND_w 1
+
+dmkk4=(
+        0*(1-map3k7_fhill_mkk4)*(1-map3k1_fhill_mkk4)+
+        map3k1_mkk4_w *(1-map3k7_fhill_mkk4)*map3k1_fhill_mkk4+
+        map3k7_mkk4_w *map3k7_fhill_mkk4*(1-map3k1_fhill_mkk4)+
+        OR(map3k7_mkk4_w,map3k1_mkk4_w,map3k7_map3k1_mkk4_AND_w)* map3k7_fhill_mkk4*map3k1_fhill_mkk4
+        -mkk4)*tau_mkk4;
+
+
+
+traf2_fhill_ask1=(pow(traf2,traf2_n_ask1)/(pow(traf2_k_ask1,traf2_n_ask1)+pow(traf2,traf2_n_ask1)))*(1+pow(traf2_k_ask1,traf2_n_ask1));
+
+//traf2_ask1_w 1
+
+dask1=(
+        0 * (1-traf2_fhill_ask1)+
+        traf2_ask1_w * traf2_fhill_ask1
+        -ask1)*tau_ask1;
+
+
+traf2_fhill_map3k7=(pow(traf2,traf2_n_map3k7)/(pow(traf2_k_map3k7,traf2_n_map3k7)+pow(traf2,traf2_n_map3k7)))*(1+pow(traf2_k_map3k7,traf2_n_map3k7));
+
+//traf2_map3k7_w 1
+
+dmap3k7=(
+        0*(1-traf2_fhill_map3k7)+
+        traf2_map3k7_w *traf2_fhill_map3k7
+        -map3k7)*tau_map3k7;
+
+
+ask1_fhill_mkk7=(pow(ask1,ask1_n_mkk7)/(pow(ask1_k_mkk7,ask1_n_mkk7)+pow(ask1,ask1_n_mkk7)))*(1+pow(ask1_k_mkk7,ask1_n_mkk7));
+map3k1_fhill_mkk7=(pow(map3k1,map3k1_n_mkk7)/(pow(map3k1_k_mkk7,map3k1_n_mkk7)+pow(map3k1,map3k1_n_mkk7)))*(1+pow(map3k1_k_mkk7,map3k1_n_mkk7));
+
+
+
+//ask1_mkk7_w             1
+//map3k1_mkk7_w           1
+//ask1_map3k1_mkk7_AND_w  0
+
+dmkk7=(
+        0*(1-ask1_fhill_mkk7)*(1-map3k1_fhill_mkk7)+
+        map3k1_mkk7_w * (1-ask1_fhill_mkk7)*map3k1_fhill_mkk7+
+        ask1_mkk7_w * ask1_fhill_mkk7*(1-map3k1_fhill_mkk7)+
+        OR(ask1_mkk7_w,map3k1_mkk7_w,ask1_map3k1_mkk7_AND_w)*ask1_fhill_mkk7*map3k1_fhill_mkk7
+        -mkk7)*tau_mkk7;
+
+
+tnfa_fhill_tnfr=(pow(tnfa,tnfa_n_tnfr)/(pow(tnfa_k_tnfr,tnfa_n_tnfr)+pow(tnfa,tnfa_n_tnfr)))*(1+pow(tnfa_k_tnfr,tnfa_n_tnfr));
+
+//tnfa_tnfr_w 1
+
+dtnfr=(
+        0*(1-tnfa_fhill_tnfr)+
+        tnfa_tnfr_w * tnfa_fhill_tnfr
+        -tnfr)*tau_tnfr;
+
+//egf_egfr_w 1
+
+egf_fhill_egfr=(pow(egf,egf_n_egfr)/(pow(egf_k_egfr,egf_n_egfr)+pow(egf,egf_n_egfr)))*(1+pow(egf_k_egfr,egf_n_egfr));
+
+degfr=(
+        0*(1-egf_fhill_egfr)+
+        egf_egfr_w * egf_fhill_egfr
+        -egfr)*tau_egfr;
+
+
+erk_fhill_ph=(pow(erk,erk_n_ph)/(pow(erk_k_ph,erk_n_ph)+pow(erk,erk_n_ph)))*(1+pow(erk_k_ph,erk_n_ph));
+
+
+//erk_ph_w 1
+
+dph=(
+        0 * (1-erk_fhill_ph)+
+        erk_ph_w * erk_fhill_ph
+        -ph)*tau_ph;
+
+nfkb_fhill_ex=(pow(nfkb,nfkb_n_ex)/(pow(nfkb_k_ex,nfkb_n_ex)+pow(nfkb,nfkb_n_ex)))*(1+pow(nfkb_k_ex,nfkb_n_ex));
+
+//nfkb_ex_w 1
+
+dex=(
+        0 * (1-nfkb_fhill_ex)+
+        nfkb_ex_w * nfkb_fhill_ex
+        -ex)*tau_ex;
+
+raf1_fhill_mek=(pow(raf1,raf1_n_mek)/(pow(raf1_k_mek,raf1_n_mek)+pow(raf1,raf1_n_mek)))*(1+pow(raf1_k_mek,raf1_n_mek));
+
+//raf1_mek_w
+
+dmek=(
+        0*(1-raf1_fhill_mek)+
+        raf1_mek_w*raf1_fhill_mek
+        -mek)*tau_mek;
+
+
+sos_fhill_ras=(pow(sos,sos_n_ras)/(pow(sos_k_ras,sos_n_ras)+pow(sos,sos_n_ras)))*(1+pow(sos_k_ras,sos_n_ras));
+
+//sos_ras_w 1
+
+dras=(
+        0*(1-sos_fhill_ras)+
+        sos_ras_w * sos_fhill_ras
+        -ras)*tau_ras;
+
+
+tnfr_fhill_traf2=(pow(tnfr,tnfr_n_traf2)/(pow(tnfr_k_traf2,tnfr_n_traf2)+pow(tnfr,tnfr_n_traf2)))*(1+pow(tnfr_k_traf2,tnfr_n_traf2));
+
+//tnfr_traf2_w 1
+
+dtraf2=(
+        0 * (1-tnfr_fhill_traf2)+
+        tnfr_traf2_w  * tnfr_fhill_traf2
+        -traf2)*tau_traf2;
+
+
+nik_fhill_ikk=(pow(nik,nik_n_ikk)/(pow(nik_k_ikk,nik_n_ikk)+pow(nik,nik_n_ikk)))*(1+pow(nik_k_ikk,nik_n_ikk));
+
+//nik_ikk_w 1
+
+dikk=(
+        0*(1-nik_fhill_ikk)+
+        nik_ikk_w*nik_fhill_ikk
+        -ikk)*tau_ikk;
+
+
+pi3k_fhill_akt=(pow(pi3k,pi3k_n_akt)/(pow(pi3k_k_akt,pi3k_n_akt)+pow(pi3k,pi3k_n_akt)))*(1+pow(pi3k_k_akt,pi3k_n_akt));
+
+//pi3k_akt_w 1
+
+dakt=(
+        0 * (1-pi3k_fhill_akt)+
+        pi3k_akt_w * pi3k_fhill_akt
+        -akt)*tau_akt;
+
+
+egfr_fhill_pi3k=(pow(egfr,egfr_n_pi3k)/(pow(egfr_k_pi3k,egfr_n_pi3k)+pow(egfr,egfr_n_pi3k)))*(1+pow(egfr_k_pi3k,egfr_n_pi3k));
+
+//egfr_pi3k_w 1
+
+dpi3k=(
+        0 * (1-egfr_fhill_pi3k)+
+        egfr_pi3k_w * egfr_fhill_pi3k
+        -pi3k)*tau_pi3k*(1-pi3k_inh);
+
+
+ex_fhill_ikb=(pow(ex,ex_n_ikb)/(pow(ex_k_ikb,ex_n_ikb)+pow(ex,ex_n_ikb)))*(1+pow(ex_k_ikb,ex_n_ikb));
+ikk_fhill_ikb=(pow(ikk,ikk_n_ikb)/(pow(ikk_k_ikb,ikk_n_ikb)+pow(ikk,ikk_n_ikb)))*(1+pow(ikk_k_ikb,ikk_n_ikb));
+
+
+// Original model was ex OR NOT ikk
+//ex_ikb_w  1
+//ikk_ikb_w 1
+//ex_ikk_ikb_AND_w 0
+
+dikb=(
+        ikk_ikb_w * (1-ex_fhill_ikb) * (1-ikk_fhill_ikb)+
+        0 * (1-ex_fhill_ikb)*ikk_fhill_ikb+
+        OR(ex_ikb_w,ikk_ikb_w,ex_ikk_ikb_AND_w) * ex_fhill_ikb * (1-ikk_fhill_ikb)+
+        ex_ikb_w * ex_fhill_ikb * ikk_fhill_ikb
+        -ikb)*tau_ikb;
+
+
+ikb_fhill_nfkb=(pow(ikb,ikb_n_nfkb)/(pow(ikb_k_nfkb,ikb_n_nfkb)+pow(ikb,ikb_n_nfkb)))*(1+pow(ikb_k_nfkb,ikb_n_nfkb));
+
+//ikb_nfkb_w 1
+
+dnfkb=(
+        ikb_nfkb_w * (1-ikb_fhill_nfkb)+
+        0*ikb_fhill_nfkb
+        -nfkb)*tau_nfkb;
+
+
+
+jnk_fhill_cjun=(pow(jnk,jnk_n_cjun)/(pow(jnk_k_cjun,jnk_n_cjun)+pow(jnk,jnk_n_cjun)))*(1+pow(jnk_k_cjun,jnk_n_cjun));
+
+//jnk_cjun_w 1
+
+dcjun=(
+        0 * (1-jnk_fhill_cjun)+
+        jnk_cjun_w * jnk_fhill_cjun
+        -cjun) * tau_cjun;
+
+
+mkk7_fhill_jnk=(pow(mkk7,mkk7_n_jnk)/(pow(mkk7_k_jnk,mkk7_n_jnk)+pow(mkk7,mkk7_n_jnk)))*(1+pow(mkk7_k_jnk,mkk7_n_jnk));
+
+//mkk7_jnk_w 1
+
+djnk=(
+        0 * (1-mkk7_fhill_jnk)+
+        mkk7_jnk_w * mkk7_fhill_jnk
+        -jnk) * tau_jnk;
+
+ras_fhill_map3k1=(pow(ras,ras_n_map3k1)/(pow(ras_k_map3k1,ras_n_map3k1)+pow(ras,ras_n_map3k1)))*(1+pow(ras_k_map3k1,ras_n_map3k1));
+
+//ras_map3k1_w 1
+
+dmap3k1=(
+        0*(1-ras_fhill_map3k1)+
+        ras_map3k1_w*ras_fhill_map3k1
+        -map3k1)*tau_map3k1;
+
+
+mek_fhill_erk=(pow(mek,mek_n_erk)/(pow(mek_k_erk,mek_n_erk)+pow(mek,mek_n_erk)))*(1+pow(mek_k_erk,mek_n_erk));
+
+//mek_erk_w 1
+
+derk=(
+        0 * (1-mek_fhill_erk)+
+        mek_erk_w * mek_fhill_erk
+        -erk) * tau_erk;
+
+
+ras_fhill_raf1=(pow(ras,ras_n_raf1)/(pow(ras_k_raf1,ras_n_raf1)+pow(ras,ras_n_raf1)))*(1+pow(ras_k_raf1,ras_n_raf1));
+
+//ras_raf1_w 1
+
+draf1=(
+        0 * (1-ras_fhill_raf1)+
+        ras_raf1_w * ras_fhill_raf1
+        -raf1) * tau_raf1 * (1-raf1_inh);
+
+
+egfr_fhill_sos=(pow(egfr,egfr_n_sos)/(pow(egfr_k_sos,egfr_n_sos)+pow(egfr,egfr_n_sos)))*(1+pow(egfr_k_sos,egfr_n_sos));
+ph_fhill_sos=(pow(ph,ph_n_sos)/(pow(ph_k_sos,ph_n_sos)+pow(ph,ph_n_sos)))*(1+pow(ph_k_sos,ph_n_sos));
+
+
+
+//Original was egfr AND NOT ph
+//egfr_sos_w 0
+//ph_sos_w   0
+//egfr_ph_sos_AND_w 1
+
+dsos=(
+        ph_sos_w * (1-egfr_fhill_sos) * (1-ph_fhill_sos)+
+        0 * (1-egfr_fhill_sos) * ph_fhill_sos+
+        OR(egfr_sos_w,ph_sos_w,egfr_ph_sos_AND_w) * egfr_fhill_sos * (1-ph_fhill_sos)+
+        egfr_sos_w * egfr_fhill_sos * ph_fhill_sos
+        -sos) * tau_sos;
+
+
+mkk4_fhill_p38=(pow(mkk4,mkk4_n_p38)/(pow(mkk4_k_p38,mkk4_n_p38)+pow(mkk4,mkk4_n_p38)))*(1+pow(mkk4_k_p38,mkk4_n_p38));
+
+//mkk4_p38_w 1
+
+dp38=(
+        0 * (1-mkk4_fhill_p38)+
+        mkk4_p38_w * mkk4_fhill_p38
+        -p38) * tau_p38;
+
+
+akt_fhill_gsk3=(pow(akt,akt_n_gsk3)/(pow(akt_k_gsk3,akt_n_gsk3)+pow(akt,akt_n_gsk3)))*(1+pow(akt_k_gsk3,akt_n_gsk3));
+
+//akt_gsk3_w 1
+
+dgsk3=(
+        akt_gsk3_w * (1-akt_fhill_gsk3)+
+        0 * akt_fhill_gsk3
+        -gsk3) * tau_gsk3;
+
+
+cjun_fhill_ap1=(pow(cjun,cjun_n_ap1)/(pow(cjun_k_ap1,cjun_n_ap1)+pow(cjun,cjun_n_ap1)))*(1+pow(cjun_k_ap1,cjun_n_ap1));
+
+//cjun_ap1_w 1
+
+dap1=(
+        0 * (1-cjun_fhill_ap1)+
+        cjun_ap1_w * cjun_fhill_ap1
+        -ap1) * tau_ap1;

@@ -1,0 +1,9 @@
+model b5model
+  // Reactions
+  {{ reactions | indent(2) }}
+
+  // Parameters
+  {% for p,value in param_id_to_default_value_map.items() %}
+  var {{ p }} = {{ value }}
+  {% endfor %}
+end
