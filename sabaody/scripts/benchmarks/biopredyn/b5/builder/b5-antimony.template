@@ -1,9 +1,18 @@
 model b5model
+  compartment cell = 1
+  // Species
+  {% for s,value in species.items() %}
+  var species {{ s }} = {{ value }}
+  {% endfor %}
+
+  // Assignments
+  {{ assignments | indent(2) }}
+
   // Reactions
   {{ reactions | indent(2) }}
 
   // Parameters
   {% for p,value in param_id_to_default_value_map.items() %}
-  var {{ p }} = {{ value }}
+  const {{ p }} = {{ value }}
   {% endfor %}
 end

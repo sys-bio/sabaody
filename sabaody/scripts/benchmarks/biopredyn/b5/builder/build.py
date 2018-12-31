@@ -1,4 +1,5 @@
-from param_builder import param_id_to_default_value_map
+from parameters import param_id_to_default_value_map
+from species import species
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -10,13 +11,11 @@ with open(abspath(join(dirname(realpath(__file__)), 'b5.sb.fragment'))) as f:
     fragment_in = f.read()
 
 pow_re = re.compile(r'pow\(([^,]+),([^,]+)\)')
-assn_re = re.compile(r'^([^=]+)=(.*)$')
+assn_re = re.compile(r'^(d[^=]+)=(.*)$')
 
 def stage1(l,r):
     r = r.lstrip().rstrip()
     r = pow_re.sub(r'\1^\2',r)
-    # r = re.sub(r'pow\(([^,]+),([^,]+)\)', 'pow(1,2)', r)
-    # r = re.sub('pow', 'xow', r)
     if r.startswith('//'):
         return l
     elif ';' in r:
@@ -25,15 +24,22 @@ def stage1(l,r):
         return l+r
 fragment_stage1 = reduce(stage1, fragment_in.splitlines(), '')
 
-def stage2(line):
+def filter_reactions(line):
     m = assn_re.match(line)
     if m is not None:
         return 'J_{q}: -> {q}; {rate}'.format(q=m.group(1), rate=m.group(2))
     else:
-        return line
-fragment_stage2 = '\n'.join((stage2(l) for l in fragment_stage1.splitlines()))
+        return ''
+reactions = '\n'.join((filter_reactions(l) for l in fragment_stage1.splitlines()))
 
-# print(fragment_stage2)
+def filter_assignments(line):
+    m = assn_re.match(line)
+    if m is None:
+        return line
+    else:
+        return ''
+assignments = '\n'.join((filter_assignments(l) for l in fragment_stage1.splitlines()))
+
 
 env = Environment(loader=FileSystemLoader(dirname(realpath(__file__))),
                   extensions=['jinja2.ext.autoescape'],
@@ -43,7 +49,9 @@ env = Environment(loader=FileSystemLoader(dirname(realpath(__file__))),
 t = env.get_template('b5-antimony.template')
 
 sb_src = t.render(
-    reactions = fragment_stage2,
+    species = species,
+    reactions = reactions,
+    assignments = assignments,
     param_id_to_default_value_map = param_id_to_default_value_map,
 )
 
