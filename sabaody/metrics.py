@@ -25,7 +25,7 @@ class InfluxDBMetric(Metric):
         # self.database = database.replace('.','_').replace('-','_')
 
 
-    def process_deltas(self, deltas, src_ids):
+    def process_deltas(self, deltas, src_ids, round):
         self.client.write_points([
             { 'measurement': 'delta',
               'time': arrow.utcnow().isoformat(),
@@ -33,11 +33,12 @@ class InfluxDBMetric(Metric):
                   'abs_delta': float(delta),
                   # 'delta_rel_to_champ': float(delta)/current_champ_score,
                   'src_id': src_id,
+                  'round': round,
               }
             } for delta,src_id in zip(deltas,src_ids)], database=self.database)
 
 
-    def process_champion(self, island_id, best_f, best_x):
+    def process_champion(self, island_id, best_f, best_x, round):
         self.client.write_points([
             { 'measurement': 'champion',
               'time': arrow.utcnow().isoformat(),
@@ -45,6 +46,7 @@ class InfluxDBMetric(Metric):
                   'island_id': island_id,
                   'best_f': repr(best_f.tolist()),
                   'best_x': repr(best_x.tolist()),
+                  'round': round,
               }
             }], database=self.database)
 

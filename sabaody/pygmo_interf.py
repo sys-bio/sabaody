@@ -57,9 +57,9 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
     migration_log = []
     best_f = None
     best_x = None
-    for x in range(rounds):
+    for round in range(rounds):
         if monitor is not None:
-            monitor.update(x, 'island', island.id, 'round')
+            monitor.update(round, 'island', island.id, 'round')
 
         from interruptingcow import timeout
         from .timecourse.timecourse_sim_irreg import StalledSimulation
@@ -82,8 +82,8 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
 
         # TODO: send objective function evaluations to metric
         if metric is not None:
-            metric.process_champion(island.id, best_f, best_x)
-            metric.process_deltas(deltas,src_ids)
+            metric.process_champion(island.id, best_f, best_x, round)
+            metric.process_deltas(deltas,src_ids, round)
         migration_log.append((float(i.get_population().champion_f[0]),deltas,src_ids))
 
     #import socket
