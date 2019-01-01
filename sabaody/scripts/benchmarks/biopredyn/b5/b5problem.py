@@ -23,12 +23,37 @@ class B5Problem(TimecourseSimBiopredyn):
         self.r = RoadRunner(sbml)
         from data import measured_quantity_ids, exp_data
         self.measured_quantity_ids = measured_quantity_ids
-        self.reference_values = exp_data
-        self.reference_value_means_squared = mean(self.reference_values, axis=0)**2
-        from params import new_param_ids as param_ids
+        from json import load
+        with open(join(dirname(realpath(__file__)), 'exp_data.json')) as f:
+            self.reference_value_collection = [array(a) for a in load(f)]
+            self.reference_value_means_squared_collection = []
+            for a in self.reference_value_collection:
+                self.reference_value_means_squared_collection.append(mean(a, axis=0)**2)
+        with open(join(dirname(realpath(__file__)), 'exp_y0.json')) as f:
+            self.exp_y0_collection = [array(a) for a in load(f)]
+        with open(join(dirname(realpath(__file__)), 'stimuli.json')) as f:
+            self.stimuli_collection = [d for d in load(f)]
+        from parameters import param_ids
         self.param_list = param_ids
 
         self.penalty_scale = 1.
+
+
+    def setExperimentNumber(self, n):
+        '''
+        Villaverde et al. use a set of 10 different experiments with respective
+        different stimuli combinations and expected results.
+        This method initialized appropriate variables for the given experiment.
+        '''
+        self.reference_values = self.reference_value_collection[n]
+        self.reference_value_means_squared = self.reference_value_means_squared_collection[n]
+        self.exp_y0 = self.exp_y0_collection[n]
+        from species import species
+        for k,s in enumerate(species):
+            self.r.setValue('init({})'.format(s), self.exp_y0[k])
+        self.stimuli = self.stimuli_collection[n]
+        for s,b in self.stimuli:
+            self.r[s] = b*1.
 
 
     def evaluate(self, x):
@@ -58,7 +83,6 @@ class B5Problem(TimecourseSimBiopredyn):
         ''' Plot a simulated quantity vs its data points using Tellurium.'''
         from data import measured_quantity_ids, measured_quantity_id_to_name_map
         from data import t1, t2, time_end, n1, n2, n3
-        quantity_name = measured_quantity_id_to_name_map.get(quantity_id,quantity_id)
         iq = measured_quantity_ids.index(quantity_id)
         reference_data = array(self.reference_values[:,iq])
 
@@ -67,13 +91,7 @@ class B5Problem(TimecourseSimBiopredyn):
         r.resetAll()
         r.resetToOrigin()
         self._setParameterVector(param_values, self.param_list, r)
-        # r.oneStep(0., 10)
-        # print('plotQuantity OAA\' = {}'.format(r["OAA'"]))
-        sim = vstack((
-            r.simulate(0., t1, n1, ['time', quantity_id]),
-            r.simulate(t1, t2, n2, ['time', quantity_id]),
-            r.simulate(t2, time_end, n3, ['time', quantity_id]),
-            ))
+        sim = r.simulate(0., 30, 16, ['time', quantity_id])
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
 
@@ -86,11 +104,11 @@ class B5Problem(TimecourseSimBiopredyn):
 
         import tellurium as te
         te.plot(sim[:,0], reference_data, scatter=True,
-            name=quantity_name+' data', show=False,
-            title=quantity_name,
+            name=quantity_id+' data', show=False,
+            title=quantity_id,
             error_y_pos=maximum(residuals,0),
             error_y_neg=-minimum(residuals,0))
-        te.plot(s[:,0], s[:,1], name=quantity_name+' sim')
+        te.plot(s[:,0], s[:,1], name=quantity_id+' sim')
 
 
     def getParameterValue(self,param_index):

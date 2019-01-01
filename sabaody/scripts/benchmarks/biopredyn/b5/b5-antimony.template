@@ -2,9 +2,15 @@ model b5model()
   // Compartments
   compartment cell = 1
 
+  // Inputs
+  const egf = 0
+  const tnfa = 0
+  const pi3k_inh = 0
+  const raf1_inh = 0
+
   // Species
-  {% for s,value in species.items() %}
-  var species {{ s }} in cell = {{ value }}
+  {% for s,value in species %}
+  var species {{ s }} in cell = 0
   {% endfor %}
 
   // Assignments
