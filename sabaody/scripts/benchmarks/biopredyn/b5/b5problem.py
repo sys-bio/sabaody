@@ -22,6 +22,7 @@ class B5Problem(TimecourseSimBiopredyn):
     def __init__(self, sbml):
         self.sbml = sbml
         self.r = RoadRunner(sbml)
+        self.r.integrator.stiff = False
         from observables import observables
         self.measured_quantity_ids = observables
         from json import load
@@ -66,9 +67,10 @@ class B5Problem(TimecourseSimBiopredyn):
         for n in range(10):
             self.setExperimentNumber(n)
             self.reset()
-            self.setParameterVector(x)
-            self.r.reset()
             def worker():
+                self.r.reset()
+                self.r.resetAll()
+                self.setParameterVector(x, exponential=False)
                 sim = self.r.simulate(0., 30., 16, self.measured_quantity_ids)
                 residuals = sim-self.reference_values
                 normalized_mse_per_quantity = mean(residuals**2,axis=0)/self.reference_value_means_squared
@@ -91,8 +93,8 @@ class B5Problem(TimecourseSimBiopredyn):
         self.r.resetAll()
         # r.resetToOrigin()
         self.setParameterVector(param_values, exponential=False)
-        print(self.r.getReactionRates())
         sim = self.r.simulate(0., 30., 16, ['time', quantity_id])
+        # print(self.r.getReactionRates())
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
 
@@ -100,7 +102,7 @@ class B5Problem(TimecourseSimBiopredyn):
         self.r.resetAll()
         # r.resetToOrigin()
         self.setParameterVector(param_values, exponential=False)
-        s = self.r.simulate(0,30.,1000,['time',quantity_id])
+        s = self.r.simulate(0, 30. ,1000, ['time',quantity_id])
 
         import tellurium as te
         te.plot(sim[:,0], reference_data, scatter=True,
