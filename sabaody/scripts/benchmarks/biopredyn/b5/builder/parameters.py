@@ -1,3 +1,6 @@
+# Sabaody
+# Copyright 2018 Shaik Asifullah and J Kyle Medley
+
 from os.path import join, abspath, dirname, realpath
 
 base_param_id_to_index_map = {

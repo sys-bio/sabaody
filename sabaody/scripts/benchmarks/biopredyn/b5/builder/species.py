@@ -1,3 +1,6 @@
+# Sabaody
+# Copyright 2018 Shaik Asifullah and J Kyle Medley
+
 species = {
     'nik': 0.,
     'mkk4': 0.,

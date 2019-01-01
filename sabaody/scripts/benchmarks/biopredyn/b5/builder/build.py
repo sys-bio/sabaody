@@ -1,3 +1,6 @@
+# Sabaody
+# Copyright 2018 Shaik Asifullah and J Kyle Medley
+
 from parameters import param_id_to_default_value_map
 from species import species
 
