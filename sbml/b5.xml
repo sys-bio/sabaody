@@ -1,0 +1,2206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.9.4 with libSBML version 5.15.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model id="b5model" name="b5model">
+    <listOfCompartments>
+      <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true"/>
+      <compartment id="cell" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="nik" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="mkk4" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ask1" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="map3k7" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="mkk7" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="tnfr" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="egfr" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ph" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ex" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="mek" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ras" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="traf2" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ikk" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="akt" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="pi3k" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ikb" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="nfkb" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="cjun" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="jnk" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="map3k1" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="erk" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="raf1" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="sos" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="p38" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="gsk3" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ap1" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="dnik" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dmkk4" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dask1" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dmap3k7" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dmkk7" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dtnfr" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="degfr" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dph" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dex" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dmek" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dras" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dtraf2" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dikk" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dakt" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dpi3k" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dikb" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dnfkb" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dcjun" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="djnk" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dmap3k1" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="derk" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="draf1" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dsos" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dp38" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dgsk3" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="dap1" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="map3k7_nik_w" value="1" constant="true"/>
+      <parameter id="tau_nik" value="7.1398" constant="true"/>
+      <parameter id="map3k1_mkk4_w" value="0" constant="true"/>
+      <parameter id="map3k7_mkk4_w" value="0" constant="true"/>
+      <parameter id="map3k7_map3k1_mkk4_AND_w" value="1" constant="true"/>
+      <parameter id="tau_mkk4" value="5.4167" constant="true"/>
+      <parameter id="traf2_ask1_w" value="1" constant="true"/>
+      <parameter id="tau_ask1" value="5.2731" constant="true"/>
+      <parameter id="traf2_map3k7_w" value="1" constant="true"/>
+      <parameter id="tau_map3k7" value="0.1" constant="true"/>
+      <parameter id="map3k1_mkk7_w" value="1" constant="true"/>
+      <parameter id="ask1_mkk7_w" value="1" constant="true"/>
+      <parameter id="ask1_map3k1_mkk7_AND_w" value="0" constant="true"/>
+      <parameter id="tau_mkk7" value="10" constant="true"/>
+      <parameter id="tnfa_tnfr_w" value="1" constant="true"/>
+      <parameter id="tau_tnfr" value="9.1369" constant="true"/>
+      <parameter id="egf_egfr_w" value="1" constant="true"/>
+      <parameter id="tau_egfr" value="1.0937" constant="true"/>
+      <parameter id="erk_ph_w" value="1" constant="true"/>
+      <parameter id="tau_ph" value="0.106" constant="true"/>
+      <parameter id="nfkb_ex_w" value="1" constant="true"/>
+      <parameter id="tau_ex" value="0.6146" constant="true"/>
+      <parameter id="raf1_mek_w" value="1" constant="true"/>
+      <parameter id="tau_mek" value="9.5228" constant="true"/>
+      <parameter id="sos_ras_w" value="1" constant="true"/>
+      <parameter id="tau_ras" value="2.8385" constant="true"/>
+      <parameter id="tnfr_traf2_w" value="1" constant="true"/>
+      <parameter id="tau_traf2" value="9.9362" constant="true"/>
+      <parameter id="nik_ikk_w" value="1" constant="true"/>
+      <parameter id="tau_ikk" value="5.7463" constant="true"/>
+      <parameter id="pi3k_akt_w" value="1" constant="true"/>
+      <parameter id="tau_akt" value="9.5917" constant="true"/>
+      <parameter id="egfr_pi3k_w" value="1" constant="true"/>
+      <parameter id="tau_pi3k" value="7.7292" constant="true"/>
+      <parameter id="ikk_ikb_w" value="1" constant="true"/>
+      <parameter id="ex_ikb_w" value="1" constant="true"/>
+      <parameter id="ex_ikk_ikb_AND_w" value="0" constant="true"/>
+      <parameter id="tau_ikb" value="0.6778" constant="true"/>
+      <parameter id="ikb_nfkb_w" value="1" constant="true"/>
+      <parameter id="tau_nfkb" value="0.9984" constant="true"/>
+      <parameter id="jnk_cjun_w" value="1" constant="true"/>
+      <parameter id="tau_cjun" value="9.6513" constant="true"/>
+      <parameter id="mkk7_jnk_w" value="1" constant="true"/>
+      <parameter id="tau_jnk" value="1.3215" constant="true"/>
+      <parameter id="ras_map3k1_w" value="1" constant="true"/>
+      <parameter id="tau_map3k1" value="9.995" constant="true"/>
+      <parameter id="mek_erk_w" value="1" constant="true"/>
+      <parameter id="tau_erk" value="10" constant="true"/>
+      <parameter id="ras_raf1_w" value="1" constant="true"/>
+      <parameter id="tau_raf1" value="0.8552" constant="true"/>
+      <parameter id="ph_sos_w" value="0" constant="true"/>
+      <parameter id="egfr_sos_w" value="0" constant="true"/>
+      <parameter id="egfr_ph_sos_AND_w" value="1" constant="true"/>
+      <parameter id="tau_sos" value="9.3196" constant="true"/>
+      <parameter id="mkk4_p38_w" value="1" constant="true"/>
+      <parameter id="tau_p38" value="0.1" constant="true"/>
+      <parameter id="akt_gsk3_w" value="1" constant="true"/>
+      <parameter id="tau_gsk3" value="0.2602" constant="true"/>
+      <parameter id="cjun_ap1_w" value="1" constant="true"/>
+      <parameter id="tau_ap1" value="0.2045" constant="true"/>
+      <parameter id="map3k7_n_nik" value="1" constant="true"/>
+      <parameter id="map3k7_k_nik" value="0.0905" constant="true"/>
+      <parameter id="map3k7_n_mkk4" value="1.09" constant="true"/>
+      <parameter id="map3k7_k_mkk4" value="0.95" constant="true"/>
+      <parameter id="map3k1_n_mkk4" value="3.1526" constant="true"/>
+      <parameter id="map3k1_k_mkk4" value="0.4721" constant="true"/>
+      <parameter id="traf2_n_ask1" value="3.4873" constant="true"/>
+      <parameter id="traf2_k_ask1" value="0.15" constant="true"/>
+      <parameter id="traf2_n_map3k7" value="1" constant="true"/>
+      <parameter id="traf2_k_map3k7" value="0.0918" constant="true"/>
+      <parameter id="ask1_n_mkk7" value="3.5966" constant="true"/>
+      <parameter id="ask1_k_mkk7" value="0.7772" constant="true"/>
+      <parameter id="map3k1_n_mkk7" value="3.9788" constant="true"/>
+      <parameter id="map3k1_k_mkk7" value="0.4026" constant="true"/>
+      <parameter id="tnfa_n_tnfr" value="1.0188" constant="true"/>
+      <parameter id="tnfa_k_tnfr" value="0.1173" constant="true"/>
+      <parameter id="egf_n_egfr" value="4.892" constant="true"/>
+      <parameter id="egf_k_egfr" value="0.0905" constant="true"/>
+      <parameter id="erk_n_ph" value="4.611" constant="true"/>
+      <parameter id="erk_k_ph" value="0.1027" constant="true"/>
+      <parameter id="nfkb_n_ex" value="4.9909" constant="true"/>
+      <parameter id="nfkb_k_ex" value="0.4268" constant="true"/>
+      <parameter id="raf1_n_mek" value="1.4875" constant="true"/>
+      <parameter id="raf1_k_mek" value="0.5195" constant="true"/>
+      <parameter id="sos_n_ras" value="1.454" constant="true"/>
+      <parameter id="sos_k_ras" value="0.7119" constant="true"/>
+      <parameter id="tnfr_n_traf2" value="4.1622" constant="true"/>
+      <parameter id="tnfr_k_traf2" value="0.5476" constant="true"/>
+      <parameter id="nik_n_ikk" value="4.997" constant="true"/>
+      <parameter id="nik_k_ikk" value="0.1029" constant="true"/>
+      <parameter id="pi3k_n_akt" value="1.0726" constant="true"/>
+      <parameter id="pi3k_k_akt" value="0.9486" constant="true"/>
+      <parameter id="egfr_n_pi3k" value="4.4151" constant="true"/>
+      <parameter id="egfr_k_pi3k" value="0.0944" constant="true"/>
+      <parameter id="ex_n_ikb" value="4.9991" constant="true"/>
+      <parameter id="ex_k_ikb" value="0.6852" constant="true"/>
+      <parameter id="ikk_n_ikb" value="1.5451" constant="true"/>
+      <parameter id="ikk_k_ikb" value="0.95" constant="true"/>
+      <parameter id="ikb_n_nfkb" value="4.9997" constant="true"/>
+      <parameter id="ikb_k_nfkb" value="0.2329" constant="true"/>
+      <parameter id="jnk_n_cjun" value="1.0759" constant="true"/>
+      <parameter id="jnk_k_cjun" value="0.9496" constant="true"/>
+      <parameter id="mkk7_n_jnk" value="4.8747" constant="true"/>
+      <parameter id="mkk7_k_jnk" value="0.0913" constant="true"/>
+      <parameter id="ras_n_map3k1" value="1.1997" constant="true"/>
+      <parameter id="ras_k_map3k1" value="0.8298" constant="true"/>
+      <parameter id="mek_n_erk" value="2.5354" constant="true"/>
+      <parameter id="mek_k_erk" value="0.7099" constant="true"/>
+      <parameter id="ras_n_raf1" value="1" constant="true"/>
+      <parameter id="ras_k_raf1" value="0.2725" constant="true"/>
+      <parameter id="egfr_n_sos" value="1.0012" constant="true"/>
+      <parameter id="egfr_k_sos" value="0.9375" constant="true"/>
+      <parameter id="ph_n_sos" value="1.4651" constant="true"/>
+      <parameter id="ph_k_sos" value="0.72" constant="true"/>
+      <parameter id="mkk4_n_p38" value="1.0032" constant="true"/>
+      <parameter id="mkk4_k_p38" value="0.9329" constant="true"/>
+      <parameter id="akt_n_gsk3" value="1.0608" constant="true"/>
+      <parameter id="akt_k_gsk3" value="0.09" constant="true"/>
+      <parameter id="cjun_n_ap1" value="4.7985" constant="true"/>
+      <parameter id="cjun_k_ap1" value="0.2653" constant="true"/>
+      <parameter id="map3k7_fhill_nik" constant="true"/>
+      <parameter id="map3k7_fhill_mkk4" constant="true"/>
+      <parameter id="map3k1_fhill_mkk4" constant="true"/>
+      <parameter id="traf2_fhill_ask1" constant="true"/>
+      <parameter id="traf2_fhill_map3k7" constant="true"/>
+      <parameter id="ask1_fhill_mkk7" constant="true"/>
+      <parameter id="map3k1_fhill_mkk7" constant="true"/>
+      <parameter id="tnfa_fhill_tnfr" constant="true"/>
+      <parameter id="egf_fhill_egfr" constant="true"/>
+      <parameter id="erk_fhill_ph" constant="true"/>
+      <parameter id="nfkb_fhill_ex" constant="true"/>
+      <parameter id="raf1_fhill_mek" constant="true"/>
+      <parameter id="sos_fhill_ras" constant="true"/>
+      <parameter id="tnfr_fhill_traf2" constant="true"/>
+      <parameter id="nik_fhill_ikk" constant="true"/>
+      <parameter id="pi3k_fhill_akt" constant="true"/>
+      <parameter id="egfr_fhill_pi3k" constant="true"/>
+      <parameter id="pi3k_inh" constant="true"/>
+      <parameter id="ex_fhill_ikb" constant="true"/>
+      <parameter id="ikk_fhill_ikb" constant="true"/>
+      <parameter id="ikb_fhill_nfkb" constant="true"/>
+      <parameter id="jnk_fhill_cjun" constant="true"/>
+      <parameter id="mkk7_fhill_jnk" constant="true"/>
+      <parameter id="ras_fhill_map3k1" constant="true"/>
+      <parameter id="mek_fhill_erk" constant="true"/>
+      <parameter id="ras_fhill_raf1" constant="true"/>
+      <parameter id="raf1_inh" constant="true"/>
+      <parameter id="egfr_fhill_sos" constant="true"/>
+      <parameter id="ph_fhill_sos" constant="true"/>
+      <parameter id="mkk4_fhill_p38" constant="true"/>
+      <parameter id="akt_fhill_gsk3" constant="true"/>
+      <parameter id="cjun_fhill_ap1" constant="true"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="dnik">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> map3k7_fhill_nik </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> map3k7_nik_w </ci>
+                  <ci> map3k7_fhill_nik </ci>
+                </apply>
+              </apply>
+              <ci> nik </ci>
+            </apply>
+            <ci> tau_nik </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dmkk4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> map3k7_fhill_mkk4 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> map3k1_fhill_mkk4 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> map3k1_mkk4_w </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> map3k7_fhill_mkk4 </ci>
+                  </apply>
+                  <ci> map3k1_fhill_mkk4 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> map3k7_mkk4_w </ci>
+                  <ci> map3k7_fhill_mkk4 </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> map3k1_fhill_mkk4 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <or/>
+                    <ci> map3k7_mkk4_w </ci>
+                    <ci> map3k1_mkk4_w </ci>
+                    <ci> map3k7_map3k1_mkk4_AND_w </ci>
+                  </apply>
+                  <ci> map3k7_fhill_mkk4 </ci>
+                  <ci> map3k1_fhill_mkk4 </ci>
+                </apply>
+              </apply>
+              <ci> mkk4 </ci>
+            </apply>
+            <ci> tau_mkk4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dask1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> traf2_fhill_ask1 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> traf2_ask1_w </ci>
+                  <ci> traf2_fhill_ask1 </ci>
+                </apply>
+              </apply>
+              <ci> ask1 </ci>
+            </apply>
+            <ci> tau_ask1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dmap3k7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> traf2_fhill_map3k7 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> traf2_map3k7_w </ci>
+                  <ci> traf2_fhill_map3k7 </ci>
+                </apply>
+              </apply>
+              <ci> map3k7 </ci>
+            </apply>
+            <ci> tau_map3k7 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dmkk7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ask1_fhill_mkk7 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> map3k1_fhill_mkk7 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> map3k1_mkk7_w </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ask1_fhill_mkk7 </ci>
+                  </apply>
+                  <ci> map3k1_fhill_mkk7 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> ask1_mkk7_w </ci>
+                  <ci> ask1_fhill_mkk7 </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> map3k1_fhill_mkk7 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <or/>
+                    <ci> ask1_mkk7_w </ci>
+                    <ci> map3k1_mkk7_w </ci>
+                    <ci> ask1_map3k1_mkk7_AND_w </ci>
+                  </apply>
+                  <ci> ask1_fhill_mkk7 </ci>
+                  <ci> map3k1_fhill_mkk7 </ci>
+                </apply>
+              </apply>
+              <ci> mkk7 </ci>
+            </apply>
+            <ci> tau_mkk7 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dtnfr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> tnfa_fhill_tnfr </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> tnfa_tnfr_w </ci>
+                  <ci> tnfa_fhill_tnfr </ci>
+                </apply>
+              </apply>
+              <ci> tnfr </ci>
+            </apply>
+            <ci> tau_tnfr </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="degfr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> egf_fhill_egfr </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> egf_egfr_w </ci>
+                  <ci> egf_fhill_egfr </ci>
+                </apply>
+              </apply>
+              <ci> egfr </ci>
+            </apply>
+            <ci> tau_egfr </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dph">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> erk_fhill_ph </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> erk_ph_w </ci>
+                  <ci> erk_fhill_ph </ci>
+                </apply>
+              </apply>
+              <ci> ph </ci>
+            </apply>
+            <ci> tau_ph </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dex">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> nfkb_fhill_ex </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> nfkb_ex_w </ci>
+                  <ci> nfkb_fhill_ex </ci>
+                </apply>
+              </apply>
+              <ci> ex </ci>
+            </apply>
+            <ci> tau_ex </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dmek">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> raf1_fhill_mek </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> raf1_mek_w </ci>
+                  <ci> raf1_fhill_mek </ci>
+                </apply>
+              </apply>
+              <ci> mek </ci>
+            </apply>
+            <ci> tau_mek </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dras">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> sos_fhill_ras </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> sos_ras_w </ci>
+                  <ci> sos_fhill_ras </ci>
+                </apply>
+              </apply>
+              <ci> ras </ci>
+            </apply>
+            <ci> tau_ras </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dtraf2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> tnfr_fhill_traf2 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> tnfr_traf2_w </ci>
+                  <ci> tnfr_fhill_traf2 </ci>
+                </apply>
+              </apply>
+              <ci> traf2 </ci>
+            </apply>
+            <ci> tau_traf2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dikk">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> nik_fhill_ikk </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> nik_ikk_w </ci>
+                  <ci> nik_fhill_ikk </ci>
+                </apply>
+              </apply>
+              <ci> ikk </ci>
+            </apply>
+            <ci> tau_ikk </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dakt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> pi3k_fhill_akt </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> pi3k_akt_w </ci>
+                  <ci> pi3k_fhill_akt </ci>
+                </apply>
+              </apply>
+              <ci> akt </ci>
+            </apply>
+            <ci> tau_akt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dpi3k">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> egfr_fhill_pi3k </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> egfr_pi3k_w </ci>
+                  <ci> egfr_fhill_pi3k </ci>
+                </apply>
+              </apply>
+              <ci> pi3k </ci>
+            </apply>
+            <ci> tau_pi3k </ci>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <ci> pi3k_inh </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dikb">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> ikk_ikb_w </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ex_fhill_ikb </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ikk_fhill_ikb </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ex_fhill_ikb </ci>
+                  </apply>
+                  <ci> ikk_fhill_ikb </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <or/>
+                    <ci> ex_ikb_w </ci>
+                    <ci> ikk_ikb_w </ci>
+                    <ci> ex_ikk_ikb_AND_w </ci>
+                  </apply>
+                  <ci> ex_fhill_ikb </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ikk_fhill_ikb </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> ex_ikb_w </ci>
+                  <ci> ex_fhill_ikb </ci>
+                  <ci> ikk_fhill_ikb </ci>
+                </apply>
+              </apply>
+              <ci> ikb </ci>
+            </apply>
+            <ci> tau_ikb </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dnfkb">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> ikb_nfkb_w </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ikb_fhill_nfkb </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <ci> ikb_fhill_nfkb </ci>
+                </apply>
+              </apply>
+              <ci> nfkb </ci>
+            </apply>
+            <ci> tau_nfkb </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dcjun">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> jnk_fhill_cjun </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> jnk_cjun_w </ci>
+                  <ci> jnk_fhill_cjun </ci>
+                </apply>
+              </apply>
+              <ci> cjun </ci>
+            </apply>
+            <ci> tau_cjun </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="djnk">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> mkk7_fhill_jnk </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> mkk7_jnk_w </ci>
+                  <ci> mkk7_fhill_jnk </ci>
+                </apply>
+              </apply>
+              <ci> jnk </ci>
+            </apply>
+            <ci> tau_jnk </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dmap3k1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ras_fhill_map3k1 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> ras_map3k1_w </ci>
+                  <ci> ras_fhill_map3k1 </ci>
+                </apply>
+              </apply>
+              <ci> map3k1 </ci>
+            </apply>
+            <ci> tau_map3k1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="derk">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> mek_fhill_erk </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> mek_erk_w </ci>
+                  <ci> mek_fhill_erk </ci>
+                </apply>
+              </apply>
+              <ci> erk </ci>
+            </apply>
+            <ci> tau_erk </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="draf1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ras_fhill_raf1 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> ras_raf1_w </ci>
+                  <ci> ras_fhill_raf1 </ci>
+                </apply>
+              </apply>
+              <ci> raf1 </ci>
+            </apply>
+            <ci> tau_raf1 </ci>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <ci> raf1_inh </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dsos">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> ph_sos_w </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> egfr_fhill_sos </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ph_fhill_sos </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> egfr_fhill_sos </ci>
+                  </apply>
+                  <ci> ph_fhill_sos </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <or/>
+                    <ci> egfr_sos_w </ci>
+                    <ci> ph_sos_w </ci>
+                    <ci> egfr_ph_sos_AND_w </ci>
+                  </apply>
+                  <ci> egfr_fhill_sos </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> ph_fhill_sos </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> egfr_sos_w </ci>
+                  <ci> egfr_fhill_sos </ci>
+                  <ci> ph_fhill_sos </ci>
+                </apply>
+              </apply>
+              <ci> sos </ci>
+            </apply>
+            <ci> tau_sos </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dp38">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> mkk4_fhill_p38 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> mkk4_p38_w </ci>
+                  <ci> mkk4_fhill_p38 </ci>
+                </apply>
+              </apply>
+              <ci> p38 </ci>
+            </apply>
+            <ci> tau_p38 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dgsk3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> akt_gsk3_w </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> akt_fhill_gsk3 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <ci> akt_fhill_gsk3 </ci>
+                </apply>
+              </apply>
+              <ci> gsk3 </ci>
+            </apply>
+            <ci> tau_gsk3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dap1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 0 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> cjun_fhill_ap1 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> cjun_ap1_w </ci>
+                  <ci> cjun_fhill_ap1 </ci>
+                </apply>
+              </apply>
+              <ci> ap1 </ci>
+            </apply>
+            <ci> tau_ap1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+    <listOfReactions>
+      <reaction id="J_dnik" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dnik" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="nik"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> map3k7_fhill_nik </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> map3k7_nik_w </ci>
+                    <ci> map3k7_fhill_nik </ci>
+                  </apply>
+                </apply>
+                <ci> nik </ci>
+              </apply>
+              <ci> tau_nik </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dmkk4" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dmkk4" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="mkk4"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> map3k7_fhill_mkk4 </ci>
+                    </apply>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> map3k1_fhill_mkk4 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> map3k1_mkk4_w </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> map3k7_fhill_mkk4 </ci>
+                    </apply>
+                    <ci> map3k1_fhill_mkk4 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> map3k7_mkk4_w </ci>
+                    <ci> map3k7_fhill_mkk4 </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> map3k1_fhill_mkk4 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <or/>
+                      <ci> map3k7_mkk4_w </ci>
+                      <ci> map3k1_mkk4_w </ci>
+                      <ci> map3k7_map3k1_mkk4_AND_w </ci>
+                    </apply>
+                    <ci> map3k7_fhill_mkk4 </ci>
+                    <ci> map3k1_fhill_mkk4 </ci>
+                  </apply>
+                </apply>
+                <ci> mkk4 </ci>
+              </apply>
+              <ci> tau_mkk4 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dask1" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dask1" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ask1"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> traf2_fhill_ask1 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> traf2_ask1_w </ci>
+                    <ci> traf2_fhill_ask1 </ci>
+                  </apply>
+                </apply>
+                <ci> ask1 </ci>
+              </apply>
+              <ci> tau_ask1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dmap3k7" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dmap3k7" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="map3k7"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> traf2_fhill_map3k7 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> traf2_map3k7_w </ci>
+                    <ci> traf2_fhill_map3k7 </ci>
+                  </apply>
+                </apply>
+                <ci> map3k7 </ci>
+              </apply>
+              <ci> tau_map3k7 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dmkk7" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dmkk7" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="mkk7"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ask1_fhill_mkk7 </ci>
+                    </apply>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> map3k1_fhill_mkk7 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> map3k1_mkk7_w </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ask1_fhill_mkk7 </ci>
+                    </apply>
+                    <ci> map3k1_fhill_mkk7 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> ask1_mkk7_w </ci>
+                    <ci> ask1_fhill_mkk7 </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> map3k1_fhill_mkk7 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <or/>
+                      <ci> ask1_mkk7_w </ci>
+                      <ci> map3k1_mkk7_w </ci>
+                      <ci> ask1_map3k1_mkk7_AND_w </ci>
+                    </apply>
+                    <ci> ask1_fhill_mkk7 </ci>
+                    <ci> map3k1_fhill_mkk7 </ci>
+                  </apply>
+                </apply>
+                <ci> mkk7 </ci>
+              </apply>
+              <ci> tau_mkk7 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dtnfr" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dtnfr" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="tnfr"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> tnfa_fhill_tnfr </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> tnfa_tnfr_w </ci>
+                    <ci> tnfa_fhill_tnfr </ci>
+                  </apply>
+                </apply>
+                <ci> tnfr </ci>
+              </apply>
+              <ci> tau_tnfr </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_degfr" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="degfr" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="egfr"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> egf_fhill_egfr </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> egf_egfr_w </ci>
+                    <ci> egf_fhill_egfr </ci>
+                  </apply>
+                </apply>
+                <ci> egfr </ci>
+              </apply>
+              <ci> tau_egfr </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dph" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dph" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ph"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> erk_fhill_ph </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> erk_ph_w </ci>
+                    <ci> erk_fhill_ph </ci>
+                  </apply>
+                </apply>
+                <ci> ph </ci>
+              </apply>
+              <ci> tau_ph </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dex" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dex" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ex"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> nfkb_fhill_ex </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> nfkb_ex_w </ci>
+                    <ci> nfkb_fhill_ex </ci>
+                  </apply>
+                </apply>
+                <ci> ex </ci>
+              </apply>
+              <ci> tau_ex </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dmek" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dmek" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="mek"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> raf1_fhill_mek </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> raf1_mek_w </ci>
+                    <ci> raf1_fhill_mek </ci>
+                  </apply>
+                </apply>
+                <ci> mek </ci>
+              </apply>
+              <ci> tau_mek </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dras" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dras" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ras"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> sos_fhill_ras </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> sos_ras_w </ci>
+                    <ci> sos_fhill_ras </ci>
+                  </apply>
+                </apply>
+                <ci> ras </ci>
+              </apply>
+              <ci> tau_ras </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dtraf2" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dtraf2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="traf2"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> tnfr_fhill_traf2 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> tnfr_traf2_w </ci>
+                    <ci> tnfr_fhill_traf2 </ci>
+                  </apply>
+                </apply>
+                <ci> traf2 </ci>
+              </apply>
+              <ci> tau_traf2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dikk" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dikk" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ikk"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> nik_fhill_ikk </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> nik_ikk_w </ci>
+                    <ci> nik_fhill_ikk </ci>
+                  </apply>
+                </apply>
+                <ci> ikk </ci>
+              </apply>
+              <ci> tau_ikk </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dakt" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dakt" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="akt"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> pi3k_fhill_akt </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> pi3k_akt_w </ci>
+                    <ci> pi3k_fhill_akt </ci>
+                  </apply>
+                </apply>
+                <ci> akt </ci>
+              </apply>
+              <ci> tau_akt </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dpi3k" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dpi3k" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="pi3k"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> egfr_fhill_pi3k </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> egfr_pi3k_w </ci>
+                    <ci> egfr_fhill_pi3k </ci>
+                  </apply>
+                </apply>
+                <ci> pi3k </ci>
+              </apply>
+              <ci> tau_pi3k </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> pi3k_inh </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dikb" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dikb" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ikb"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> ikk_ikb_w </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ex_fhill_ikb </ci>
+                    </apply>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ikk_fhill_ikb </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ex_fhill_ikb </ci>
+                    </apply>
+                    <ci> ikk_fhill_ikb </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <or/>
+                      <ci> ex_ikb_w </ci>
+                      <ci> ikk_ikb_w </ci>
+                      <ci> ex_ikk_ikb_AND_w </ci>
+                    </apply>
+                    <ci> ex_fhill_ikb </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ikk_fhill_ikb </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> ex_ikb_w </ci>
+                    <ci> ex_fhill_ikb </ci>
+                    <ci> ikk_fhill_ikb </ci>
+                  </apply>
+                </apply>
+                <ci> ikb </ci>
+              </apply>
+              <ci> tau_ikb </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dnfkb" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dnfkb" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="nfkb"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> ikb_nfkb_w </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ikb_fhill_nfkb </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <ci> ikb_fhill_nfkb </ci>
+                  </apply>
+                </apply>
+                <ci> nfkb </ci>
+              </apply>
+              <ci> tau_nfkb </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dcjun" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dcjun" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cjun"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> jnk_fhill_cjun </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> jnk_cjun_w </ci>
+                    <ci> jnk_fhill_cjun </ci>
+                  </apply>
+                </apply>
+                <ci> cjun </ci>
+              </apply>
+              <ci> tau_cjun </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_djnk" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="djnk" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="jnk"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> mkk7_fhill_jnk </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> mkk7_jnk_w </ci>
+                    <ci> mkk7_fhill_jnk </ci>
+                  </apply>
+                </apply>
+                <ci> jnk </ci>
+              </apply>
+              <ci> tau_jnk </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dmap3k1" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dmap3k1" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="map3k1"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ras_fhill_map3k1 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> ras_map3k1_w </ci>
+                    <ci> ras_fhill_map3k1 </ci>
+                  </apply>
+                </apply>
+                <ci> map3k1 </ci>
+              </apply>
+              <ci> tau_map3k1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_derk" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="derk" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="erk"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> mek_fhill_erk </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> mek_erk_w </ci>
+                    <ci> mek_fhill_erk </ci>
+                  </apply>
+                </apply>
+                <ci> erk </ci>
+              </apply>
+              <ci> tau_erk </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_draf1" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="draf1" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="raf1"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ras_fhill_raf1 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> ras_raf1_w </ci>
+                    <ci> ras_fhill_raf1 </ci>
+                  </apply>
+                </apply>
+                <ci> raf1 </ci>
+              </apply>
+              <ci> tau_raf1 </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> raf1_inh </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dsos" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dsos" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="sos"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> ph_sos_w </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> egfr_fhill_sos </ci>
+                    </apply>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ph_fhill_sos </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> egfr_fhill_sos </ci>
+                    </apply>
+                    <ci> ph_fhill_sos </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <or/>
+                      <ci> egfr_sos_w </ci>
+                      <ci> ph_sos_w </ci>
+                      <ci> egfr_ph_sos_AND_w </ci>
+                    </apply>
+                    <ci> egfr_fhill_sos </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> ph_fhill_sos </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> egfr_sos_w </ci>
+                    <ci> egfr_fhill_sos </ci>
+                    <ci> ph_fhill_sos </ci>
+                  </apply>
+                </apply>
+                <ci> sos </ci>
+              </apply>
+              <ci> tau_sos </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dp38" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dp38" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="p38"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> mkk4_fhill_p38 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> mkk4_p38_w </ci>
+                    <ci> mkk4_fhill_p38 </ci>
+                  </apply>
+                </apply>
+                <ci> p38 </ci>
+              </apply>
+              <ci> tau_p38 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dgsk3" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dgsk3" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="gsk3"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> akt_gsk3_w </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> akt_fhill_gsk3 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <ci> akt_fhill_gsk3 </ci>
+                  </apply>
+                </apply>
+                <ci> gsk3 </ci>
+              </apply>
+              <ci> tau_gsk3 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J_dap1" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="dap1" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ap1"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 0 </cn>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> cjun_fhill_ap1 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> cjun_ap1_w </ci>
+                    <ci> cjun_fhill_ap1 </ci>
+                  </apply>
+                </apply>
+                <ci> ap1 </ci>
+              </apply>
+              <ci> tau_ap1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

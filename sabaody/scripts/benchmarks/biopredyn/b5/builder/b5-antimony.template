@@ -1,8 +1,10 @@
-model b5model
+model b5model()
+  // Compartments
   compartment cell = 1
+
   // Species
   {% for s,value in species.items() %}
-  var species {{ s }} = {{ value }}
+  var species {{ s }} in cell = {{ value }}
   {% endfor %}
 
   // Assignments
