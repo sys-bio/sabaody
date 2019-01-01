@@ -187,7 +187,7 @@ class TopologyGenerator:
           algorithms=['de','neldermead'],
           archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=g),n)), self.make_nelder_mead()))
         # de + praxis combo
-        self.de_nm_oring = self.new_topology(
+        self.new_topology(
           desc='One-way ring, de+praxis',
           category='rings',
           algorithms=['de','praxis'],
@@ -261,6 +261,12 @@ class TopologyGenerator:
           category='rings',
           algorithms=['de','neldermead'],
           archipelago=assign_every_other_algo(Archipelago(self.factory.createBidirRing(de(gen=g),n)), self.make_nelder_mead()))
+        # de + praxis combo
+        self.new_topology(
+          desc='Bidirectional ring, de+praxis',
+          category='rings',
+          algorithms=['de','praxis'],
+          archipelago=assign_every_other_algo(Archipelago(self.factory.createBidirRing(de(gen=g),n)), self.make_praxis()))
         # de + nsga2 combo
         self.new_topology(
           desc='Bidirectional ring, de+nsga2',
@@ -325,17 +331,23 @@ class TopologyGenerator:
           algorithms=['xnes'],
           archipelago=Archipelago(self.factory.createBidirChain(nsga2(gen=g),n)))
         # de + nelder mead combo
-        self.de_nm_bring = self.new_topology(
+        self.new_topology(
           desc='Bidirectional chain, de+nelder mead',
           category='chains',
           algorithms=['de','neldermead'],
-          archipelago=assign_endpoints(Archipelago(self.factory.createBidirRing(de(gen=g),n)), self.make_nelder_mead()))
+          archipelago=assign_endpoints(Archipelago(self.factory.createBidirChain(de(gen=g),n)), self.make_nelder_mead()))
+        # de + praxis combo
+        self.new_topology(
+          desc='Bidirectional chain, de+praxis',
+          category='chains',
+          algorithms=['de','praxis'],
+          archipelago=assign_endpoints(Archipelago(self.factory.createBidirChain(de(gen=g),n)), self.make_praxis()))
         # de + nsga2 combo
         self.new_topology(
           desc='Bidirectional chain, de+nsga2',
           category='chains',
           algorithms=['de','nsga2'],
-          archipelago=assign_endpoints(Archipelago(self.factory.createBidirRing(de(gen=g),n)), nsga2(gen=g)))
+          archipelago=assign_endpoints(Archipelago(self.factory.createBidirChain(de(gen=g),n)), nsga2(gen=g)))
 
         return self.topologies
 
