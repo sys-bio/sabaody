@@ -34,7 +34,7 @@ def filter_reactions(line):
         return 'J_{q}: -> {q}; {rate}'.format(q=m.group(1), rate=m.group(2))
     else:
         return ''
-reactions = '\n'.join((filter_reactions(l) for l in fragment_stage1.splitlines()))
+reactions = '\n'.join((filter_reactions(l).replace('OR', 'myor') for l in fragment_stage1.splitlines()))
 reactions = '\n'.join((l for l in reactions.splitlines() if l != ''))
 
 def filter_assignments(line):
@@ -43,7 +43,7 @@ def filter_assignments(line):
         return '{q} := {rhs}'.format(q=m.group(1), rhs=m.group(2))
     else:
         return ''
-assignments = '\n'.join((filter_assignments(l) for l in fragment_stage1.splitlines()))
+assignments = '\n'.join((filter_assignments(l).replace('OR', 'myor') for l in fragment_stage1.splitlines()))
 assignments = '\n'.join((l for l in assignments.splitlines() if l != ''))
 
 env = Environment(loader=FileSystemLoader(dirname(realpath(__file__))),

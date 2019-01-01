@@ -2,6 +2,123 @@
 <!-- Created by libAntimony version v2.9.4 with libSBML version 5.15.0. -->
 <sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
   <model id="b5model" name="b5model">
+    <listOfFunctionDefinitions>
+      <functionDefinition id="myor">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> x1 </ci>
+            </bvar>
+            <bvar>
+              <ci> x2 </ci>
+            </bvar>
+            <bvar>
+              <ci> x3 </ci>
+            </bvar>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn type="integer"> 0 </cn>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x1 </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x2 </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x3 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x1 </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x2 </ci>
+                </apply>
+                <ci> x3 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x1 </ci>
+                </apply>
+                <ci> x2 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x3 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x1 </ci>
+                </apply>
+                <ci> x2 </ci>
+                <ci> x3 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> x1 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x2 </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x3 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> x1 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x2 </ci>
+                </apply>
+                <ci> x3 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> x1 </ci>
+                <ci> x2 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> x3 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> x1 </ci>
+                <ci> x2 </ci>
+                <ci> x3 </ci>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
     <listOfCompartments>
       <compartment id="cell" spatialDimensions="3" size="1" constant="true"/>
     </listOfCompartments>
@@ -1385,7 +1502,7 @@
                   <apply>
                     <times/>
                     <apply>
-                      <or/>
+                      <ci> myor </ci>
                       <ci> map3k7_mkk4_w </ci>
                       <ci> map3k1_mkk4_w </ci>
                       <ci> map3k7_map3k1_mkk4_AND_w </ci>
@@ -1518,7 +1635,7 @@
                   <apply>
                     <times/>
                     <apply>
-                      <or/>
+                      <ci> myor </ci>
                       <ci> ask1_mkk7_w </ci>
                       <ci> map3k1_mkk7_w </ci>
                       <ci> ask1_map3k1_mkk7_AND_w </ci>
@@ -1918,7 +2035,7 @@
                   <apply>
                     <times/>
                     <apply>
-                      <or/>
+                      <ci> myor </ci>
                       <ci> ex_ikb_w </ci>
                       <ci> ikk_ikb_w </ci>
                       <ci> ex_ikk_ikb_AND_w </ci>
@@ -2192,7 +2309,7 @@
                   <apply>
                     <times/>
                     <apply>
-                      <or/>
+                      <ci> myor </ci>
                       <ci> egfr_sos_w </ci>
                       <ci> ph_sos_w </ci>
                       <ci> egfr_ph_sos_AND_w </ci>

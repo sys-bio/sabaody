@@ -53,7 +53,6 @@ class B5Problem(TimecourseSimBiopredyn):
         for k,s in enumerate(species):
             self.r.setValue('init({})'.format(s), float(self.exp_y0[k]))
         self.stimuli = self.stimuli_collection[n]
-        print(self.stimuli)
         for s,b in self.stimuli.items():
             self.r[s] = b*1.
 
@@ -93,6 +92,7 @@ class B5Problem(TimecourseSimBiopredyn):
         r.resetAll()
         r.resetToOrigin()
         self._setParameterVector(param_values, self.param_list, r)
+        print(r.getReactionRates())
         sim = r.simulate(0., 30., 16, ['time', quantity_id])
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data

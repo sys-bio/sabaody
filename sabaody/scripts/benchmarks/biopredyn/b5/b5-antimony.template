@@ -1,3 +1,14 @@
+function myor(x1, x2, x3)
+  0*(1-x1)*(1-x2)*(1-x3)+  \
+  (1-x1)*(1-x2)*(x3)+ \
+  (1-x1)*(x2)*(1-x3)+ \
+  (1-x1)*(x2)*(x3)+ \
+  (x1)*(1-x2)*(1-x3)+ \
+  (x1)*(1-x2)*(x3)+ \
+  (x1)*(x2)*(1-x3)+ \
+  (x1)*(x2)*(x3)
+end
+
 model b5model()
   // Compartments
   compartment cell = 1
