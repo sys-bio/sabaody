@@ -107,6 +107,92 @@ class TopologyGenerator:
         topologies = loads(t[1])
         return (self.find(desc,topologies),key)
 
+    def create_variants(self, n, desc, category, constructor):
+        def assign_2nd_alg(archipelago, algo):
+            if category == 'rings':
+                for island in archipelago.topology.every_other_island():
+                    island.algorithm = algo
+            elif hasattr(archipelago.topology, 'endpoints'):
+                for island in archipelago.topology.endpoints:
+                    island.algorithm = algo'
+            return archipelago
+
+        g = self.generations
+
+        self.new_topology(
+          desc='{}, de'.format(desc),
+          category=category,
+          algorithms=['de'],
+          archipelago=Archipelago(constructor(de(gen=g),n)))
+        self.new_topology(
+          desc='{}, de1220'.format(desc),
+          category=category,
+          algorithms=['de1220'],
+          archipelago=Archipelago(constructor(de1220(gen=g),n)))
+        self.new_topology(
+          desc='{}, sade'.format(desc),
+          category=category,
+          algorithms=['sade'],
+          archipelago=Archipelago(constructor(sade(gen=g),n)))
+        self.new_topology(
+          desc='{}, ihs'.format(desc),
+          category=category,
+          algorithms=['ihs'],
+          archipelago=Archipelago(constructor(ihs(gen=g),n)))
+        self.new_topology(
+          desc='{}, pso'.format(desc),
+          category=category,
+          algorithms=['pso'],
+          archipelago=Archipelago(constructor(pso(gen=g),n)))
+        self.new_topology(
+          desc='{}, pso_gen'.format(desc),
+          category=category,
+          algorithms=['pso_gen'],
+          archipelago=Archipelago(constructor(pso_gen(gen=g),n)))
+        # self.new_topology(
+        #   desc='{}, simulated_annealing'.format(desc),
+        #   category=category,
+        #   algorithms=['simulated_annealing'],
+        #   archipelago=Archipelago(constructor(simulated_annealing(),n)))
+        self.new_topology(
+          desc='{}, bee_colony'.format(desc),
+          category=category,
+          algorithms=['bee_colony'],
+          archipelago=Archipelago(constructor(bee_colony(gen=g),n)))
+        self.new_topology(
+          desc='{}, cmaes'.format(desc),
+          category=category,
+          algorithms=['cmaes'],
+          archipelago=Archipelago(constructor(cmaes(gen=g),n)))
+        self.new_topology(
+          desc='{}, nsga2'.format(desc),
+          category=category,
+          algorithms=['nsga2'],
+          archipelago=Archipelago(constructor(nsga2(gen=g),n)))
+        self.new_topology(
+          desc='{}, xnes'.format(desc),
+          category=category,
+          algorithms=['xnes'],
+          archipelago=Archipelago(constructor(nsga2(gen=g),n)))
+        # de + nelder mead combo
+        self.new_topology(
+          desc='{}, de+nelder mead'.format(desc),
+          category=category,
+          algorithms=['de','neldermead'],
+          archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), self.make_nelder_mead()))
+        # de + praxis combo
+        self.new_topology(
+          desc='{}, de+praxis'.format(desc),
+          category=category,
+          algorithms=['de','praxis'],
+          archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), self.make_praxis()))
+        # de + nsga2 combo
+        self.new_topology(
+          desc='{}, de+nsga2'.format(desc),
+          category=category,
+          algorithms=['de','nsga2'],
+          archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), nsga2(gen=g)))
+
 
     def _generate_all(self, n):
         '''
@@ -114,240 +200,10 @@ class TopologyGenerator:
 
         :param n: Number of islands.
         '''
-        g = self.generations
 
-        def assign_every_other_algo(archipelago, algo):
-            for island in archipelago.topology.endpoints:
-                island.algorithm = algo
-            return archipelago
-
-        def assign_endpoints(archipelago, algo):
-            return archipelago
-
-        # one-way rings
-        self.new_topology(
-          desc='One-way ring, de',
-          category='rings',
-          algorithms=['de'],
-          archipelago=Archipelago(self.factory.createOneWayRing(de(gen=g),n)))
-        self.new_topology(
-          desc='One-way ring, de1220',
-          category='rings',
-          algorithms=['de1220'],
-          archipelago=Archipelago(self.factory.createOneWayRing(de1220(gen=g),n)))
-        self.new_topology(
-          desc='One-way ring, sade',
-          category='rings',
-          algorithms=['sade'],
-          archipelago=Archipelago(self.factory.createOneWayRing(sade(gen=g),n)))
-        self.new_topology(
-          desc='One-way ring, ihs',
-          category='rings',
-          algorithms=['ihs'],
-          archipelago=Archipelago(self.factory.createOneWayRing(ihs(gen=g),n)))
-        self.new_topology(
-          desc='One-way ring, pso',
-          category='rings',
-          algorithms=['pso'],
-          archipelago=Archipelago(self.factory.createOneWayRing(pso(gen=g),n)))
-        self.new_topology(
-          desc='One-way ring, pso_gen',
-          category='rings',
-          algorithms=['pso_gen'],
-          archipelago=Archipelago(self.factory.createOneWayRing(pso_gen(gen=g),n)))
-        # self.new_topology(
-        #   desc='One-way ring, simulated_annealing',
-        #   category='rings',
-        #   algorithms=['simulated_annealing'],
-        #   archipelago=Archipelago(self.factory.createOneWayRing(simulated_annealing(Ts=1.,Tf=.01),n)))
-        self.new_topology(
-          desc='One-way ring, bee_colony',
-          category='rings',
-          algorithms=['bee_colony'],
-          archipelago=Archipelago(self.factory.createOneWayRing(bee_colony(gen=g),n)))
-        self.new_topology(
-          desc='One-way ring, cmaes',
-          category='rings',
-          algorithms=['cmaes'],
-          archipelago=Archipelago(self.factory.createOneWayRing(cmaes(gen=g),n)))
-        self.new_topology(
-          desc='One-way ring, nsga2',
-          category='rings',
-          algorithms=['nsga2'],
-          archipelago=Archipelago(self.factory.createOneWayRing(nsga2(gen=g),n)))
-        self.new_topology(
-          desc='One-way ring, xnes',
-          category='rings',
-          algorithms=['xnes'],
-          archipelago=Archipelago(self.factory.createOneWayRing(xnes(gen=g),n)))
-        # de + nelder mead combo
-        self.de_nm_oring = self.new_topology(
-          desc='One-way ring, de+nelder mead',
-          category='rings',
-          algorithms=['de','neldermead'],
-          archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=g),n)), self.make_nelder_mead()))
-        # de + praxis combo
-        self.new_topology(
-          desc='One-way ring, de+praxis',
-          category='rings',
-          algorithms=['de','praxis'],
-          archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=g),n)), self.make_praxis()))
-        # de + nsga2 combo
-        self.new_topology(
-          desc='One-way ring, de+nsga2',
-          category='rings',
-          algorithms=['de','nsga2'],
-          archipelago=assign_every_other_algo(Archipelago(self.factory.createOneWayRing(de(gen=g),n)), nsga2(gen=g)))
-
-        # bidirectional rings
-        self.new_topology(
-          desc='Bidirectional ring, de',
-          category='rings',
-          algorithms=['de'],
-          archipelago=Archipelago(self.factory.createBidirRing(de(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional ring, de1220',
-          category='rings',
-          algorithms=['de1220'],
-          archipelago=Archipelago(self.factory.createBidirRing(de1220(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional ring, sade',
-          category='rings',
-          algorithms=['sade'],
-          archipelago=Archipelago(self.factory.createBidirRing(sade(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional ring, ihs',
-          category='rings',
-          algorithms=['ihs'],
-          archipelago=Archipelago(self.factory.createBidirRing(ihs(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional ring, pso',
-          category='rings',
-          algorithms=['pso'],
-          archipelago=Archipelago(self.factory.createBidirRing(pso(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional ring, pso_gen',
-          category='rings',
-          algorithms=['pso'],
-          archipelago=Archipelago(self.factory.createBidirRing(pso_gen(gen=g),n)))
-        # self.new_topology(
-        #   desc='Bidirectional ring, simulated_annealing',
-        #   category='rings',
-        #   algorithms=['simulated_annealing'],
-        #   archipelago=Archipelago(self.factory.createBidirRing(simulated_annealing(),n)))
-        self.new_topology(
-          desc='Bidirectional ring, bee_colony',
-          category='rings',
-          algorithms=['bee_colony'],
-          archipelago=Archipelago(self.factory.createBidirRing(bee_colony(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional ring, cmaes',
-          category='rings',
-          algorithms=['cmaes'],
-          archipelago=Archipelago(self.factory.createBidirRing(cmaes(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional ring, nsga2',
-          category='rings',
-          algorithms=['nsga2'],
-          archipelago=Archipelago(self.factory.createBidirRing(nsga2(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional ring, xnes',
-          category='rings',
-          algorithms=['xnes'],
-          archipelago=Archipelago(self.factory.createBidirRing(xnes(gen=g),n)))
-        # de + nelder mead combo
-        self.de_nm_bring = self.new_topology(
-          desc='Bidirectional ring, de+nelder mead',
-          category='rings',
-          algorithms=['de','neldermead'],
-          archipelago=assign_every_other_algo(Archipelago(self.factory.createBidirRing(de(gen=g),n)), self.make_nelder_mead()))
-        # de + praxis combo
-        self.new_topology(
-          desc='Bidirectional ring, de+praxis',
-          category='rings',
-          algorithms=['de','praxis'],
-          archipelago=assign_every_other_algo(Archipelago(self.factory.createBidirRing(de(gen=g),n)), self.make_praxis()))
-        # de + nsga2 combo
-        self.new_topology(
-          desc='Bidirectional ring, de+nsga2',
-          category='rings',
-          algorithms=['de','nsga2'],
-          archipelago=assign_every_other_algo(Archipelago(self.factory.createBidirRing(de(gen=g),n)), nsga2(gen=g)))
-
-        # bidirectional chains
-        self.new_topology(
-          desc='Bidirectional chain, de',
-          category='chains',
-          algorithms=['de'],
-          archipelago=Archipelago(self.factory.createBidirChain(de(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional chain, de1220',
-          category='chains',
-          algorithms=['de1220'],
-          archipelago=Archipelago(self.factory.createBidirChain(de1220(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional chain, sade',
-          category='chains',
-          algorithms=['sade'],
-          archipelago=Archipelago(self.factory.createBidirChain(sade(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional chain, ihs',
-          category='chains',
-          algorithms=['ihs'],
-          archipelago=Archipelago(self.factory.createBidirChain(ihs(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional chain, pso',
-          category='chains',
-          algorithms=['pso'],
-          archipelago=Archipelago(self.factory.createBidirChain(pso(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional chain, pso_gen',
-          category='chains',
-          algorithms=['pso_gen'],
-          archipelago=Archipelago(self.factory.createBidirChain(pso_gen(gen=g),n)))
-        # self.new_topology(
-        #   desc='Bidirectional chain, simulated_annealing',
-        #   category='chains',
-        #   algorithms=['simulated_annealing'],
-        #   archipelago=Archipelago(self.factory.createBidirChain(simulated_annealing(),n)))
-        self.new_topology(
-          desc='Bidirectional chain, bee_colony',
-          category='chains',
-          algorithms=['bee_colony'],
-          archipelago=Archipelago(self.factory.createBidirChain(bee_colony(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional chain, cmaes',
-          category='chains',
-          algorithms=['cmaes'],
-          archipelago=Archipelago(self.factory.createBidirChain(cmaes(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional chain, nsga2',
-          category='chains',
-          algorithms=['nsga2'],
-          archipelago=Archipelago(self.factory.createBidirChain(nsga2(gen=g),n)))
-        self.new_topology(
-          desc='Bidirectional chain, xnes',
-          category='chains',
-          algorithms=['xnes'],
-          archipelago=Archipelago(self.factory.createBidirChain(nsga2(gen=g),n)))
-        # de + nelder mead combo
-        self.new_topology(
-          desc='Bidirectional chain, de+nelder mead',
-          category='chains',
-          algorithms=['de','neldermead'],
-          archipelago=assign_endpoints(Archipelago(self.factory.createBidirChain(de(gen=g),n)), self.make_nelder_mead()))
-        # de + praxis combo
-        self.new_topology(
-          desc='Bidirectional chain, de+praxis',
-          category='chains',
-          algorithms=['de','praxis'],
-          archipelago=assign_endpoints(Archipelago(self.factory.createBidirChain(de(gen=g),n)), self.make_praxis()))
-        # de + nsga2 combo
-        self.new_topology(
-          desc='Bidirectional chain, de+nsga2',
-          category='chains',
-          algorithms=['de','nsga2'],
-          archipelago=assign_endpoints(Archipelago(self.factory.createBidirChain(de(gen=g),n)), nsga2(gen=g)))
+        self.create_variants(n, 'One-way ring', 'rings', self.factory.createOneWayRing)
+        self.create_variants(n, 'Bidirectional ring', 'rings', self.factory.createBidirRing)
+        self.create_variants(n, 'Bidirectional chain', 'rings', self.factory.createBidirChain)
 
         return self.topologies
 
