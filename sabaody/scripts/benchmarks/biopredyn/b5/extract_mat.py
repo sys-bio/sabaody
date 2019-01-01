@@ -31,8 +31,8 @@ with open(join(dirname(realpath(__file__)), 'stimuli.json'), 'w') as f:
     } for a in u], f)
 
 with open(join(dirname(realpath(__file__)), 'params.json'), 'w') as f:
-    dump([{
+    dump({
         'param_defaults':      param_defaults.tolist(),
         'param_lb':     param_lb.tolist(),
         'param_ub': param_ub.tolist(),
-    } for a in u], f)
+    }, f)

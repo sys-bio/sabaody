@@ -1,7 +1,7 @@
 # Sabaody
 # Copyright 2018 Shaik Asifullah and J Kyle Medley
 
-from numpy import array, isclose, zeros
+from numpy import array, allclose, zeros
 
 from os.path import join, abspath, dirname, realpath
 
@@ -98,8 +98,8 @@ base_param_id_to_index_map = {
 import scipy.io
 pnom = scipy.io.loadmat(abspath(join(dirname(realpath(__file__)), 'pnom.mat')))['pnom']
 
-param_id_to_default_value_map = { id: pnom[0,index] for id,index in base_param_id_to_index_map.items() }
-print(param_id_to_default_value_map)
+base_param_id_to_default_value_map = { id: pnom[0,index] for id,index in base_param_id_to_index_map.items() }
+param_id_to_default_value_map      = { id: pnom[0,index] for id,index in base_param_id_to_index_map.items() }
 
 extended_param_id_to_default_value_map = {
     'map3k7_nik_w': 1.,
@@ -143,7 +143,7 @@ extended_param_id_to_default_value_map = {
 
 param_id_to_default_value_map.update(extended_param_id_to_default_value_map)
 
-param_ids = ['']*85
+param_ids = ['']*86
 for p,i in base_param_id_to_index_map.items():
     param_ids[i] = p
 assert '' not in param_ids
@@ -156,7 +156,7 @@ with open(join(dirname(realpath(__file__)), 'params.json')) as f:
     param_ub       = array(o['param_ub'])
 
 print(param_defaults - array([v for v in param_id_to_default_value_map.values()]))
-assert isclose(param_defaults - array([v for v in param_id_to_default_value_map.values()]), zeros((85,)))
+assert allclose(param_defaults - array([v for v in param_id_to_default_value_map.values()]), zeros((120,)))
 
 def getDefaultParamValues():
     # type: () -> array

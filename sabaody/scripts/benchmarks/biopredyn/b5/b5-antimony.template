@@ -9,7 +9,7 @@ model b5model()
   const raf1_inh = 0
 
   // Species
-  {% for s,value in species %}
+  {% for s in species %}
   var species {{ s }} in cell = 0
   {% endfor %}
 

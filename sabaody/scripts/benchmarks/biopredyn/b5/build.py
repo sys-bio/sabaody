@@ -14,8 +14,8 @@ with open(abspath(join(dirname(realpath(__file__)), 'b5.sb.fragment'))) as f:
     fragment_in = f.read()
 
 pow_re = re.compile(r'pow\(([^,]+),([^,]+)\)')
-rxn_re = re.compile(r'^(d[^=]+)=(.*)$')
-assn_re = re.compile(r'^(d[^=]+)=(.*)$')
+rxn_re = re.compile(r'^d([^=]+)=(.*)$')
+assn_re = re.compile(r'^([^d][^=]*)=(.*)$')
 
 def stage1(l,r):
     r = r.lstrip().rstrip()
@@ -59,9 +59,10 @@ sb_src = t.render(
     assignments = assignments,
     param_id_to_default_value_map = param_id_to_default_value_map,
 )
+print(sb_src)
 
 import antimony
 antimony.loadAntimonyString(sb_src)
 sbml_str = antimony.getSBMLString('b5model')
-with open(abspath(join(dirname(realpath(__file__)), '..', '..','..','..','..','..','sbml','b5.xml')), 'w') as f:
+with open(abspath(join(dirname(realpath(__file__)), '..','..','..','..','..','sbml','b5.xml')), 'w') as f:
     f.write(sbml_str)
