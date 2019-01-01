@@ -87,22 +87,20 @@ class B5Problem(TimecourseSimBiopredyn):
         iq = self.measured_quantity_ids.index(quantity_id)
         reference_data = array(self.reference_values[:,iq])
 
-        r = RoadRunner(self.sbml)
-        r.reset()
-        r.resetAll()
-        r.resetToOrigin()
-        self._setParameterVector(param_values, self.param_list, r)
-        print(r.getReactionRates())
-        sim = r.simulate(0., 30., 16, ['time', quantity_id])
+        self.r.reset()
+        self.r.resetAll()
+        # r.resetToOrigin()
+        self.setParameterVector(param_values, exponential=False)
+        print(self.r.getReactionRates())
+        sim = self.r.simulate(0., 30., 16, ['time', quantity_id])
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
 
-        r.reset()
-        r.resetAll()
-        r.resetToOrigin()
-        self._setParameterVector(param_values, self.param_list, r)
-        # self._setParameterVector(param_values, self.param_list, r)
-        s = r.simulate(0,30.,1000,['time',quantity_id])
+        self.r.reset()
+        self.r.resetAll()
+        # r.resetToOrigin()
+        self.setParameterVector(param_values, exponential=False)
+        s = self.r.simulate(0,30.,1000,['time',quantity_id])
 
         import tellurium as te
         te.plot(sim[:,0], reference_data, scatter=True,

@@ -85,12 +85,12 @@ class TimecourseSimBase(Evaluator):
             return true
 
 
-    def setParameterVector(self, x):
+    def setParameterVector(self, x, exponential=True):
         '''
         Set the entire parameter vector (x can be a 1d array).
         '''
         # type: (ndarray) -> None
-        self._setParameterVector(x, self.param_list, self.r)
+        self._setParameterVector(x, self.param_list, self.r, exponential)
 
 
     def getParametersDict(self):
