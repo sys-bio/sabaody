@@ -3,6 +3,7 @@
 
 from os.path import join, dirname, realpath, abspath
 
+from numpy import reshape
 import scipy.io
 
 mat            = scipy.io.loadmat(abspath(join(dirname(realpath(__file__)), 'b5_data.mat')))
@@ -17,7 +18,7 @@ u              = inputs[0][0][1][0][0][20][0]
 
 from json import dump
 with open(join(dirname(realpath(__file__)), 'exp_y0.json'), 'w') as f:
-    dump([a.tolist() for a in exp_y0], f)
+    dump([reshape(a,(-1,)).tolist() for a in exp_y0], f)
 
 with open(join(dirname(realpath(__file__)), 'exp_data.json'), 'w') as f:
     dump([a.tolist() for a in exp_data], f)
@@ -32,7 +33,7 @@ with open(join(dirname(realpath(__file__)), 'stimuli.json'), 'w') as f:
 
 with open(join(dirname(realpath(__file__)), 'params.json'), 'w') as f:
     dump({
-        'param_defaults':      param_defaults.tolist(),
-        'param_lb':     param_lb.tolist(),
-        'param_ub': param_ub.tolist(),
+        'param_defaults': reshape(param_defaults,(-1,)).tolist(),
+        'param_lb':       reshape(param_lb,(-1,)).tolist(),
+        'param_ub':       reshape(param_ub,(-1,)).tolist(),
     }, f)

@@ -144,8 +144,10 @@ extended_param_id_to_default_value_map = {
 param_id_to_default_value_map.update(extended_param_id_to_default_value_map)
 
 param_ids = ['']*86
+param_values = [0.]*86
 for p,i in base_param_id_to_index_map.items():
     param_ids[i] = p
+    param_values[i] = base_param_id_to_default_value_map[p]
 assert '' not in param_ids
 
 from json import load
@@ -155,12 +157,12 @@ with open(join(dirname(realpath(__file__)), 'params.json')) as f:
     param_lb       = array(o['param_lb'])
     param_ub       = array(o['param_ub'])
 
-print(param_defaults - array([v for v in param_id_to_default_value_map.values()]))
+# print(param_defaults - array([v for v in param_id_to_default_value_map.values()]))
 assert allclose(param_defaults - array([v for v in param_id_to_default_value_map.values()]), zeros((120,)))
 
 def getDefaultParamValues():
     # type: () -> array
-    return param_defaults
+    return param_values
 
 def getUpperBound():
     # type: () -> array

@@ -3,11 +3,11 @@
 
 from __future__ import print_function, division, absolute_import
 
-observables = {
+observables = [
     'raf1',
     'erk',
     'ap1',
     'gsk3',
     'p38',
     'nfkb',
-}
+]

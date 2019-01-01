@@ -12,6 +12,7 @@ from numpy import array, mean, sqrt, maximum, minimum, vstack
 import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
 
+from os.path import join, dirname, realpath
 from typing import SupportsFloat
 
 class B5Problem(TimecourseSimBiopredyn):
@@ -21,8 +22,8 @@ class B5Problem(TimecourseSimBiopredyn):
     def __init__(self, sbml):
         self.sbml = sbml
         self.r = RoadRunner(sbml)
-        from data import measured_quantity_ids, exp_data
-        self.measured_quantity_ids = measured_quantity_ids
+        from observables import observables
+        self.measured_quantity_ids = observables
         from json import load
         with open(join(dirname(realpath(__file__)), 'exp_data.json')) as f:
             self.reference_value_collection = [array(a) for a in load(f)]
@@ -50,9 +51,10 @@ class B5Problem(TimecourseSimBiopredyn):
         self.exp_y0 = self.exp_y0_collection[n]
         from species import species
         for k,s in enumerate(species):
-            self.r.setValue('init({})'.format(s), self.exp_y0[k])
+            self.r.setValue('init({})'.format(s), float(self.exp_y0[k]))
         self.stimuli = self.stimuli_collection[n]
-        for s,b in self.stimuli:
+        print(self.stimuli)
+        for s,b in self.stimuli.items():
             self.r[s] = b*1.
 
 
@@ -62,28 +64,28 @@ class B5Problem(TimecourseSimBiopredyn):
         Evaluate and return the objective function.
         """
         from interruptingcow import timeout
-        from data import time_end, n_points
-        self.reset()
-        self.setParameterVector(x)
-        self.r.reset()
-        def worker():
-            sim = self.r.simulate(0., time_end, n_points, self.measured_quantity_ids)
-            residuals = sim-self.reference_values
-            normalized_mse_per_quantity = mean(residuals**2,axis=0)/self.reference_value_means_squared
-            return sqrt(mean(normalized_mse_per_quantity))
-        try:
-            with timeout(10, StalledSimulation):
-                return worker()
-        except (RuntimeError, StalledSimulation):
-            # if convergence fails, use a penalty score
-            return 1e9*self.penalty_scale
+        for n in range(10):
+            self.setExperimentNumber(n)
+            self.reset()
+            self.setParameterVector(x)
+            self.r.reset()
+            def worker():
+                sim = self.r.simulate(0., 30., 16, self.measured_quantity_ids)
+                residuals = sim-self.reference_values
+                normalized_mse_per_quantity = mean(residuals**2,axis=0)/self.reference_value_means_squared
+                return sqrt(mean(normalized_mse_per_quantity))
+            try:
+                with timeout(10, StalledSimulation):
+                    return worker()
+            except (RuntimeError, StalledSimulation):
+                # if convergence fails, use a penalty score
+                return 1e9*self.penalty_scale
 
 
     def plotQuantity(self, quantity_id, param_values, exp_number):
         ''' Plot a simulated quantity vs its data points using Tellurium.'''
-        from data import measured_quantity_ids, measured_quantity_id_to_name_map
-        from data import t1, t2, time_end, n1, n2, n3
-        iq = measured_quantity_ids.index(quantity_id)
+        self.setExperimentNumber(exp_number)
+        iq = self.measured_quantity_ids.index(quantity_id)
         reference_data = array(self.reference_values[:,iq])
 
         r = RoadRunner(self.sbml)
@@ -91,7 +93,7 @@ class B5Problem(TimecourseSimBiopredyn):
         r.resetAll()
         r.resetToOrigin()
         self._setParameterVector(param_values, self.param_list, r)
-        sim = r.simulate(0., 30, 16, ['time', quantity_id])
+        sim = r.simulate(0., 30., 16, ['time', quantity_id])
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
 
@@ -100,7 +102,7 @@ class B5Problem(TimecourseSimBiopredyn):
         r.resetToOrigin()
         self._setParameterVector(param_values, self.param_list, r)
         # self._setParameterVector(param_values, self.param_list, r)
-        s = r.simulate(0,time_end,1000,['time',quantity_id])
+        s = r.simulate(0,30.,1000,['time',quantity_id])
 
         import tellurium as te
         te.plot(sim[:,0], reference_data, scatter=True,

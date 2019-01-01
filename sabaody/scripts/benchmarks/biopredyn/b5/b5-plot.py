@@ -14,6 +14,7 @@ from observables import observables
 with open('../../../../../sbml/b5.xml') as f:
     sbml = f.read()
 m = B5Problem(sbml)
+# m.setExperimentNumber(0)
 print(m.evaluate(getDefaultParamValues()))
 for q in observables:
-    m.plotQuantity(quantity_id=q, param_values=getDefaultParamValues())
+    m.plotQuantity(quantity_id=q, param_values=getDefaultParamValues(), exp_number=0)
