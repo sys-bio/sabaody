@@ -148,7 +148,7 @@ def print_out_status(client, domainJoin, base_domain_qualifier, screen):
         screen.refresh()
         sleep(1)
 
-class TimecourseSimLauncher:
+class BenchmarkLauncherBase:
     '''
     The base class for all timecourse benchmarks which handles initialization of Spark
     configs and algorithmic parameters, including the island topology, migration settings,
@@ -400,3 +400,93 @@ class TimecourseSimLauncher:
             return self.run_islands()
         else:
             raise RuntimeError('Unrecognized command: {}'.format(command))
+
+
+    def run_islands(self):
+        with self.monitor(self.app_name, 'luna', 11211, self.suite_run_id) as monitor:
+            with self.create_metric(monitor.getDomain()+'.') as metric:
+                import arrow
+                time_start = arrow.utcnow()
+
+                # set up topology parameters
+                from sabaody.topology import TopologyFactory
+
+                # instantiate algorithm and topology
+                a = self.generate_archipelago(self.topology_name, metric, monitor)
+
+                # select migrator
+                # assumes the migrator process / service has already been started
+                migrator = self.select_migrator(self.migrator_name,
+                                                self.migration_policy,
+                                                self.selection_policy,
+                                                self.replacement_policy)
+                from sabaody.migration_central import CentralMigrator
+                if isinstance(migrator, CentralMigrator):
+                    migrator.defineMigrantPools(a.topology, len(self.udp.lb))
+
+                a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
+                a.monitor = monitor
+                a.metric = metric
+                results = a.run(self.spark_context, migrator, self.udp, self.rounds)
+                champions = sorted([(f[0],x) for f,x in results], key=lambda t: t[0])
+                champion_scores = [f for f,x in champions]
+
+                best_score,best_candidate = champions[0]
+                average_score = float(sum(champion_scores))/len(champion_scores)
+                time_end = arrow.utcnow()
+
+                # self.serialize_results(output, champion_scores, best_score, average_score, time_start, time_end)
+                self.commit_results_to_database(
+                    host='luna',
+                    user='sabaody',
+                    database='sabaody',
+                    password='w00t',
+                    rounds=self.rounds,
+                    generations=self.generations,
+                    champions=champions,
+                    min_score=best_score,
+                    average_score=average_score,
+                    validation_mode=self.validation_mode,
+                    validation_points=self.validation_points,
+                    time_start=time_start,
+                    time_end=time_end,
+                    metric_id = metric.database)
+
+                print('min champion score {}'.format(best_score))
+                print('mean champion score {}'.format(average_score))
+                print('Total run time: {}'.format(time_start.humanize()))
+
+
+    def commit_results_to_database(self, host, user, database, password, rounds, generations, champions, min_score, average_score, validation_mode, validation_points, time_start, time_end, metric_id):
+        import MySQLdb
+        mariadb_connection = MySQLdb.connect(host,user,password,database)
+        cursor = mariadb_connection.cursor()
+        from pickle import dumps
+        # cursor.execute(
+        #     "DELETE FROM benchmark_runs WHERE (Benchmark, RunID, Description)=('{benchmark}',{suite_run_id},'{description}');".format(
+        #         benchmark=self.app_name,
+        #         suite_run_id=self.suite_run_id,
+        #         description=self.description,
+        #     ))
+        # mariadb_connection.commit()
+        query = '\n'.join([
+            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, Rounds, Generations, Champions, MinScore, ValidationMode, ValidationPoints, AverageScore, TimeStart, TimeEnd)',
+            "VALUES ('{benchmark}','{run_id}','{metric_id}','{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
+                benchmark=self.app_name,
+                run_id=self.run_id,
+                metric_id=metric_id,
+                description=self.description,
+                topologyid=self.topology_id,
+                rounds=rounds,
+                generations=generations,
+                champions='0x{}'.format(dumps(champions).hex()),
+                min_score=min_score,
+                average_score=average_score,
+                validation_mode=validation_mode*1,
+                validation_points=validation_points,
+                time_start=time_start.format('YYYY-MM-DD HH:mm:ss'),
+                time_end=time_end.format('YYYY-MM-DD HH:mm:ss'),
+                )])
+        print(query)
+        cursor.execute(query)
+        mariadb_connection.commit()
