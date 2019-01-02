@@ -150,10 +150,9 @@ def print_out_status(client, domainJoin, base_domain_qualifier, screen):
 
 class TimecourseSimLauncher:
     '''
-    A class to handle initialization of the configuration of the problem run
-    and algorithmic parameters, including the island topology, migration settings,
-    and Spark configs.
-    This class takes a topology name and generates a corresponding topology.
+    The base class for all timecourse benchmarks which handles initialization of Spark
+    configs and algorithmic parameters, including the island topology, migration settings,
+    and selection / replacement policies.
     '''
     def __init__(self):
         self.run_id = str(uuid4())
@@ -167,6 +166,7 @@ class TimecourseSimLauncher:
         self.spark_conf = SparkConf().setAppName(app_name)
         self.spark_conf.setMaster('spark://{}:{}'.format(self.hostname,self.port))
         self.spark_conf.set('spark.driver.memory', '1g')
+        # examples of other inportant config variables
         #self.spark_conf.set('spark.executor.memory', '2g')
         #self.spark_conf.set('spark.executor.cores', '4')
         #self.spark_conf.set('spark.cores.max', '40')
@@ -176,7 +176,7 @@ class TimecourseSimLauncher:
         self.spark_conf.set('spark.submit.pyFiles', py_files)
         self.spark_conf.set('spark.logConf', True)
 
-        # after setting up the Spark config, we can instantiate the Spark context
+        # after setting up the Spark config, instantiate the Spark context
         self.spark_context = SparkContext(conf=self.spark_conf)
 
 
@@ -228,8 +228,6 @@ class TimecourseSimLauncher:
                             help='The number of rounds of migrations to perform.')
         parser.add_argument('--description', required=True,
                             help='A description of the topology used.')
-        #parser.add_argument('--num-islands', type=int, required=True,
-                            #help='The migration scheme to use')
         parser.add_argument('--validation-mode', type=bool, default=False,
                             help='If true, run in validation mode.')
         parser.add_argument('--validation-points', type=int, default=0,
@@ -270,7 +268,6 @@ class TimecourseSimLauncher:
         else:
             raise RuntimeError('Specify either --selection-rate or --selection-fraction')
         config.replacement_policy = cls.select_replacement_policy(args.replacement_policy)
-        config.n_islands = args.num_islands
         config.suite_run_id = args.suite_run_id
         config.rounds = args.rounds
         config.description = args.description
@@ -282,11 +279,6 @@ class TimecourseSimLauncher:
         config._initialize_spark(app_name, spark_files, py_files)
 
         return config
-
-
-    def make_algorithm(self):
-        import pygmo as pg
-        return pg.de(gen=10) # FIXME: hard-coded algo
 
 
     def generate_archipelago(self, topology_name, metric, monitor):
@@ -305,7 +297,6 @@ class TimecourseSimLauncher:
                 island_size = int(m.group(6)),
                 migrant_pool_size = int(m.group(7)),
                 generations = int(m.group(8)))
-            print(m.group(4))
             topology,id = generator.find_in_database(
                 desc = m.group(9),
                 user = m.group(1),
@@ -398,11 +389,7 @@ class TimecourseSimLauncher:
 
     def run_command(self, command):
         if command == 'count-params':
-            with open(self.sbmlfile) as f:
-                sbml = f.read()
-                from b2problem import B2Problem
-                print('Number of parameters: {}'.format(len(
-        p = self.udp.getParameterNames())))
+            print('Number of parameters: {}'.format(len(p = self.udp.getParameterNames())))
         else:
             return super().run_command(command)
 
