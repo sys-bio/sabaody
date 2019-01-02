@@ -4,8 +4,6 @@
 from __future__ import print_function, division, absolute_import
 
 from sabaody.scripts.benchmarks.pagmo.launcher import PagmobenchLauncher
-from params import getDefaultParamValues, getUpperBound, getLowerBound
-from b4problem import B4_UDP
 
 from os.path import join, dirname, abspath, realpath
 
