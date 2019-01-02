@@ -115,7 +115,7 @@ class TopologyGenerator:
                     island.algorithm = algo
             elif hasattr(archipelago.topology, 'endpoints'):
                 for island in archipelago.topology.endpoints:
-                    island.algorithm = algo'
+                    island.algorithm = algo
             return archipelago
 
         g = self.generations
