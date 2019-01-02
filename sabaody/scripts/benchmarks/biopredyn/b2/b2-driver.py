@@ -1,7 +1,7 @@
 # Driver code for B2 parameter fitting problem.
 from __future__ import print_function, division, absolute_import
 
-from sabaody.scripts.benchmarks.biopredyn.benchsetup import BiopredynConfiguration
+from sabaody.scripts.benchmarks.biopredyn.launcher import BiopredynConfiguration
 from params import getDefaultParamValues, getUpperBound, getLowerBound
 from b2problem import B2_UDP
 from b2problem_validator import B2Validator_UDP
@@ -24,7 +24,7 @@ py_files = ','.join(join(script_dir,p) for p in [
     'b2problem.py',
     'b2problem_validator.py',
     'params.py',
-    '../benchsetup.py',
+    '../launcher.py',
     ])
 config = BiopredynConfiguration.from_cmdline_args('b2-driver', get_udp, getDefaultParamValues, sbmlfile=sbmlfile, spark_files=spark_files, py_files=py_files)
 
