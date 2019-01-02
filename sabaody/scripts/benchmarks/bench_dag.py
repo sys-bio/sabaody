@@ -3,10 +3,12 @@
 
 from __future__ import print_function, division, absolute_import
 
+from airflow.models import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.mysql_operator import MySqlOperator
 from airflow.contrib.operators.spark_submit_operator import SparkSubmitOperator
 from os.path import join
+from datetime import datetime, timedelta
 
 default_args = {
     'owner': 'airflow',
@@ -24,46 +26,6 @@ all_benchmarks_dag = DAG(
   schedule_interval=timedelta(10000))
 
 root_path = '/opt/nfs/src/sabaody/sabaody/scripts/benchmarks/biopredyn'
-
-b1_dag = DAG(
-  'b1_benchmark',
-  default_args=default_args,
-  concurrency=1,
-  schedule_interval=timedelta(10000))
-TaskFactory().generate(b1_dag, join(root_path,'b1','b1-driver.py'))
-TaskFactory().generate(all_benchmarks_dag, join(root_path,'b1','b1-driver.py'))
-
-b2_dag = DAG(
-  'b2_benchmark',
-  default_args=default_args,
-  concurrency=1,
-  schedule_interval=timedelta(10000))
-TaskFactory().generate(b2_dag, join(root_path,'b2','b2-driver.py'))
-TaskFactory().generate(all_benchmarks_dag, join(root_path,'b2','b2-driver.py'))
-
-b3_dag = DAG(
-  'b3_benchmark',
-  default_args=default_args,
-  concurrency=1,
-  schedule_interval=timedelta(10000))
-TaskFactory().generate(b2_dag, join(root_path,'b3','b3-driver.py'))
-TaskFactory().generate(all_benchmarks_dag, join(root_path,'b3','b3-driver.py'))
-
-b4_dag = DAG(
-  'b4_benchmark',
-  default_args=default_args,
-  concurrency=1,
-  schedule_interval=timedelta(10000))
-TaskFactory().generate(b4_dag, join(root_path,'b4','b4-driver.py'))
-TaskFactory().generate(all_benchmarks_dag, join(root_path,'b4','b4-driver.py'))
-
-b5_dag = DAG(
-  'b5_benchmark',
-  default_args=default_args,
-  concurrency=1,
-  schedule_interval=timedelta(10000))
-TaskFactory().generate(b5_dag, join(root_path,'b5','b5-driver.py'))
-TaskFactory().generate(all_benchmarks_dag, join(root_path,'b5','b5-driver.py'))
 
 
 def topology_generator(n_islands, island_size, migrant_pool_size, generations):
@@ -118,9 +80,15 @@ def legalize_name(name):
             result += '_'
     return result
 
+n_islands = 10
+island_size = 500
+migrant_pool_size = 4
+generations = 1000
 
 class TaskGenerator():
-    def __init__(self):
+
+    def __init__(self, dag):
+        self.dag = dag
         # first, make sure the SQL tables exist
         self.setup_topology_sets_table = MySqlOperator(
             task_id='setup_topology_sets_table',
@@ -135,7 +103,7 @@ class TaskGenerator():
                     MigrantPoolSize INT NOT NULL,
                     Generations INT NOT NULL,
                     Content MEDIUMBLOB NOT NULL);''',
-            dag=dag)
+            dag=self.dag)
 
         # first, make sure the SQL tables exist
         self.setup_benchmark_results_table = MySqlOperator(
@@ -158,7 +126,7 @@ class TaskGenerator():
                     ValidationPoints INT NOT NULL,
                     TimeStart DATETIME NOT NULL,
                     TimeEnd DATETIME NOT NULL);''',
-            dag=dag)
+            dag=self.dag)
 
         # store the topologies in the table
         self.generate_topologies = PythonOperator(
@@ -169,17 +137,12 @@ class TaskGenerator():
                 'island_size': island_size,
                 'migrant_pool_size': migrant_pool_size,
                 'generations': generations},
-            dag=dag)
+            dag=self.dag)
 
         self.setup_topology_sets_table >> self.generate_topologies
         self.setup_benchmark_results_table >> self.generate_topologies
 
-    def generate(self, dag, application):
-        n_islands = 10
-        island_size = 500
-        migrant_pool_size = 4
-        generations = 1000
-
+    def generate(self, application):
         # for each topology, create a benchmark task
         self.benchmarks = []
         from sabaody import TopologyGenerator
@@ -214,6 +177,49 @@ class TaskGenerator():
                     'run',
                     # '--deploy-mode', 'client',
                 ],
-                dag=dag,
+                dag=self.dag,
             ))
             self.generate_topologies >> self.benchmarks[-1]
+
+
+all_bench_generator = TaskGenerator(all_benchmarks_dag)
+
+b1_dag = DAG(
+  'b1_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskGenerator(b1_dag).generate(join(root_path,'b1','b1-driver.py'))
+all_bench_generator.generate(join(root_path,'b1','b1-driver.py'))
+
+b2_dag = DAG(
+  'b2_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskGenerator(b2_dag).generate(join(root_path,'b2','b2-driver.py'))
+all_bench_generator.generate(join(root_path,'b2','b2-driver.py'))
+
+b3_dag = DAG(
+  'b3_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskGenerator(b3_dag).generate(join(root_path,'b3','b3-driver.py'))
+all_bench_generator.generate(join(root_path,'b3','b3-driver.py'))
+
+b4_dag = DAG(
+  'b4_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskGenerator(b4_dag).generate(join(root_path,'b4','b4-driver.py'))
+all_bench_generator.generate(join(root_path,'b4','b4-driver.py'))
+
+b5_dag = DAG(
+  'b5_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskGenerator(b5_dag).generate(join(root_path,'b5','b5-driver.py'))
+all_bench_generator.generate(join(root_path,'b5','b5-driver.py'))

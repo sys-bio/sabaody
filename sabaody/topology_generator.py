@@ -5,7 +5,7 @@ from __future__ import print_function, division, absolute_import
 
 from sabaody import Archipelago
 
-from pygmo import de, de1220, sade, ihs, pso, simulated_annealing, bee_colony, cmaes, nsga2
+from pygmo import de, de1220, sade, ihs, pso, pso_gen, simulated_annealing, bee_colony, cmaes, nsga2
 from pygmo import nlopt
 
 from uuid import uuid4
