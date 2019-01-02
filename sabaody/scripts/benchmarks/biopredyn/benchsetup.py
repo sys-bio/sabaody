@@ -27,9 +27,6 @@ class BiopredynConfiguration(BenchmarkLauncherBase):
     @classmethod
     def from_cmdline_args(cls, app_name, udp_constructor, getDefaultParamValues, sbmlfile, spark_files, py_files):
         from os.path import join
-
-        # py_files += ','+join(script_dir,'..','benchsetup.py')
-
         result = super(BiopredynConfiguration,cls).from_cmdline_args(app_name, spark_files, py_files)
         result.app_name = app_name
         result.sbmlfile = sbmlfile
@@ -40,22 +37,6 @@ class BiopredynConfiguration(BenchmarkLauncherBase):
 
     def monitor(self, name, host, port, run=None):
         return BiopredynMCMonitor(name, host, port, run=None)
-
-
-    # def serialize_results(self, filename, champion_scores, min_score, average_score, time_start, time_end):
-    #     results = {
-    #               'champion_scores': champion_scores,
-    #               'min_champion_score': min_score,
-    #               'mean_champion_score': average_score,
-    #               'total_run_time': (time_start-time_end)
-    #               }
-    #     with open(filename,'w') as f:
-    #         json.dump(results)
-    #
-    #
-    # def deserialize_results(self, filename):
-    #     with open(filename,'w') as f:
-    #         return json.load(f)
 
 
 

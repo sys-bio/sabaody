@@ -403,7 +403,7 @@ class BenchmarkLauncherBase:
 
 
     def run_islands(self):
-        with self.monitor(self.app_name, 'luna', 11211, self.suite_run_id) as monitor:
+        with self.monitor(self.app_name, 'luna', 11211, self.suite_run_id) as monitor: # FIXME: hard-coded
             with self.create_metric(monitor.getDomain()+'.') as metric:
                 import arrow
                 time_start = arrow.utcnow()
@@ -435,7 +435,6 @@ class BenchmarkLauncherBase:
                 average_score = float(sum(champion_scores))/len(champion_scores)
                 time_end = arrow.utcnow()
 
-                # self.serialize_results(output, champion_scores, best_score, average_score, time_start, time_end)
                 self.commit_results_to_database(
                     host='luna',
                     user='sabaody',
