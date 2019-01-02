@@ -156,6 +156,8 @@ class BenchmarkLauncherBase:
     '''
     def __init__(self):
         self.run_id = str(uuid4())
+        self.problem = None
+        self.udp_constructor = None
 
     def _initialize_spark(self, app_name, spark_files, py_files):
         '''
@@ -396,7 +398,8 @@ class BenchmarkLauncherBase:
 
     def run_command(self, command):
         if command == 'run' or command == 'run-islands':
-            self.udp = self.udp_constructor(self.validation_mode, self.validation_points)
+            if self.udp_constructor is not None:
+                self.udp = self.udp_constructor(self.validation_mode, self.validation_points)
             return self.run_islands()
         else:
             raise RuntimeError('Unrecognized command: {}'.format(command))
@@ -427,7 +430,7 @@ class BenchmarkLauncherBase:
                 a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
                 a.monitor = monitor
                 a.metric = metric
-                results = a.run(self.spark_context, migrator, self.udp, self.rounds)
+                results = a.run(self.spark_context, migrator, self.udp, self.rounds, self.problem)
                 champions = sorted([(f[0],x) for f,x in results], key=lambda t: t[0])
                 champion_scores = [f for f,x in champions]
 

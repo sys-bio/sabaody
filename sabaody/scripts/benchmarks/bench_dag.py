@@ -57,6 +57,14 @@ b4_dag = DAG(
 TaskFactory().generate(b4_dag, join(root_path,'b4','b4-driver.py'))
 TaskFactory().generate(all_benchmarks_dag, join(root_path,'b4','b4-driver.py'))
 
+b5_dag = DAG(
+  'b5_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+TaskFactory().generate(b5_dag, join(root_path,'b5','b5-driver.py'))
+TaskFactory().generate(all_benchmarks_dag, join(root_path,'b5','b5-driver.py'))
+
 
 def topology_generator(n_islands, island_size, migrant_pool_size, generations):
             from sabaody import TopologyGenerator
