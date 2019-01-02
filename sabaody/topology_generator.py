@@ -15,11 +15,12 @@ class TopologyGenerator:
     Generates a set of topologies used for benchmarks.
     '''
 
-    def __init__(self, n_islands, island_size=20, migrant_pool_size=5, generations=10):
+    def __init__(self, n_islands, island_size=20, migrant_pool_size=5, generations=10, seed=1):
         self.topologies = []
         from sabaody.topology import TopologyFactory
         self.factory =  TopologyFactory(island_size=island_size,
-                                        migrant_pool_size=migrant_pool_size)
+                                        migrant_pool_size=migrant_pool_size,
+                                        seed=seed)
         self.n_islands = n_islands
         self.island_size = island_size
         self.migrant_pool_size = migrant_pool_size
@@ -203,7 +204,18 @@ class TopologyGenerator:
 
         self.create_variants(n, 'One-way ring', 'rings', self.factory.createOneWayRing)
         self.create_variants(n, 'Bidirectional ring', 'rings', self.factory.createBidirRing)
-        self.create_variants(n, 'Bidirectional chain', 'rings', self.factory.createBidirChain)
+        self.create_variants(n, 'Bidirectional chain', 'chain', self.factory.createBidirChain)
+        self.create_variants(n, 'Rim', 'rings', self.factory.createRim)
+        self.create_variants(n, '1-2 Ring', 'rings', self.factory.create_12_Ring)
+        self.create_variants(n, '1-2-3 Ring', 'rings', self.factory.create_123_Ring)
+        self.create_variants(n, 'Fully Connected', 'clustered', self.factory.createFullyConnected)
+        self.create_variants(n, 'Broadcast', 'clustered', self.factory.createBroadcast)
+        self.create_variants(n, 'Hypercube', 'clustered', self.factory.createHypercube)
+        self.create_variants(n, 'Watts-Strogatz', 'clustered', self.factory.createWattsStrogatz)
+        self.create_variants(n, 'Erdos-Renyi', 'clustered', self.factory.createErdosRenyi)
+        self.create_variants(n, 'Barabasi-Albert', 'clustered', self.factory.createBarabasiAlbert)
+        self.create_variants(n, 'Extended Barabasi-Albert', 'clustered', self.factory.createExtendedBarabasiAlbert)
+        self.create_variants(n, 'Ageing Extended Barabasi-Albert', 'clustered', self.factory.createAgeingExtendedBarabasiAlbert)
 
         return self.topologies
 

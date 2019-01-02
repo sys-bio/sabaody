@@ -137,11 +137,21 @@ class TopologyFactory:
     Has methods for constructing a variety of topologies.
     '''
 
-    def __init__(self, island_size = 20, migrant_pool_size = 5, domain_qualifier=None, mc_host=None, mc_port=None):
+    def __init__(self, island_size = 20, migrant_pool_size = 5, domain_qualifier=None, mc_host=None, mc_port=None, seed=None):
         self.domain_qualifier = domain_qualifier
         self.mc_host = mc_host
         self.mc_port = mc_port
         self.island_size = island_size
+        self.seed = seed
+
+
+    def getSeed(self, seed=None):
+        if seed is not None:
+            return seed
+        elif self.seed is not None:
+            return self.seed
+        else:
+            return randint(0,10000)
 
 
     # DEPRECATED
@@ -315,7 +325,7 @@ class TopologyFactory:
         These graphs tend to exhibit high clustering and short average path lengths.
         `See also: PaGMO's description. <http://esa.github.io/pygmo/documentation/topology.html>`_
         '''
-        seed = seed if seed is not None else randint(0,10000)
+        seed = self.getSeed(seed)
         return self._processTopology(nx.watts_strogatz_graph(num_nodes,k,p,seed), algorithm, Topology)
 
 
@@ -324,7 +334,7 @@ class TopologyFactory:
         '''
         Creates a topology based on an Erdős-Rényi random graph.
         '''
-        seed = seed if seed is not None else randint(0,10000)
+        seed = self.getSeed(seed)
         return self._processTopology(nx.erdos_renyi_graph(num_nodes,p,seed,directed), algorithm, Topology)
 
 
@@ -333,7 +343,7 @@ class TopologyFactory:
         '''
         Creates a topology based on a Barabási-Albert graph.
         '''
-        seed = seed if seed is not None else randint(0,10000)
+        seed = self.getSeed(seed)
         return self._processTopology(nx.barabasi_albert_graph(num_nodes,m,seed), algorithm, Topology)
 
 
@@ -342,7 +352,7 @@ class TopologyFactory:
         '''
         Creates a topology based on the extended Barabási-Albert method.
         '''
-        seed = seed if seed is not None else randint(0,10000)
+        seed = self.getSeed(seed)
         return self._processTopology(nx.extended_barabasi_albert_graph(num_nodes,m,p,q,seed), algorithm, Topology)
 
 
@@ -354,7 +364,7 @@ class TopologyFactory:
         '''
         import random
         from networkx.generators.random_graphs import _random_subset
-        seed = seed if seed is not None else randint(0,10000)
+        seed = self.getSeed(seed)
 
         if m < 1 or m >= n:
             msg = "Extended ageing Barabasi-Albert network needs m>=1 and m<n, m=%d, n=%d"
@@ -480,11 +490,3 @@ class TopologyFactory:
         Create a custom topology from a networkx graph.
         '''
         return self._processTopology(g, algorithm, DiTopology if directed else Topology)
-
-
-
-
-
-
-
-
