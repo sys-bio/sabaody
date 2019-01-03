@@ -479,7 +479,7 @@ class TopologyFactory:
             # Adding new node with m edges
             else:
                 # Select the edges' nodes by preferential attachment
-                targets = _random_subset([nd for nd in attachment_preference if nd > new_node-max_age], m)
+                targets = _random_subset([nd for nd in attachment_preference if nd > new_node-max_age], m, random)
                 G.add_edges_from(zip([new_node] * m, targets))
 
                 # Add one node to the list for each new edge just created.
