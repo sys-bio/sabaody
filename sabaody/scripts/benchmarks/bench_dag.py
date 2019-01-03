@@ -58,6 +58,8 @@ def topology_generator(n_islands, island_size, migrant_pool_size, generations):
             # if this version is already stored, do nothing
             if n_matches == 0:
                 serialized_topologies = generator.serialize()
+                # print(len(serialized_topologies))
+                # print(serialized_topologies.hex())
                 # store in database
                 cursor.execute('\n'.join([
                     'INSERT INTO topology_sets (TopologySetID, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
@@ -104,7 +106,7 @@ class TaskGenerator():
                     IslandSize INT NOT NULL,
                     MigrantPoolSize INT NOT NULL,
                     Generations INT NOT NULL,
-                    Content MEDIUMBLOB NOT NULL);''',
+                    Content LONGBLOB NOT NULL);''',
             dag=self.dag)
 
         # first, make sure the SQL tables exist
@@ -132,7 +134,7 @@ class TaskGenerator():
 
         # store the topologies in the table
         self.generate_topologies = PythonOperator(
-            task_id='generate_topologies',
+            task_id='.'.join((self.dag.dag_id, 'generate_topologies')),
             python_callable=topology_generator,
             op_kwargs={
                 'n_islands': n_islands,

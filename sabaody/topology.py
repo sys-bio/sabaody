@@ -194,7 +194,7 @@ class TopologyFactory:
         if compute_every_other_id:
             g.every_other_id = g.compute_every_other_id()
         elif every_other_id is not None:
-            g.every_other_id = (m[k].id for k in every_other_id)
+            g.every_other_id = tuple(m[k].id for k in every_other_id)
         return g
 
 
