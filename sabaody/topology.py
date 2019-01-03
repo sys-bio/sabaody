@@ -63,7 +63,7 @@ class Topology(nx.Graph):
         def sprout_and_continue(nodes):
             result = set()
             for n in nodes:
-                if len(self.neighbor_ids(n)) != 2:
+                if len(self.neighbor_ids(n)) > 2:
                     raise RuntimeError('every_other_id only works for linear or cyclic graphs')
                 result.update(node for node in self.neighbor_ids(n) if node not in visited)
             return result
@@ -194,7 +194,7 @@ class TopologyFactory:
         if compute_every_other_id:
             g.every_other_id = g.compute_every_other_id()
         elif every_other_id is not None:
-            g.every_other_id = (m[k] for k in every_other_id)
+            g.every_other_id = (m[k].id for k in every_other_id)
         return g
 
 

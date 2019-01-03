@@ -7,6 +7,7 @@ from sabaody import Archipelago
 
 from pygmo import de, de1220, sade, ihs, pso, pso_gen, simulated_annealing, bee_colony, cmaes, nsga2
 from pygmo import nlopt
+from toolz import partial
 
 from uuid import uuid4
 
@@ -41,6 +42,12 @@ class TopologyGenerator:
             t['algorithms'] = algorithms
         self.topologies.append(t)
         return t
+
+
+    def find_by_desc(self, desc):
+        for t in self.topologies:
+            if t['description'] == desc:
+                return t['archipelago']
 
 
     def get_checksum(self):
@@ -111,7 +118,7 @@ class TopologyGenerator:
     def create_variants(self, n, desc, category, constructor):
         def assign_2nd_alg(archipelago, algo):
             if category == 'rings':
-                for island in archipelago.topology.every_other_island:
+                for island in archipelago.topology.every_other_island():
                     island.algorithm = algo
             elif hasattr(archipelago.topology, 'endpoints'):
                 for island in archipelago.topology.endpoints:
@@ -211,11 +218,11 @@ class TopologyGenerator:
         self.create_variants(n, 'Fully Connected', 'clustered', self.factory.createFullyConnected)
         self.create_variants(n, 'Broadcast', 'clustered', self.factory.createBroadcast)
         self.create_variants(n, 'Hypercube', 'clustered', self.factory.createHypercube)
-        self.create_variants(n, 'Watts-Strogatz', 'clustered', self.factory.createWattsStrogatz)
+        self.create_variants(n, 'Watts-Strogatz', 'clustered', partial(self.factory.createWattsStrogatz, k=int(n/4)))
         self.create_variants(n, 'Erdos-Renyi', 'clustered', self.factory.createErdosRenyi)
-        self.create_variants(n, 'Barabasi-Albert', 'clustered', self.factory.createBarabasiAlbert)
-        self.create_variants(n, 'Extended Barabasi-Albert', 'clustered', self.factory.createExtendedBarabasiAlbert)
-        self.create_variants(n, 'Ageing Extended Barabasi-Albert', 'clustered', self.factory.createAgeingExtendedBarabasiAlbert)
+        self.create_variants(n, 'Barabasi-Albert', 'clustered', partial(self.factory.createBarabasiAlbert, m=int(n/4)))
+        self.create_variants(n, 'Extended Barabasi-Albert', 'clustered', partial(self.factory.createExtendedBarabasiAlbert, m=int(n/4)))
+        self.create_variants(n, 'Ageing Extended Barabasi-Albert', 'clustered', partial(self.factory.createAgeingExtendedBarabasiAlbert, m=int(n/4)))
 
         return self.topologies
 

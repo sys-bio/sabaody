@@ -27,5 +27,5 @@ def test_topology_generator():
     from pygmo import de, nlopt
 
     # should have 5 islands with de and 5 with nelder mead
-    assert sum(type(i.algorithm) is de for i in roundtrip(g.de_nm_bring['archipelago']).topology.islands) == 5
-    assert sum(type(i.algorithm) is nlopt for i in roundtrip(g.de_nm_bring['archipelago']).topology.islands) == 5
+    assert sum(type(i.algorithm) is de for i in roundtrip(g.find_by_desc('Bidirectional ring, de+nelder mead')).topology.islands) == 5
+    assert sum(type(i.algorithm) is nlopt for i in roundtrip(g.find_by_desc('Bidirectional ring, de+nelder mead')).topology.islands) == 5
