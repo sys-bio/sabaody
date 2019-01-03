@@ -5,7 +5,7 @@ from __future__ import print_function, division, absolute_import
 
 from sabaody.timecourse.timecourse_sim_base import StalledSimulation
 from sabaody.timecourse.timecourse_sim_biopredyn import TimecourseSimBiopredyn
-from sabaody.scripts.benchmarks.biopredyn.benchsetup import BioPreDynUDP
+from sabaody.scripts.benchmarks.biopredyn.launcher import BioPreDynUDP
 
 from numpy import array, mean, sqrt, maximum, minimum
 

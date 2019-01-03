@@ -4,7 +4,7 @@
 from __future__ import print_function, division, absolute_import
 
 from collections import OrderedDict
-from numpy import array, hstack, argwhere, unique, maximum, minimum
+from numpy import array, hstack, argwhere, unique, maximum, minimum, mean, sqrt
 from typing import SupportsFloat
 from builtins import super
 import os
@@ -158,8 +158,8 @@ class TimecourseSimIrreg(TimecourseSimBase):
             # if convergence fails, use a penalty score
             return 1e9*self.penalty_scale
         return sqrt(mean(array([
-            array(residuals**2.)/self.mean_measurement_map[quantity]**2. \
-            for quantity,residuals in self.quantity_residuals \
+            mean(array(residuals))**2./self.mean_measurement_map[quantity]**2. \
+            for quantity,residuals in self.quantity_residuals.items() \
             ])))
 
 

@@ -1,12 +1,18 @@
 from __future__ import print_function, division, absolute_import
 
-import sabaody
-from sabaody.scripts.biopredyn.b2.b2problem import B2Problem
-from sabaody.scripts.biopredyn.b2.params import getDefaultParamValues
+import os, sys
+from os.path import join, abspath
 
-import os
+# print(abspath(join(os.path.dirname(__file__),'..','sabaody','scripts','benchmarks','biopredyn','b2')))
+# os.chdir(abspath(join(os.path.dirname(__file__),'..','sabaody','scripts','benchmarks','biopredyn','b2')))
+# sys.path.append(abspath(join(os.path.dirname(__file__),'..','sabaody','scripts','benchmarks','biopredyn','b2')))
+# print(sys.path)
+import sabaody
+from sabaody.scripts.benchmarks.biopredyn.b2.b2problem import B2Problem
+from sabaody.scripts.benchmarks.biopredyn.b2.params import getDefaultParamValues
 
 def test_datapoint_usage():
+    sys.path.append(os.path.join(os.path.dirname(__file__),'..','sabaody','scripts','benchmarks','biopredyn','b2'))
     b2 = B2Problem(os.path.join(os.path.dirname(__file__),'..','sbml','b2.xml'))
     # call evaluate to trigger residual calc
     b2.evaluate(getDefaultParamValues())

@@ -4,7 +4,7 @@
 from __future__ import print_function, division, absolute_import
 
 from sabaody.timecourse.timecourse_sim_biopredyn import TimecourseSimBiopredyn
-from sabaody.scripts.benchmarks.biopredyn.benchsetup import BioPreDynUDP
+from sabaody.scripts.benchmarks.biopredyn.launcher import BioPreDynUDP
 
 from params import getUpperBound, getLowerBound, param_ids
 from data import time_values, conc_ids, scaled_data, scaled_error

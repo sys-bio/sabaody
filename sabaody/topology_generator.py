@@ -111,7 +111,7 @@ class TopologyGenerator:
     def create_variants(self, n, desc, category, constructor):
         def assign_2nd_alg(archipelago, algo):
             if category == 'rings':
-                for island in archipelago.topology.every_other_island():
+                for island in archipelago.topology.every_other_island:
                     island.algorithm = algo
             elif hasattr(archipelago.topology, 'endpoints'):
                 for island in archipelago.topology.endpoints:
