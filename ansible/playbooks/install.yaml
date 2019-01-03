@@ -4,13 +4,24 @@
 
 - hosts: all
   tasks:
+    - name: Copy Python requirements
+      copy:
+        src: ../../requirements.txt
+        dest: /tmp/imodel_requirements.txt
+
     - name: Install required Python packages.
       pip:
-        requirements: ~/imodel_requirements.txt
+        executable: "{{pipexe}}"
+        # executable: pip3
+        requirements: /tmp/imodel_requirements.txt
+      become: yes
 
 - hosts: sqlhost
+  tasks:
     - name: Set maximum SQL packet size.
       mysql_variables:
+        login_user: root
+        login_password: "{{sqlpasswd}}" # should ideally use vault
         variable: max_allowed_packet
         value: 67108864
 

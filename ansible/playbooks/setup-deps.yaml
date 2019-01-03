@@ -103,9 +103,3 @@
 
     - name: Write spark config files
       template: src=../configs/spark/log4j.properties.j2 dest=~/config/spark/log4j.properties
-
-    # Requirements
-    - name: Copy Python requirements
-      copy:
-        src: ../../requirements
-        dest: ~/imodel_requirements.txt

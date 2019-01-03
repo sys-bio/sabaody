@@ -29,5 +29,6 @@ setup(name='sabaody',
         'interruptingcow>=0.8',
         'elasticsearch>=6.3.1',
         'influxdb>=5.2.0',
+        'PyMySQL>=0.9.3',
         ],
       )
