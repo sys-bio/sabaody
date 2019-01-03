@@ -7,3 +7,15 @@
     - name: Install required Python packages.
       pip:
         requirements: ~/imodel_requirements.txt
+
+- hosts: sqlhost
+    - name: Set maximum SQL packet size.
+      mysql_variables:
+        variable: max_allowed_packet
+        value: 67108864
+
+    # - mysql_user:
+    #     name: sabaody
+    #     password: 12345
+    #     priv: 'sabaody.*:ALL'
+    #     state: present
