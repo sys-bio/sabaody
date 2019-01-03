@@ -10,6 +10,7 @@ from sabaody.metrics import InfluxDBMetric
 
 from pyspark import SparkContext, SparkConf
 
+from itertools import chain
 from uuid import uuid4
 from time import time
 
@@ -173,7 +174,7 @@ class BenchmarkLauncherBase:
         #self.spark_conf.set('spark.executor.cores', '4')
         #self.spark_conf.set('spark.cores.max', '40')
 
-        self.spark_conf.set('spark.files', ','.join([spark_files,py_files]))
+        self.spark_conf.set('spark.files', ','.join((spark_files,py_files)))
         # set py files
         self.spark_conf.set('spark.submit.pyFiles', py_files)
         self.spark_conf.set('spark.logConf', True)

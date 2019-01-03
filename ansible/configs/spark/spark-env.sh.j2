@@ -1,2 +1,3 @@
-# FIXME: hard-coded temporary
-PYSPARK_PYTHON=/opt/python-3.6.5/bin/python3
+{% if pythonexe is defined %}
+PYSPARK_PYTHON={{pythonexe}}
+{% endif %}

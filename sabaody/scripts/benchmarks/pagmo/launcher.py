@@ -19,7 +19,7 @@ class PagmobenchLauncher(BenchmarkLauncherBase):
     @classmethod
     def from_cmdline_args(cls, app_name, problem, spark_files, py_files):
         from os.path import join
-        result = super(BiopredynConfiguration,cls).from_cmdline_args(app_name, spark_files, py_files)
+        result = super(PagmobenchLauncher,cls).from_cmdline_args(app_name, spark_files, py_files)
         result.app_name = app_name
         result.problem = problem
         result.udp = None

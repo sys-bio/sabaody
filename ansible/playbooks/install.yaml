@@ -1,0 +1,9 @@
+---
+  # TODO: increase SQL packet size to my.ini
+  # mysql --host=luna -u root -e "SET GLOBAL max_allowed_packet = 67108864;"
+
+- hosts: all
+  tasks:
+    - name: Install required Python packages.
+      pip:
+        requirements: ~/imodel_requirements.txt

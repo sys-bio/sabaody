@@ -3,6 +3,9 @@
   # mysql --host=luna -u root -e "SET GLOBAL max_allowed_packet = 67108864;"
 
 - hosts: all
+  become: yes
+  become_user: imodel
+
   tasks:
     - name: Write environment variables for Apache tool paths
       template: src=../configs/imodel-paths.j2 dest=~/.imodel-paths
@@ -100,3 +103,9 @@
 
     - name: Write spark config files
       template: src=../configs/spark/log4j.properties.j2 dest=~/config/spark/log4j.properties
+
+    # Requirements
+    - name: Copy Python requirements
+      copy:
+        src: ../../requirements
+        dest: ~/imodel_requirements.txt
