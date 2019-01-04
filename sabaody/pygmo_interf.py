@@ -31,7 +31,7 @@ class Island:
         self.size = size
         self.domain_qualifier = domain_qualifier
 
-def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=None, problem=None):
+def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=None, use_pool=False, problem=None):
     # TODO: pass pygmo problem not udp
     import pygmo as pg
     from multiprocessing import cpu_count
@@ -48,10 +48,13 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
     if hasattr(island.algorithm, 'maxtime'):
         # print('maxtime ', island.algorithm.maxt.ime)
         island.algorithm.maxtime = 1
-    if problem is not None:
+    # i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size, udi=pg.mp_island(use_pool=False))
+    if problem is None:
+        problem = pg.problem(udp)
+    if use_pool:
         i = pg.island(algo=island.algorithm, prob=problem, size=island.size, udi=pg.mp_island(use_pool=False))
     else:
-        i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size, udi=pg.mp_island(use_pool=False))
+        i = pg.island(algo=island.algorithm, prob=problem, size=island.size)
 
     if monitor is not None:
         monitor.update('Running', 'island', island.id, 'status')
@@ -114,7 +117,7 @@ class Archipelago:
             mc_client = Client((self.mc_host,self.mc_port))
             mc_client.set(self.domain_qualifier('islandIds'), dumps(self.topology.island_ids), 10000)
 
-    def run(self, sc, migrator, udp, rounds, problem=None):
+    def run(self, sc, migrator, udp, rounds, use_pool=False, problem=None):
         assert self.metric is not None
         def worker(island):
             return run_island(island,self.topology,

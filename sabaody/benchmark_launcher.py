@@ -235,6 +235,8 @@ class BenchmarkLauncherBase:
                             help='If true, run in validation mode.')
         parser.add_argument('--validation-points', type=int, default=0,
                             help='If in validation mode, the number of points for the reference simulation.')
+        parser.add_argument('--use-pool', type=bool, default=False,
+                            help='Use a pool of processes or a thread pool (better performance for compatible problems).')
         return parser
 
 
@@ -277,6 +279,7 @@ class BenchmarkLauncherBase:
         config.generations = None
         config.validation_mode = args.validation_mode
         config.validation_points = args.validation_points
+        config.use_pool = args.use_pool
         config.command = args.command
 
         config._initialize_spark(app_name, spark_files, py_files)
@@ -426,12 +429,16 @@ class BenchmarkLauncherBase:
                                                 self.replacement_policy)
                 from sabaody.migration_central import CentralMigrator
                 if isinstance(migrator, CentralMigrator):
-                    migrator.defineMigrantPools(a.topology, len(self.udp.lb))
+                    if self.udp is not None:
+                        l = len(self.udp.get_bounds()[0])
+                    elif self.problem is not None:
+                        l = len(self.problem.get_bounds()[0])
+                    migrator.defineMigrantPools(a.topology, l)
 
                 a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
                 a.monitor = monitor
                 a.metric = metric
-                results = a.run(self.spark_context, migrator, self.udp, self.rounds, self.problem)
+                results = a.run(sc=self.spark_context, migrator=migrator, udp=self.udp, rounds=self.rounds, use_pool=self.use_pool, problem=self.problem)
                 champions = sorted([(f[0],x) for f,x in results], key=lambda t: t[0])
                 champion_scores = [f for f,x in champions]
 
@@ -473,7 +480,7 @@ class BenchmarkLauncherBase:
         #     ))
         # mariadb_connection.commit()
         query = '\n'.join([
-            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, Rounds, Generations, Champions, MinScore, ValidationMode, ValidationPoints, AverageScore, TimeStart, TimeEnd)',
+            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, Rounds, Generations, Champions, MinScore, AverageScore, ValidationMode, ValidationPoints, TimeStart, TimeEnd)',
             "VALUES ('{benchmark}','{run_id}','{metric_id}','{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
                 benchmark=self.app_name,
                 run_id=self.run_id,
@@ -490,6 +497,6 @@ class BenchmarkLauncherBase:
                 time_start=time_start.format('YYYY-MM-DD HH:mm:ss'),
                 time_end=time_end.format('YYYY-MM-DD HH:mm:ss'),
                 )])
-        print(query)
+        # print(query)
         cursor.execute(query)
         mariadb_connection.commit()
