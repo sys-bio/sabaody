@@ -4,10 +4,12 @@
 from __future__ import print_function, division, absolute_import
 
 from sabaody import Archipelago
+from sabaody.topology import FullyConnectedTopology
 
-from pygmo import de, de1220, sade, ihs, pso, pso_gen, simulated_annealing, bee_colony, cmaes, nsga2
+from pygmo import de, de1220, sade, ihs, pso, pso_gen, simulated_annealing, bee_colony, cmaes, nsga2, xnes
 from pygmo import nlopt
 from toolz import partial
+from itertools import cycle
 
 from uuid import uuid4
 
@@ -128,6 +130,13 @@ class TopologyGenerator:
                     island.algorithm = algo
             return archipelago
 
+        def assign_algs(archipelago, algos):
+            '''
+            Evenly partitions and assigns algorithms to islands.
+            '''
+            for island,algo in zip(archipelago.topology.islands, cycle(algos)):
+                island.algorithm = algo
+
         g = self.generations
 
         self.new_topology(
@@ -184,7 +193,7 @@ class TopologyGenerator:
           desc='{}, xnes'.format(desc),
           category=category,
           algorithms=['xnes'],
-          archipelago=Archipelago(constructor(nsga2(gen=g),n)))
+          archipelago=Archipelago(constructor(xnes(gen=g),n)))
         # de + nelder mead combo
         self.new_topology(
           desc='{}, de+nelder mead'.format(desc),
@@ -203,6 +212,30 @@ class TopologyGenerator:
           category=category,
           algorithms=['de','nsga2'],
           archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), nsga2(gen=g)))
+
+
+      # extra configurations for fully connected topology
+        if isinstance(archipelago.topology, FullyConnectedTopology):
+            self.new_topology(
+                desc='{}, de+pso+praxis'.format(desc),
+                category=category,
+                algorithms=['de','pso','praxis'],
+                archipelago=assign_algs(Archipelago(constructor(de(gen=g),n)), (de(gen=g), pso(gen=g), self.make_praxis())))
+            self.new_topology(
+                desc='{}, de+pso+praxis+nsga2'.format(desc),
+                category=category,
+                algorithms=['de','pso','praxis','nsga2'],
+                archipelago=assign_algs(Archipelago(constructor(de(gen=g),n)), (de(gen=g), pso(gen=g), self.make_praxis(), nsga2(gen=g))))
+            self.new_topology(
+                desc='{}, de+pso+praxis+cmaes'.format(desc),
+                category=category,
+                algorithms=['de','pso','praxis','cmaes'],
+                archipelago=assign_algs(Archipelago(constructor(de(gen=g),n)), (de(gen=g), pso(gen=g), self.make_praxis(), cmaes(gen=g))))
+            self.new_topology(
+                desc='{}, de+pso+praxis+xnes'.format(desc),
+                category=category,
+                algorithms=['de','pso','praxis','xnes'],
+                archipelago=assign_algs(Archipelago(constructor(de(gen=g),n)), (de(gen=g), pso(gen=g), self.make_praxis(), xnes(gen=g))))
 
 
     def _generate_all(self, n):
