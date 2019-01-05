@@ -31,7 +31,7 @@ class Island:
         self.size = size
         self.domain_qualifier = domain_qualifier
 
-def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=None, use_pool=False, problem=None):
+def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=None, use_pool=False, problem=None, terminator=None):
     # TODO: pass pygmo problem not udp
     import pygmo as pg
     from multiprocessing import cpu_count
@@ -85,12 +85,16 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
             best_x = x
         if monitor is not None:
             monitor.update('{:6.4}'.format(float(best_f[0])), 'island', island.id, 'best_f')
+            monitor.best_score_candidate(best_f, best_x)
 
         # TODO: send objective function evaluations to metric
         if metric is not None:
             metric.process_champion(island.id, best_f, best_x, round)
             metric.process_deltas(deltas,src_ids, round)
         migration_log.append((float(i.get_population().champion_f[0]),deltas,src_ids))
+
+        if terminator.should_stop(i, monitor):
+            break
 
     #import socket
     #hostname = socket.gethostname()
@@ -117,7 +121,7 @@ class Archipelago:
             mc_client = Client((self.mc_host,self.mc_port))
             mc_client.set(self.domain_qualifier('islandIds'), dumps(self.topology.island_ids), 10000)
 
-    def run(self, sc, migrator, udp, rounds, use_pool=False, problem=None):
+    def run(self, sc, migrator, udp, rounds, use_pool=False, problem=None, terminator=None):
         assert self.metric is not None
         def worker(island):
             return run_island(island,self.topology,
@@ -126,5 +130,6 @@ class Archipelago:
                 rounds=rounds,
                 metric=self.metric,
                 monitor=self.monitor,
-                problem=problem)
+                problem=problem,
+                terminator=terminator)
         return sc.parallelize(self.topology.islands, numSlices=len(self.topology.islands)).map(worker).collect()

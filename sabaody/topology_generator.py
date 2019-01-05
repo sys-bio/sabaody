@@ -61,7 +61,7 @@ class TopologyGenerator:
     @classmethod
     def get_version(cls):
         # semantic version
-        return (0,2,0)
+        return (0,2,1)
 
 
     @classmethod
@@ -212,6 +212,24 @@ class TopologyGenerator:
           category=category,
           algorithms=['de','nsga2'],
           archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), nsga2(gen=g)))
+        # de + de1220 combo
+        self.new_topology(
+          desc='{}, de+de1220'.format(desc),
+          category=category,
+          algorithms=['de','de1220'],
+          archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), de1220(gen=g)))
+        # de + sade combo
+        self.new_topology(
+          desc='{}, de+sade'.format(desc),
+          category=category,
+          algorithms=['de','sade'],
+          archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), sade(gen=g)))
+        # de + pso combo
+        self.new_topology(
+          desc='{}, de+pso'.format(desc),
+          category=category,
+          algorithms=['de','pso'],
+          archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), pso(gen=g)))
 
 
       # extra configurations for fully connected topology

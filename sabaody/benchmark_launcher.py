@@ -9,6 +9,7 @@ from pymemcache.client.base import Client
 from sabaody.metrics import InfluxDBMetric
 
 from pyspark import SparkContext, SparkConf
+from numpy import array, mean
 
 from itertools import chain
 from uuid import uuid4
@@ -84,6 +85,25 @@ class MemcachedMonitor:
 
     def update(self, value, *key):
         self.mc_client.set(self.getNameQualifier()(*list(str(k) for k in key)), str(value), 10000)
+
+
+    def best_score_candidate(self, best_f, best_x):
+        from json import dumps, loads
+        current_best_f = self.mc_client.get(self.getNameQualifier()('global', 'best_f'))
+        if current_best_f is not None:
+            current_best_f = array(loads(current_best_f))
+        if current_best_f is None or mean(best_f) < mean(current_best_f):
+            self.update(dumps(best_f.tolist()), 'global', 'best_f')
+            self.update(dumps(best_x.tolist()), 'global', 'best_x')
+
+
+    def get_best_x(self):
+        best_x = self.mc_client.get(self.getNameQualifier()('global', 'best_x'))
+        if best_x is not None:
+            from json import loads
+            best_x = array(loads(best_x))
+        return best_x
+
 
 def print_out_status(client, domainJoin, base_domain_qualifier, screen):
     from asciimatics.screen import Screen
@@ -438,7 +458,7 @@ class BenchmarkLauncherBase:
                 a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
                 a.monitor = monitor
                 a.metric = metric
-                results = a.run(sc=self.spark_context, migrator=migrator, udp=self.udp, rounds=self.rounds, use_pool=self.use_pool, problem=self.problem)
+                results = a.run(sc=self.spark_context, migrator=migrator, udp=self.udp, rounds=self.rounds, use_pool=self.use_pool, problem=self.problem, terminator=self.terminator)
                 champions = sorted([(f[0],x) for f,x in results], key=lambda t: t[0])
                 champion_scores = [f for f,x in champions]
 
