@@ -215,3 +215,12 @@ def test_bidir_chain():
             migrator.purgeAll()
     finally:
         process.terminate()
+
+def test_barabasi_albert():
+    '''
+    Test whether the hub is correctly assigned.
+    '''
+    topology_factory = TopologyFactory(island_size=20)
+    topology = topology_factory.createBarabasiAlbert(m=2)
+    for id in topology.island_ids:
+        assert len(topology.neighbors(topology.hub.id)) >= len(topology.neighbors(id))

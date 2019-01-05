@@ -103,6 +103,10 @@ class Topology(nx.Graph):
         return self.neighbor_islands(id)
 
 
+class FullyConnectedTopology(Topology):
+    pass
+
+
 class DiTopology(nx.DiGraph,Topology):
     '''
     nx.DiGraph with additional convenience methods.
@@ -196,6 +200,9 @@ class TopologyFactory:
         elif every_other_id is not None:
             g.every_other_id = tuple(m[k].id for k in every_other_id)
         return g
+
+    def _assignHub(self,t):
+        t.hub = list(sorted(t.islands, key: len(t.neighbors(i.id))))[0]
 
 
     def createOneWayRing(self, algorithm, number_of_islands = 100):
@@ -296,7 +303,7 @@ class TopologyFactory:
         '''
         A fully connected (complete) topology.
         '''
-        return  self._processTopology(nx.complete_graph(number_of_islands, create_using=nx.Graph()), algorithm, Topology)
+        return  self._processTopology(nx.complete_graph(number_of_islands, create_using=nx.Graph()), algorithm, FullyConnectedTopology)
 
 
     def createBroadcast(self, algorithm, number_of_islands = 100, central_node = 1):
@@ -348,7 +355,7 @@ class TopologyFactory:
         Creates a topology based on a Barabási-Albert graph.
         '''
         seed = self.getSeed(seed)
-        return self._processTopology(nx.barabasi_albert_graph(num_nodes,m,seed), algorithm, Topology)
+        return self._assignHub(self._processTopology(nx.barabasi_albert_graph(num_nodes,m,seed), algorithm, Topology))
 
 
     def createExtendedBarabasiAlbert(self, algorithm, num_nodes=100, m=3, p=0.3, q=0.1, seed = None):
@@ -357,7 +364,7 @@ class TopologyFactory:
         Creates a topology based on the extended Barabási-Albert method.
         '''
         seed = self.getSeed(seed)
-        return self._processTopology(nx.extended_barabasi_albert_graph(num_nodes,m,p,q,seed), algorithm, Topology)
+        return self._assignHub(self._processTopology(nx.extended_barabasi_albert_graph(num_nodes,m,p,q,seed), algorithm, Topology))
 
 
     def createAgeingExtendedBarabasiAlbert(self, algorithm, n=100, m=10, p=0.3, q=0.1, max_age=10, seed = None):
@@ -487,7 +494,7 @@ class TopologyFactory:
                 # The new node has m edges to it, plus itself: m + 1
                 attachment_preference.extend([new_node] * (m + 1))
                 new_node += 1
-        return self._processTopology(G, algorithm, Topology)
+        return self._assignHub(self._processTopology(G, algorithm, Topology))
 
     def fromNetworkxGraph(self, algorithm, g, directed=False):
         '''

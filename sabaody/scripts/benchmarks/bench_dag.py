@@ -37,42 +37,42 @@ generator = TopologyGenerator(n_islands=n_islands,  island_size=island_size, mig
 
 
 def topology_generator(n_islands, island_size, migrant_pool_size, generations):
-            from sabaody import TopologyGenerator
-            import MySQLdb
-            mariadb_connection = MySQLdb.connect('luna','sabaody','w00t','sabaody')
-            cursor = mariadb_connection.cursor()
+    from sabaody import TopologyGenerator
+    import MySQLdb
+    mariadb_connection = MySQLdb.connect('luna','sabaody','w00t','sabaody')
+    cursor = mariadb_connection.cursor()
 
-            checksum = generator.get_checksum()
-            cursor.execute('SELECT COUNT(*) FROM topology_sets WHERE '+\
-                '(Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
-                "({checksum}, {n_islands}, {island_size}, {migrant_pool_size},{generations});".format(
+    checksum = generator.get_checksum()
+    cursor.execute('SELECT COUNT(*) FROM topology_sets WHERE '+\
+        '(Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
+        "({checksum}, {n_islands}, {island_size}, {migrant_pool_size},{generations});".format(
+        checksum=checksum,
+        n_islands=n_islands,
+        island_size=island_size,
+        migrant_pool_size=migrant_pool_size,
+        generations=generations,
+    ))
+    x = cursor.fetchone()
+    n_matches = int(x[0])
+
+    # if this version is already stored, do nothing
+    if n_matches == 0:
+        serialized_topologies = generator.serialize()
+        # print(len(serialized_topologies))
+        # print(serialized_topologies.hex())
+        # store in database
+        cursor.execute('\n'.join([
+            'INSERT INTO topology_sets (TopologySetID, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
+            'VALUES ({id},{checksum},{n_islands},{island_size},{migrant_pool_size},{generations},{content});'.format(
+                id="'topology_set({})'".format(generator.get_version_string()),
                 checksum=checksum,
                 n_islands=n_islands,
                 island_size=island_size,
                 migrant_pool_size=migrant_pool_size,
                 generations=generations,
-            ))
-            x = cursor.fetchone()
-            n_matches = int(x[0])
-
-            # if this version is already stored, do nothing
-            if n_matches == 0:
-                serialized_topologies = generator.serialize()
-                # print(len(serialized_topologies))
-                # print(serialized_topologies.hex())
-                # store in database
-                cursor.execute('\n'.join([
-                    'INSERT INTO topology_sets (TopologySetID, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
-                    'VALUES ({id},{checksum},{n_islands},{island_size},{migrant_pool_size},{generations},{content});'.format(
-                        id="'topology_set({})'".format(generator.get_version_string()),
-                        checksum=checksum,
-                        n_islands=n_islands,
-                        island_size=island_size,
-                        migrant_pool_size=migrant_pool_size,
-                        generations=generations,
-                        content="0x{}".format(serialized_topologies.hex()),
-                        )]))
-                mariadb_connection.commit()
+                content="0x{}".format(serialized_topologies.hex()),
+                )]))
+        mariadb_connection.commit()
 
 
 def legalize_name(name):

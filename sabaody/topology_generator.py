@@ -59,7 +59,7 @@ class TopologyGenerator:
     @classmethod
     def get_version(cls):
         # semantic version
-        return (0,1,0)
+        return (0,2,0)
 
 
     @classmethod
@@ -122,6 +122,9 @@ class TopologyGenerator:
                     island.algorithm = algo
             elif hasattr(archipelago.topology, 'endpoints'):
                 for island in archipelago.topology.endpoints:
+                    island.algorithm = algo
+            elif isinstance(archipelago.topology, FullyConnectedTopology):
+                for island in islice(archipelago.topology.islands, None, None, 2):
                     island.algorithm = algo
             return archipelago
 
