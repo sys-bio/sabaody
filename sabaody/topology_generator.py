@@ -9,7 +9,7 @@ from sabaody.topology import FullyConnectedTopology
 from pygmo import de, de1220, sade, ihs, pso, pso_gen, simulated_annealing, bee_colony, cmaes, nsga2, xnes
 from pygmo import nlopt
 from toolz import partial
-from itertools import cycle
+from itertools import islice, cycle
 
 from uuid import uuid4
 
@@ -215,7 +215,7 @@ class TopologyGenerator:
 
 
       # extra configurations for fully connected topology
-        if isinstance(archipelago.topology, FullyConnectedTopology):
+        if constructor is self.factory.createFullyConnected:
             self.new_topology(
                 desc='{}, de+pso+praxis'.format(desc),
                 category=category,

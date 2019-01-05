@@ -202,7 +202,7 @@ class TopologyFactory:
         return g
 
     def _assignHub(self,t):
-        t.hub = list(sorted(t.islands, key: len(t.neighbors(i.id))))[0]
+        t.hub = list(sorted(t.islands, key = lambda i: len(tuple(t.neighbors(i.id)))))[0]
 
 
     def createOneWayRing(self, algorithm, number_of_islands = 100):
