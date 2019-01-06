@@ -2,7 +2,7 @@
 from __future__ import print_function, division, absolute_import
 
 from sabaody import getQualifiedName
-from sabaody.timecourse.timecourse_launcher import print_out_status
+from sabaody.benchmark_launcher import print_out_status
 
 from asciimatics.screen import Screen
 from toolz import partial

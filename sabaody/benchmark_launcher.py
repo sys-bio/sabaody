@@ -459,8 +459,9 @@ class BenchmarkLauncherBase:
                 a.monitor = monitor
                 a.metric = metric
                 results = a.run(sc=self.spark_context, migrator=migrator, udp=self.udp, rounds=self.rounds, use_pool=self.use_pool, problem=self.problem, terminator=self.terminator)
-                champions = sorted([(f[0],x) for f,x in results], key=lambda t: t[0])
+                champions = sorted([(f[0],x) for f,x,r in results], key=lambda t: t[0])
                 champion_scores = [f for f,x in champions]
+                rounds = [r for f,x,r in results]
 
                 best_score,best_candidate = champions[0]
                 average_score = float(sum(champion_scores))/len(champion_scores)
@@ -485,6 +486,7 @@ class BenchmarkLauncherBase:
                 print('min champion score {}'.format(best_score))
                 print('mean champion score {}'.format(average_score))
                 print('Total run time: {}'.format(time_start.humanize()))
+                print('Rounds: {}'.format(rounds))
 
 
     def commit_results_to_database(self, host, user, database, password, rounds, generations, champions, min_score, average_score, validation_mode, validation_points, time_start, time_end, metric_id):
