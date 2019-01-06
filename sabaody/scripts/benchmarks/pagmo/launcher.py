@@ -17,13 +17,24 @@ class PagmobenchMCMonitor(MemcachedMonitor):
 
 class PagmobenchLauncher(BenchmarkLauncherBase):
     @classmethod
+    def _create_arg_parser(cls):
+        parser = super(PagmobenchLauncher,cls)._create_arg_parser()
+        parser.add_argument('--dimension', type=int,
+                            help='Dimension of the test problem.')
+        parser.add_argument('--cutoff', type=float,
+                            help='The RMSD cutoff between the fitted and known values at which to stop the fitting procedure.')
+        return parser
+
+    @classmethod
     def from_cmdline_args(cls, app_name, problem, spark_files, py_files, terminator):
         from os.path import join
         result = super(PagmobenchLauncher,cls).from_cmdline_args(app_name, spark_files, py_files)
+        result.dimension = self.args.dimension
+        result.cutoff = self.args.cutoff
         result.app_name = app_name
         result.problem = problem
         result.udp = None
-        result.terminator=terminator
+        result.terminator=terminator(self.dimension, self.cutoff)
         return result
 
 

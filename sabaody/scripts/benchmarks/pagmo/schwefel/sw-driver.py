@@ -5,23 +5,23 @@ from __future__ import print_function, division, absolute_import
 
 from sabaody.scripts.benchmarks.pagmo.launcher import PagmobenchLauncher
 from sabaody.terminator import TerminatorBase
-from pygmo import problem, rosenbrock
+from pygmo import problem, schwefel
 
 from os.path import join, dirname, abspath, realpath
 
-class RosenbrockTerminator(TerminatorBase):
+class SchwefelTerminator(TerminatorBase):
     def __init__(self, dim, cutoff):
         self.dim = dim
         self.cutoff = cutoff
 
     def should_stop(self, pg_island, monitor):
         from numpy import mean, sqrt
-        return sqrt(mean((monitor.get_best_x()-rosenbrock(dim).best_known())**2.)) < self.cutoff
+        return sqrt(mean((monitor.get_best_x()-schwefel(dim).best_known())**2.)) < self.cutoff
 
 script_dir = dirname(realpath(__file__))
 py_files = ','.join(join(script_dir,p) for p in [
     '../launcher.py',
     ])
-config = PagmobenchLauncher.from_cmdline_args(app_name='rb-driver', problem=problem(rosenbrock(dim)), spark_files='', py_files=py_files, terminator=RosenbrockTerminator)
+config = PagmobenchLauncher.from_cmdline_args(app_name='sw-driver', problem=problem(schwefel(dim)), spark_files='', py_files=py_files, terminator=SchwefelTerminator)
 
 config.run_command(config.command)

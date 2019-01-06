@@ -1,5 +1,5 @@
 # Sabaody
-# Copyright 2018 Shaik Asifullah and J Kyle Medley
+# Copyright 2018-2019 Shaik Asifullah and J Kyle Medley
 
 from __future__ import print_function, division, absolute_import
 
@@ -268,6 +268,7 @@ class BenchmarkLauncherBase:
         config = cls()
         parser = cls._create_arg_parser()
         args = parser.parse_args()
+        self.args = args
         from re import match
         if not match(r'[^: ](:[\d]+)?', args.host):
             raise RuntimeError('Expected host name to be either a name or name:port')

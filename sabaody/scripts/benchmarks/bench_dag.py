@@ -147,6 +147,28 @@ class TaskGenerator():
         self.setup_topology_sets_table >> self.generate_topologies
         self.setup_benchmark_results_table >> self.generate_topologies
 
+    def get_application_args():
+        return [
+            '--topology',  'sql:sabaody@luna,pw=w00t,db=sabaody(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):{desc}'.format(
+                n_islands=n_islands,
+                island_size=island_size,
+                migrant_pool_size=migrant_pool_size,
+                generations=generations,
+                desc=topology['description'],
+            ),
+            '--migration', 'central',
+            '--migration-policy', 'uniform',
+            '--rounds', '50',
+            '--description', '{}'.format(topology['description']),
+            '--host', 'luna',
+            '--selection-policy', 'best',
+            '--selection-rate', '4',
+            '--replacement-policy', 'fair',
+            '--suite-run-id', '1',
+            'run',
+            # '--deploy-mode', 'client',
+            ]
+
     def generate(self, benchmark, application):
         # for each topology, create a benchmark task
         self.benchmarks = []
@@ -160,29 +182,22 @@ class TaskGenerator():
                     'spark.executor.cores': 1,
                 },
                 application=application,
-                application_args=[
-                    '--topology',  'sql:sabaody@luna,pw=w00t,db=sabaody(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):{desc}'.format(
-                        n_islands=n_islands,
-                        island_size=island_size,
-                        migrant_pool_size=migrant_pool_size,
-                        generations=generations,
-                        desc=topology['description'],
-                    ),
-                    '--migration', 'central',
-                    '--migration-policy', 'uniform',
-                    '--rounds', '50',
-                    '--description', '{}'.format(topology['description']),
-                    '--host', 'luna',
-                    '--selection-policy', 'best',
-                    '--selection-rate', '4',
-                    '--replacement-policy', 'fair',
-                    '--suite-run-id', '1',
-                    'run',
-                    # '--deploy-mode', 'client',
-                ],
+                application_args=self.get_application_args(),
                 dag=self.dag,
             ))
             self.generate_topologies >> self.benchmarks[-1]
+
+class PagmoTaskGenerator(TaskGenerator):
+    def __init__(self, dag, dimension, cutoff):
+        self.dimension = dimension
+        self.cutoff = cutoff
+
+    def get_application_args(self):
+        return super().get_application_args()+[
+            '--dimension', str(self.dimension),
+            '--cutoff', str(self.cutoff),
+            ]
+
 
 
 all_bench_generator = TaskGenerator(all_benchmarks_dag)
@@ -226,3 +241,59 @@ b5_dag = DAG(
   schedule_interval=timedelta(10000))
 TaskGenerator(b5_dag).generate('b5', join(root_path,'b5','b5-driver.py'))
 all_bench_generator.generate('b5', join(root_path,'b5','b5-driver.py'))
+
+
+# pagmo test problems
+
+pagmo_benchmarks_dag = DAG(
+  'pagmo_benchmarks',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+
+pagmo_bench_generator = PagmoTaskGenerator(pagmo_benchmarks_dag, dimension=16, cutoff=0.01)
+
+ackley_dag = DAG(
+  'ackley_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+PagmoTaskGenerator(ackley_dag, dimension=16, cutoff=0.01).generate(
+    'ackley', join(root_path,'ackley','ak-driver.py'))
+all_bench_generator.generate('ackley', join(root_path,'ackley','ak-driver.py'))
+
+griewank_dag = DAG(
+  'griewank_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+PagmoTaskGenerator(griewank_dag, dimension=16, cutoff=0.01).generate(
+    'griewank', join(root_path,'griewank','gr-driver.py'))
+all_bench_generator.generate('griewank', join(root_path,'griewank','gr-driver.py'))
+
+rastrigin_dag = DAG(
+  'rastrigin_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+PagmoTaskGenerator(rastrigin_dag, dimension=16, cutoff=0.01).generate(
+    'rastrigin', join(root_path,'rastrigin','ra-driver.py'))
+all_bench_generator.generate('rastrigin', join(root_path,'rastrigin','ra-driver.py'))
+
+rosenbrock_dag = DAG(
+  'rosenbrock_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+PagmoTaskGenerator(rosenbrock_dag, dimension=16, cutoff=0.01).generate(
+    'rosenbrock', join(root_path,'rosenbrock','rb-driver.py'))
+all_bench_generator.generate('rosenbrock', join(root_path,'rosenbrock','rb-driver.py'))
+
+schwefel_dag = DAG(
+  'schwefel_benchmark',
+  default_args=default_args,
+  concurrency=1,
+  schedule_interval=timedelta(10000))
+PagmoTaskGenerator(schwefel_dag, dimension=16, cutoff=0.01).generate(
+    'schwefel', join(root_path,'schwefel','sw-driver.py'))
+all_bench_generator.generate('schwefel', join(root_path,'schwefel','sw-driver.py'))
