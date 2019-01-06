@@ -473,12 +473,12 @@ class BenchmarkLauncherBase:
                     user='sabaody',
                     database='sabaody',
                     password='w00t',
-                    rounds=self.rounds,
+                    max_rounds=self.rounds,
                     generations=self.generations,
                     champions=champions,
                     min_score=best_score,
                     average_score=average_score,
-                    rounds=rounds,
+                    actual_rounds=rounds,
                     validation_mode=self.validation_mode,
                     validation_points=self.validation_points,
                     time_start=time_start,
@@ -491,7 +491,7 @@ class BenchmarkLauncherBase:
                 print('Rounds: {}'.format(rounds))
 
 
-    def commit_results_to_database(self, host, user, database, password, rounds, generations, champions, min_score, average_score, round, validation_mode, validation_points, time_start, time_end, metric_id):
+    def commit_results_to_database(self, host, user, database, password, max_rounds, generations, champions, min_score, average_score, actual_round, validation_mode, validation_points, time_start, time_end, metric_id):
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host,user,password,database)
         cursor = mariadb_connection.cursor()
@@ -505,19 +505,19 @@ class BenchmarkLauncherBase:
         #     ))
         # mariadb_connection.commit()
         query = '\n'.join([
-            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, Rounds, Generations, Champions, MinScore, AverageScore, Rounds, ValidationMode, ValidationPoints, TimeStart, TimeEnd)',
-            "VALUES ('{benchmark}','{run_id}','{metric_id}','{description}','{topologyid}',{rounds},{generations},{champions},{min_score},{average_score},{rounds},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
+            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, MaxRounds, Generations, Champions, MinScore, AverageScore, ActualRounds, ValidationMode, ValidationPoints, TimeStart, TimeEnd)',
+            "VALUES ('{benchmark}','{run_id}','{metric_id}','{description}','{topologyid}',{max_rounds},{generations},{champions},{min_score},{average_score},{actual_rounds},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
                 benchmark=self.app_name,
                 run_id=self.run_id,
                 metric_id=metric_id,
                 description=self.description,
                 topologyid=self.topology_id,
-                rounds=rounds,
+                max_rounds=max_rounds,
                 generations=generations,
                 champions='0x{}'.format(dumps(champions).hex()),
                 min_score=min_score,
                 average_score=average_score,
-                rounds=json.dumps(rounds),
+                actual_rounds=json.dumps(rounds),
                 validation_mode=validation_mode*1,
                 validation_points=validation_points,
                 time_start=time_start.format('YYYY-MM-DD HH:mm:ss'),
