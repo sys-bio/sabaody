@@ -29,12 +29,12 @@ class PagmobenchLauncher(BenchmarkLauncherBase):
     def from_cmdline_args(cls, app_name, problem, spark_files, py_files, terminator):
         from os.path import join
         result = super(PagmobenchLauncher,cls).from_cmdline_args(app_name, spark_files, py_files)
-        result.dimension = self.args.dimension
-        result.cutoff = self.args.cutoff
+        result.dimension = result.args.dimension
+        result.cutoff = result.args.cutoff
         result.app_name = app_name
-        result.problem = problem
+        result.problem = problem(result.dimension)
         result.udp = None
-        result.terminator=terminator(self.dimension, self.cutoff)
+        result.terminator=terminator(result.dimension, result.cutoff)
         return result
 
 

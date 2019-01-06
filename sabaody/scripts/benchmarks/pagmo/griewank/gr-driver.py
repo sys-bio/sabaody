@@ -16,12 +16,12 @@ class GriewankTerminator(TerminatorBase):
 
     def should_stop(self, pg_island, monitor):
         from numpy import mean, sqrt
-        return sqrt(mean((monitor.get_best_x()-griewank(dim).best_known())**2.)) < self.cutoff
+        return sqrt(mean((monitor.get_best_x()-griewank(self.dim).best_known())**2.)) < self.cutoff
 
 script_dir = dirname(realpath(__file__))
 py_files = ','.join(join(script_dir,p) for p in [
     '../launcher.py',
     ])
-config = PagmobenchLauncher.from_cmdline_args(app_name='gr-driver', problem=problem(griewank(dim)), spark_files='', py_files=py_files, terminator=GriewankTerminator)
+config = PagmobenchLauncher.from_cmdline_args(app_name='gr-driver', problem=lambda dim: problem(griewank(dim)), spark_files='', py_files=py_files, terminator=GriewankTerminator)
 
 config.run_command(config.command)

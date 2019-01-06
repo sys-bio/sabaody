@@ -268,7 +268,7 @@ class BenchmarkLauncherBase:
         config = cls()
         parser = cls._create_arg_parser()
         args = parser.parse_args()
-        self.args = args
+        config.args = args
         from re import match
         if not match(r'[^: ](:[\d]+)?', args.host):
             raise RuntimeError('Expected host name to be either a name or name:port')
@@ -491,7 +491,7 @@ class BenchmarkLauncherBase:
                 print('Rounds: {}'.format(rounds))
 
 
-    def commit_results_to_database(self, host, user, database, password, max_rounds, generations, champions, min_score, average_score, actual_round, validation_mode, validation_points, time_start, time_end, metric_id):
+    def commit_results_to_database(self, host, user, database, password, max_rounds, generations, champions, min_score, average_score, actual_rounds, validation_mode, validation_points, time_start, time_end, metric_id):
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host,user,password,database)
         cursor = mariadb_connection.cursor()
@@ -505,8 +505,8 @@ class BenchmarkLauncherBase:
         #     ))
         # mariadb_connection.commit()
         query = '\n'.join([
-            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, MaxRounds, Generations, Champions, MinScore, AverageScore, ActualRounds, ValidationMode, ValidationPoints, TimeStart, TimeEnd)',
-            "VALUES ('{benchmark}','{run_id}','{metric_id}','{description}','{topologyid}',{max_rounds},{generations},{champions},{min_score},{average_score},{actual_rounds},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
+            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, MaxRounds, Generations, Champions, MinScore, AverageScore, ActualRounds, ActualAvgRounds, ValidationMode, ValidationPoints, TimeStart, TimeEnd)',
+            "VALUES ('{benchmark}','{run_id}','{metric_id}','{description}','{topologyid}',{max_rounds},{generations},{champions},{min_score},{average_score},'{actual_rounds}',{actual_avg_rounds},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
                 benchmark=self.app_name,
                 run_id=self.run_id,
                 metric_id=metric_id,
@@ -517,7 +517,8 @@ class BenchmarkLauncherBase:
                 champions='0x{}'.format(dumps(champions).hex()),
                 min_score=min_score,
                 average_score=average_score,
-                actual_rounds=json.dumps(rounds),
+                actual_rounds=json.dumps(actual_rounds),
+                actual_avg_rounds=float(mean(array(actual_rounds))),
                 validation_mode=validation_mode*1,
                 validation_points=validation_points,
                 time_start=time_start.format('YYYY-MM-DD HH:mm:ss'),

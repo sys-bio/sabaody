@@ -16,12 +16,12 @@ class RastriginTerminator(TerminatorBase):
 
     def should_stop(self, pg_island, monitor):
         from numpy import mean, sqrt
-        return sqrt(mean((monitor.get_best_x()-rastrigin(dim).best_known())**2.)) < self.cutoff
+        return sqrt(mean((monitor.get_best_x()-rastrigin(self.dim).best_known())**2.)) < self.cutoff
 
 script_dir = dirname(realpath(__file__))
 py_files = ','.join(join(script_dir,p) for p in [
     '../launcher.py',
     ])
-config = PagmobenchLauncher.from_cmdline_args(app_name='ra-driver', problem=problem(rastrigin(dim)), spark_files='', py_files=py_files, terminator=RastriginTerminator)
+config = PagmobenchLauncher.from_cmdline_args(app_name='ra-driver', problem=lambda dim: problem(rastrigin(dim)), spark_files='', py_files=py_files, terminator=RastriginTerminator)
 
 config.run_command(config.command)
