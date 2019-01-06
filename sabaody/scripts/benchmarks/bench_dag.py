@@ -147,7 +147,7 @@ class TaskGenerator():
         self.setup_topology_sets_table >> self.generate_topologies
         self.setup_benchmark_results_table >> self.generate_topologies
 
-    def get_application_args():
+    def get_application_args(self, topology):
         return [
             '--topology',  'sql:sabaody@luna,pw=w00t,db=sabaody(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):{desc}'.format(
                 n_islands=n_islands,
@@ -182,18 +182,19 @@ class TaskGenerator():
                     'spark.executor.cores': 1,
                 },
                 application=application,
-                application_args=self.get_application_args(),
+                application_args=self.get_application_args(topology),
                 dag=self.dag,
             ))
             self.generate_topologies >> self.benchmarks[-1]
 
 class PagmoTaskGenerator(TaskGenerator):
     def __init__(self, dag, dimension, cutoff):
+        super().__init__(dag)
         self.dimension = dimension
         self.cutoff = cutoff
 
-    def get_application_args(self):
-        return super().get_application_args()+[
+    def get_application_args(self, topology):
+        return super().get_application_args(topology)+[
             '--dimension', str(self.dimension),
             '--cutoff', str(self.cutoff),
             ]
