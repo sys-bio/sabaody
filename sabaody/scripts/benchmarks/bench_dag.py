@@ -91,8 +91,9 @@ def legalize_name(name):
 
 class TaskGenerator():
 
-    def __init__(self, dag):
+    def __init__(self, dag, rounds):
         self.dag = dag
+        self.rounds = rounds
         # first, make sure the SQL tables exist
         self.setup_topology_sets_table = MySqlOperator(
             task_id='.'.join((self.dag.dag_id, 'setup_topology_sets_table')),
@@ -159,7 +160,7 @@ class TaskGenerator():
             ),
             '--migration', 'central',
             '--migration-policy', 'uniform',
-            '--rounds', '50',
+            '--rounds', str(self.rounds),
             '--description', '{}'.format(topology['description']),
             '--host', 'luna',
             '--selection-policy', 'best',
@@ -189,15 +190,16 @@ class TaskGenerator():
             self.generate_topologies >> self.benchmarks[-1]
 
 
+biopredyn_rounds = 1000
 
-all_bench_generator = TaskGenerator(all_benchmarks_dag)
+all_bench_generator = TaskGenerator(all_benchmarks_dag, biopredyn_rounds)
 
 b1_dag = DAG(
   'b1_benchmark',
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b1_dag).generate('b1', join(root_path,'b1','b1-driver.py'))
+TaskGenerator(b1_dag, biopredyn_rounds).generate('b1', join(root_path,'b1','b1-driver.py'))
 all_bench_generator.generate('b1', join(root_path,'b1','b1-driver.py'))
 
 b2_dag = DAG(
@@ -205,7 +207,7 @@ b2_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b2_dag).generate('b2', join(root_path,'b2','b2-driver.py'))
+TaskGenerator(b2_dag, biopredyn_rounds).generate('b2', join(root_path,'b2','b2-driver.py'))
 all_bench_generator.generate('b2', join(root_path,'b2','b2-driver.py'))
 
 b3_dag = DAG(
@@ -213,7 +215,7 @@ b3_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b3_dag).generate('b3', join(root_path,'b3','b3-driver.py'))
+TaskGenerator(b3_dag, biopredyn_rounds).generate('b3', join(root_path,'b3','b3-driver.py'))
 all_bench_generator.generate('b3', join(root_path,'b3','b3-driver.py'))
 
 b4_dag = DAG(
@@ -221,7 +223,7 @@ b4_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b4_dag).generate('b4', join(root_path,'b4','b4-driver.py'))
+TaskGenerator(b4_dag, biopredyn_rounds).generate('b4', join(root_path,'b4','b4-driver.py'))
 all_bench_generator.generate('b4', join(root_path,'b4','b4-driver.py'))
 
 b5_dag = DAG(
@@ -229,7 +231,7 @@ b5_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b5_dag).generate('b5', join(root_path,'b5','b5-driver.py'))
+TaskGenerator(b5_dag, biopredyn_rounds).generate('b5', join(root_path,'b5','b5-driver.py'))
 all_bench_generator.generate('b5', join(root_path,'b5','b5-driver.py'))
 
 
@@ -237,8 +239,8 @@ all_bench_generator.generate('b5', join(root_path,'b5','b5-driver.py'))
 # pagmo test problems
 
 class PagmoTaskGenerator(TaskGenerator):
-    def __init__(self, dag, dimension, cutoff):
-        super().__init__(dag)
+    def __init__(self, dag, rounds, dimension, cutoff):
+        super().__init__(dag, rounds)
         self.dimension = dimension
         self.cutoff = cutoff
 
@@ -254,6 +256,7 @@ pagmo_benchmarks_dag = DAG(
   concurrency=1,
   schedule_interval=timedelta(10000))
 
+pagmo_rounds = 2000
 pagmo_dimension = 16
 pagmo_cutoff = 0.01
 
@@ -264,7 +267,7 @@ ackley_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(ackley_dag, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
+PagmoTaskGenerator(ackley_dag, rounds=pagmo_rounds, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
     'ackley', join(root_path,'ackley','ak-driver.py'))
 all_bench_generator.generate('ackley', join(root_path,'ackley','ak-driver.py'))
 
@@ -273,7 +276,7 @@ griewank_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(griewank_dag, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
+PagmoTaskGenerator(griewank_dag, rounds=pagmo_rounds, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
     'griewank', join(root_path,'griewank','gr-driver.py'))
 all_bench_generator.generate('griewank', join(root_path,'griewank','gr-driver.py'))
 
@@ -282,7 +285,7 @@ rastrigin_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(rastrigin_dag, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
+PagmoTaskGenerator(rastrigin_dag, rounds=pagmo_rounds, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
     'rastrigin', join(root_path,'rastrigin','ra-driver.py'))
 all_bench_generator.generate('rastrigin', join(root_path,'rastrigin','ra-driver.py'))
 
@@ -291,7 +294,7 @@ rosenbrock_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(rosenbrock_dag, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
+PagmoTaskGenerator(rosenbrock_dag, rounds=pagmo_rounds, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
     'rosenbrock', join(root_path,'rosenbrock','rb-driver.py'))
 all_bench_generator.generate('rosenbrock', join(root_path,'rosenbrock','rb-driver.py'))
 
@@ -300,6 +303,6 @@ schwefel_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(schwefel_dag, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
+PagmoTaskGenerator(schwefel_dag, rounds=pagmo_rounds, dimension=pagmo_dimension, cutoff=pagmo_cutoff).generate(
     'schwefel', join(root_path,'schwefel','sw-driver.py'))
 all_bench_generator.generate('schwefel', join(root_path,'schwefel','sw-driver.py'))
