@@ -126,6 +126,7 @@ class TaskGenerator():
                     Champions BLOB NOT NULL,
                     MinScore DOUBLE NOT NULL,
                     AverageScore DOUBLE NOT NULL,
+                    Rounds TEXT NOT NULL,
                     ValidationMode INT NOT NULL,
                     ValidationPoints INT NOT NULL,
                     TimeStart DATETIME NOT NULL,

@@ -13,14 +13,14 @@ client = Client((mc_host,mc_port))
 
 import argparse
 parser = argparse.ArgumentParser(description='Run monitor.')
-parser.add_argument('app',
-                    help='The app to monitor, e.g. b2-driver.')
+parser.add_argument('domain', nargs='+',
+                    help='The domain and app to monitor, e.g. biopredyn b2-driver.')
 args = parser.parse_args()
-app = args.app
+domain = args.domain
 
 def domainJoin(s,*args):
-    return '.'.join(['com.how2cell.sabaody.biopredyn.'+app,str(s),*list(str(a) for a in args)])
+    return '.'.join(['.'.join(('com.how2cell.sabaody',*domain)),str(s),*list(str(a) for a in args)])
 
-domain_qualifier = partial(getQualifiedName, 'biopredyn', app)
+domain_qualifier = partial(getQualifiedName, *domain)
 
 Screen.wrapper(partial(print_out_status, client, domainJoin, domain_qualifier))
