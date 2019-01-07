@@ -271,7 +271,7 @@ class TopologyGenerator:
         self.create_variants(n, '1-2-3 Ring', 'rings', self.factory.create_123_Ring)
         self.create_variants(n, 'Fully Connected', 'clustered', self.factory.createFullyConnected)
         self.create_variants(n, 'Broadcast', 'clustered', self.factory.createBroadcast)
-        self.create_variants(n, 'Hypercube', 'clustered', self.factory.createHypercube)
+        self.create_variants(4, 'Hypercube', 'clustered', self.factory.createHypercube) # FIXME: hard-coded
         self.create_variants(n, 'Watts-Strogatz', 'clustered', partial(self.factory.createWattsStrogatz, k=int(n/4)))
         self.create_variants(n, 'Erdos-Renyi', 'clustered', self.factory.createErdosRenyi)
         self.create_variants(n, 'Barabasi-Albert', 'clustered', partial(self.factory.createBarabasiAlbert, m=int(n/4)))

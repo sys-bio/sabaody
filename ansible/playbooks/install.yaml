@@ -30,3 +30,10 @@
     #     password: 12345
     #     priv: 'sabaody.*:ALL'
     #     state: present
+
+# Postgres:
+# pg_hba.conf should have (ip4 and ip6 resp.):
+# host    all             all               0.0.0.0/0            password
+# host    all             all             ::/0                   password
+# postgresql.conf should have:
+# listen_addresses = '*'
