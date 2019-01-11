@@ -150,6 +150,8 @@ class MigrationPolicyUniform(MigrationPolicyBase):
             candidates = reshape(candidates,(1,-1))
             candidate_f = reshape(candidate_f,(1,-1))
         total_num_migrants = candidates.shape[0]
+        if len(tuple(topology.outgoing_ids(island_id))) == 0 or total_num_migrants == 0:
+            return
         # pick the neighbors to receive migrants based on the total number of migrants
         from numpy.random import choice
         choices = choice(topology.outgoing_ids(island_id), total_num_migrants)
