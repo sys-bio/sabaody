@@ -111,6 +111,7 @@ class TopologyGenerator:
         cursor.execute(query_string)
         from pickle import loads
         t = cursor.fetchone()
+        mariadb_connection.close()
         if t is None:
             raise RuntimeError('Entry not found for query {}'.format(query_string))
         key = int(t[0])
