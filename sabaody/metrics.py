@@ -1,5 +1,5 @@
 # Sabaody
-# Copyright 2018 Shaik Asifullah and J Kyle Medley
+# Copyright 2018-2019 Shaik Asifullah and J Kyle Medley
 from __future__ import print_function, division, absolute_import
 
 from influxdb import InfluxDBClient
@@ -8,7 +8,8 @@ import arrow
 from uuid import uuid4
 
 class Metric:
-    pass
+    def __init__(self, database):
+        self.database = database
 
 class InfluxDBMetric(Metric):
     '''
@@ -21,12 +22,16 @@ class InfluxDBMetric(Metric):
                 raise RuntimeError('Expected a database name')
             else:
                 database = database_prefix + str(uuid4())
-        self.database = database
+        super().__init__(database)
         # self.database = database.replace('.','_').replace('-','_')
 
 
+    def getClient(self):
+        return self.client
+
+
     def process_deltas(self, deltas, src_ids, round):
-        self.client.write_points([
+        self.getClient().write_points([
             { 'measurement': 'delta',
               'time': arrow.utcnow().isoformat(),
               'fields': {
@@ -39,7 +44,7 @@ class InfluxDBMetric(Metric):
 
 
     def process_champion(self, island_id, best_f, best_x, round):
-        self.client.write_points([
+        self.getClient().write_points([
             { 'measurement': 'champion',
               'time': arrow.utcnow().isoformat(),
               'fields': {
@@ -52,10 +57,42 @@ class InfluxDBMetric(Metric):
 
 
     def __enter__(self):
-        self.client.create_database(self.database)
+        self.getClient().create_database(self.database)
         return self
 
 
     def __exit__(self, exception_type, exception_val, trace):
         pass
-        # self.client.drop_database(self.database)
+        # self.getClient().drop_database(self.database)
+
+
+class SingletonMetricConstructor:
+    '''InfluxDB singleton instance'''
+    __instance = None
+    __instance_opts = None
+
+    @classmethod
+    def init(cls, host='localhost', port=8086, username='root', password='root', database=None, database_prefix=None,
+                    ssl=False, verify_ssl=False, timeout=None, retries=3, use_udp=False, udp_port=4444, proxies=None):
+        cls.__instance_opts = dict(host=host, port=port, username=username, password=password,
+                            database=database, database_prefix=database_prefix, ssl=ssl, verify_ssl=verify_ssl, timeout=timeout, retries=retries,
+                            use_udp=use_udp, udp_port=udp_port, proxies=proxies)
+        return cls.__instance_opts
+
+    @classmethod
+    def getInstance(cls, instance_opts):
+        if cls.__instance == None:
+            # if cls.__instance_opts == None:
+                # raise RuntimeError('Need to call init first')
+            cls.__instance = InfluxDBMetric(**instance_opts)
+        return cls.__instance
+
+
+class SingletonInfluxDBMetric(InfluxDBMetric):
+    def __init__(self, *args, **kwargs):
+        self.instance_opts = SingletonMetricConstructor.init(*args, **kwargs)
+        Metric.__init__(self, self.instance_opts['database'])
+
+
+    def getClient(self):
+        return SingletonMetricConstructor.getInstance(self.instance_opts).getClient()

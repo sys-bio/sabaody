@@ -6,7 +6,7 @@ from __future__ import print_function, division, absolute_import
 from sabaody import getQualifiedName, Archipelago
 
 from pymemcache.client.base import Client
-from sabaody.metrics import InfluxDBMetric
+from sabaody.metrics import SingletonInfluxDBMetric
 
 from pyspark import SparkContext, SparkConf
 from numpy import array, mean
@@ -400,7 +400,7 @@ class BenchmarkLauncherBase:
 
 
     def create_metric(self, prefix):
-        metric = InfluxDBMetric(host=self.metric_host, port=self.metric_port, database=prefix+self.run_id)
+        metric = SingletonInfluxDBMetric(host=self.metric_host, port=self.metric_port, database=prefix+self.run_id)
         print ('using influxdb database {}'.format(metric.database))
         return metric
 
