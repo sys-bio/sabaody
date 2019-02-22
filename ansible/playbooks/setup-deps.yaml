@@ -48,6 +48,8 @@
         - ~/config/kafka
         - ~/config/zookeeper
         - ~/config/elasticsearch
+        - ~/config/influxdb
+        - ~/config/monit
 
     # Hadoop
     - name: Create hadoop data directories
@@ -103,3 +105,11 @@
 
     - name: Write spark config files
       template: src=../configs/spark/log4j.properties.j2 dest=~/config/spark/log4j.properties
+
+    # InfluxDB
+    - name: Write InfluxDB config files
+      template: src=../configs/influxdb.conf.j2 dest=~/config/influx/influxdb.conf
+
+    # Monit
+    - name: Write Monit config files
+      template: src=../configs/monit.control.j2 dest=~/config/influx/monit.control
