@@ -16,7 +16,11 @@ class RastriginTerminator(TerminatorBase):
 
     def should_stop(self, pg_island, monitor):
         from numpy import mean, sqrt
-        return sqrt(mean((monitor.get_best_x()-rastrigin(self.dim).best_known())**2.)) < self.cutoff
+        best_x = monitor.get_best_x()
+        if best_x is None:
+            return False
+        else:
+            return sqrt(mean((best_x-rastrigin(self.dim).best_known())**2.)) < self.cutoff
 
 script_dir = dirname(realpath(__file__))
 py_files = ','.join(join(script_dir,p) for p in [
