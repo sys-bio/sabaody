@@ -15,6 +15,4 @@ if __name__ == '__main__':
     topology_rank_max = topology_rank.max(axis=0,level=1)
     # print(topology_rank_min['ActualAvgRounds'])
     for i in topology_rank_min.index:
-        print(i, topology_rank_min['ActualAvgRounds'][i])
-    for topology in topology_rank_min['ActualAvgRounds']:
-        print(topology)
+        print(i, '{}-{}'.format(int(topology_rank_min['ActualAvgRounds'][i]), int(topology_rank_max['ActualAvgRounds'][i])))
