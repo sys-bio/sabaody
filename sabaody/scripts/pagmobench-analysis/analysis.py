@@ -13,9 +13,10 @@ if __name__ == '__main__':
     topology_rank_min = topology_rank.min(axis=0,level=1)
     topology_rank_max = topology_rank.max(axis=0,level=1)
     topology_rank_range = topology_rank_max-topology_rank_min
+    topology_rank_median = 0.5*(topology_rank_min + topology_rank_max)
 
     print('Range (topology):')
-    for i in topology_rank_min.index:
+    for i in topology_rank_median.sort_values(by='ActualAvgRounds').index:
         print(i, '{}-{}'.format(
             int(topology_rank_min['ActualAvgRounds'][i]), int(topology_rank_max['ActualAvgRounds'][i])))
     mean_range = float(topology_rank_range.mean())
@@ -28,9 +29,11 @@ if __name__ == '__main__':
     algorithm_rank_min = algorithm_rank.min(axis=0,level=1)
     algorithm_rank_max = algorithm_rank.max(axis=0,level=1)
     algorithm_rank_range = algorithm_rank_max-algorithm_rank_min
+    algorithm_rank_median = 0.5*(algorithm_rank_min + algorithm_rank_max)
+    print(algorithm_rank_median)
 
     print('Range (algorithm):')
-    for i in algorithm_rank_min.index:
+    for i in algorithm_rank_median.sort_values(by='ActualAvgRounds').index:
         print(i, '{}-{}'.format(
             int(algorithm_rank_min['ActualAvgRounds'][i]), int(algorithm_rank_max['ActualAvgRounds'][i])))
     mean_range = float(algorithm_rank_range.mean())
