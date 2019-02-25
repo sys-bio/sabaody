@@ -27,25 +27,32 @@ all_benchmarks_dag = DAG(
 
 biopredyn_root_path = abspath(join(dirname(realpath(__file__)),'biopredyn'))
 
-n_islands = 10
+# n_islands = 10
 island_size = 500
 migrant_pool_size = 4
 generations = 1000
 
-from sabaody import TopologyGenerator
-generator = TopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
-
+from sabaody import TopologyGenerator, BiopredynTopologyGenerator
+pagmo_generator = TopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
+biopredyn_generator = BiopredynTopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
 
 def topology_generator(n_islands, island_size, migrant_pool_size, generations):
-    from sabaody import TopologyGenerator
     import MySQLdb
+    if name == 'pagmo':
+        generator = pagmo_generator
+    elif name == 'biopredyn':
+        generator = biopredyn_generator
+    else:
+        raise RuntimeError('Unrecognized generator "{}"'.format(name))
+
     mariadb_connection = MySQLdb.connect('luna','sabaody','w00t','sabaody')
     cursor = mariadb_connection.cursor()
 
     checksum = generator.get_checksum()
     cursor.execute('SELECT COUNT(*) FROM topology_sets WHERE '+\
-        '(Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
+        '(Name, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
         "({checksum}, {n_islands}, {island_size}, {migrant_pool_size},{generations});".format(
+        name=generator.name,
         checksum=checksum,
         n_islands=n_islands,
         island_size=island_size,
@@ -62,8 +69,9 @@ def topology_generator(n_islands, island_size, migrant_pool_size, generations):
         # print(serialized_topologies.hex())
         # store in database
         cursor.execute('\n'.join([
-            'INSERT INTO topology_sets (TopologySetID, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
-            'VALUES ({id},{checksum},{n_islands},{island_size},{migrant_pool_size},{generations},{content});'.format(
+            'INSERT INTO topology_sets (Name, TopologySetID, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
+            'VALUES ({name},{id},{checksum},{n_islands},{island_size},{migrant_pool_size},{generations},{content});'.format(
+                name=name,
                 id="'topology_set({})'".format(generator.get_version_string()),
                 checksum=checksum,
                 n_islands=n_islands,
@@ -101,6 +109,7 @@ class TaskGenerator():
             sql='''
                 CREATE TABLE IF NOT EXISTS topology_sets (
                     PrimaryKey INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                    Name VARCHAR(255) NOT NULL,
                     TopologySetID VARCHAR(255) NOT NULL,
                     Checksum INT NOT NULL,
                     NumIslands INT NOT NULL,
@@ -136,21 +145,28 @@ class TaskGenerator():
             dag=self.dag)
 
         # store the topologies in the table
-        self.generate_topologies = PythonOperator(
-            task_id='.'.join((self.dag.dag_id, 'generate_topologies')),
-            python_callable=topology_generator,
-            op_kwargs={
-                'n_islands': n_islands,
-                'island_size': island_size,
-                'migrant_pool_size': migrant_pool_size,
-                'generations': generations},
-            dag=self.dag)
+        for name in ('pagmo','biopredyn'):
+            if name == 'pagmo':
+                n_islands_values = (10,)
+            else:
+                n_islands_values = (2,4,8,16)
+            for n_islands in n_islands_values:
+                self.generate_topologies = PythonOperator(
+                    task_id='.'.join((self.dag.dag_id, 'generate_topologies')),
+                    python_callable=topology_generator,
+                    op_kwargs={
+                        'name': name,
+                        'n_islands': n_islands,
+                        'island_size': island_size,
+                        'migrant_pool_size': migrant_pool_size,
+                        'generations': generations},
+                    dag=self.dag)
 
         self.setup_topology_sets_table >> self.generate_topologies
         self.setup_benchmark_results_table >> self.generate_topologies
 
     def get_application_args(self, topology):
-        return [
+        return [ # FIXME: hardcoded
             '--topology',  'sql:sabaody@luna,pw=w00t,db=sabaody(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):{desc}'.format(
                 n_islands=n_islands,
                 island_size=island_size,

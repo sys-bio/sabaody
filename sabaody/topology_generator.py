@@ -24,6 +24,7 @@ class TopologyGenerator:
         self.factory =  TopologyFactory(island_size=island_size,
                                         migrant_pool_size=migrant_pool_size,
                                         seed=seed)
+        self.name = 'pagmo'
         self.n_islands = n_islands
         self.island_size = island_size
         self.migrant_pool_size = migrant_pool_size
@@ -55,13 +56,13 @@ class TopologyGenerator:
     def get_checksum(self):
         # from pickle import dumps
         # return hash(dumps(self.topologies)) % 16777216
-        return hash(self.get_version()) % 16777216
+        return hash(self.get_version()) + hash(self.name) % 16777216
 
 
     @classmethod
     def get_version(cls):
         # semantic version
-        return (0,2,2)
+        return (0,2,2,)
 
 
     @classmethod
@@ -285,3 +286,11 @@ class TopologyGenerator:
     def serialize(self):
         from pickle import dumps
         return dumps(self.topologies)
+
+
+class BiopredynTopologyGenerator(TopologyGenerator):
+    '''
+    Generates fewer topologies per problem.
+    '''
+    def __init__(self,name):
+        self.name = biopredyn
