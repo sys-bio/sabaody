@@ -5,7 +5,7 @@ from sabaody.scripts.benchmarks.biopredyn.launcher import BiopredynConfiguration
 from params import getDefaultParamValues, getUpperBound, getLowerBound
 from b4problem import B4_UDP
 
-from os.path import join, dirname, abspath, realpath
+from os.path import join, dirname, realpath
 
 def get_udp(validation_mode,n):
     if not validation_mode:
@@ -13,7 +13,7 @@ def get_udp(validation_mode,n):
     else:
         raise RuntimeError('No validation')
 
-sbmlfile = abspath(join('..','..','..','..','..','sbml','b4.xml'))
+sbmlfile = join('..','..','..','..','..','sbml','b4.xml')
 script_dir = dirname(realpath(__file__))
 spark_files = ','.join(join(script_dir,p) for p in [
     sbmlfile,

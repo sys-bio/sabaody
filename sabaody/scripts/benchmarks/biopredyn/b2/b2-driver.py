@@ -6,7 +6,7 @@ from params import getDefaultParamValues, getUpperBound, getLowerBound
 from b2problem import B2_UDP
 from b2problem_validator import B2Validator_UDP
 
-from os.path import join, dirname, abspath, realpath
+from os.path import join, dirname, realpath
 
 def get_udp(validation_mode,n):
     if not validation_mode:
@@ -14,7 +14,7 @@ def get_udp(validation_mode,n):
     else:
         return B2Validator_UDP(getLowerBound(),getUpperBound(),n=n)
 
-sbmlfile = abspath(join('..','..','..','..','..','sbml','b2.xml'))
+sbmlfile = join('..','..','..','..','..','sbml','b2.xml')
 script_dir = dirname(realpath(__file__))
 spark_files = ','.join(join(script_dir,p) for p in [
     sbmlfile,

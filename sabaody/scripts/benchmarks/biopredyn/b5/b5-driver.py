@@ -5,7 +5,7 @@ from sabaody.scripts.benchmarks.biopredyn.launcher import BiopredynConfiguration
 from params import getDefaultParamValues, getUpperBound, getLowerBound
 from b5problem import B5_UDP
 
-from os.path import join, dirname, abspath, realpath
+from os.path import join, dirname, realpath
 
 def get_udp(validation_mode,n):
     if not validation_mode:
