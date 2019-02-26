@@ -264,6 +264,7 @@ class TopologyGenerator:
 
         :param n: Number of islands.
         '''
+        from math import log
 
         self.create_variants(n, 'One-way ring', 'rings', self.factory.createOneWayRing)
         self.create_variants(n, 'Bidirectional ring', 'rings', self.factory.createBidirRing)
@@ -276,7 +277,7 @@ class TopologyGenerator:
         self.create_variants(n, '1-2-3 Ring', 'rings', self.factory.create_123_Ring)
         self.create_variants(n, 'Fully Connected', 'clustered', self.factory.createFullyConnected)
         self.create_variants(n, 'Broadcast', 'clustered', self.factory.createBroadcast)
-        self.create_variants(4, 'Hypercube', 'clustered', self.factory.createHypercube) # FIXME: hard-coded
+        self.create_variants(round(log(n,2)), 'Hypercube', 'clustered', self.factory.createHypercube) # FIXME: hard-coded
         if n <= 4:
             # remaining topologies need at least 4 islands
             return self.topologies
@@ -301,3 +302,73 @@ class BiopredynTopologyGenerator(TopologyGenerator):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
         self.name = 'biopredyn'
+
+    def create_variants(self, n, desc, category, constructor):
+        def assign_2nd_alg(archipelago, algo):
+            if category == 'rings':
+                for island in archipelago.topology.every_other_island():
+                    island.algorithm = algo
+            elif hasattr(archipelago.topology, 'endpoints'):
+                for island in archipelago.topology.endpoints:
+                    island.algorithm = algo
+            elif isinstance(archipelago.topology, FullyConnectedTopology):
+                for island in islice(archipelago.topology.islands, None, None, 2):
+                    island.algorithm = algo
+            return archipelago
+
+        def assign_algs(archipelago, algos):
+            '''
+            Evenly partitions and assigns algorithms to islands.
+            '''
+            for island,algo in zip(archipelago.topology.islands, cycle(algos)):
+                island.algorithm = algo
+
+        g = self.generations
+
+        self.new_topology(
+          desc='{}, de1220'.format(desc),
+          category=category,
+          algorithms=['de1220'],
+          archipelago=Archipelago(constructor(de1220(gen=g),n)))
+        self.new_topology(
+          desc='{}, sade'.format(desc),
+          category=category,
+          algorithms=['sade'],
+          archipelago=Archipelago(constructor(sade(gen=g),n)))
+        self.new_topology(
+          desc='{}, bee_colony'.format(desc),
+          category=category,
+          algorithms=['bee_colony'],
+          archipelago=Archipelago(constructor(bee_colony(gen=g),n)))
+        # de + nelder mead combo
+        self.new_topology(
+          desc='{}, de+nelder mead'.format(desc),
+          category=category,
+          algorithms=['de','neldermead'],
+          archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), self.make_nelder_mead()))
+        # de + praxis combo
+        self.new_topology(
+          desc='{}, de+praxis'.format(desc),
+          category=category,
+          algorithms=['de','praxis'],
+          archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), self.make_praxis()))
+        # de + sade combo
+        self.new_topology(
+          desc='{}, de+sade'.format(desc),
+          category=category,
+          algorithms=['de','sade'],
+          archipelago=assign_2nd_alg(Archipelago(constructor(de(gen=g),n)), sade(gen=g)))
+
+
+    def _generate_all(self, n):
+        '''
+        Generate a set of benchmark topologies for biopredyn.
+
+        :param n: Number of islands.
+        '''
+        from math import log
+
+        self.create_variants(n, 'Rim', 'rings', self.factory.createRim)
+        self.create_variants(round(log(n,2)), 'Hypercube', 'clustered', self.factory.createHypercube)
+
+        return self.topologies
