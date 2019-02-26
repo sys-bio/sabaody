@@ -311,7 +311,7 @@ class BenchmarkLauncherBase:
     def generate_archipelago(self, topology_name, metric, monitor):
         from os.path import isfile
         from re import compile
-        db_regex = compile(r'sql:(\w+)@([\w:]+),pw=([^,]+),db=([\w]+)\(n_islands=(\d+),island_size=(\d+),migrant_pool_size=(\d+),generations=(\d+)\):(.*)')
+        db_regex = compile(r'sql:(\w+)@([\w:]+),pw=([^,]+),db=([\w]+)\(name=(\w+),n_islands=(\d+),island_size=(\d+),migrant_pool_size=(\d+),generations=(\d+)\):(.*)')
         if isfile(topology_name):
             import pickle
             with open(topology_name) as f:
@@ -319,13 +319,18 @@ class BenchmarkLauncherBase:
         elif db_regex.match(topology_name) is not None:
             m = db_regex.match(topology_name)
             from sabaody import TopologyGenerator
-            generator = TopologyGenerator(
-                n_islands = int(m.group(5)),
-                island_size = int(m.group(6)),
-                migrant_pool_size = int(m.group(7)),
-                generations = int(m.group(8)))
+            name = m.group(5)
+            if name == 'pagmo':
+                generator_class = TopologyGenerator
+            elif name == 'biopredyn':
+                generator_class = BiopredynTopologyGenerator
+            generator = generator_class(
+                n_islands = int(m.group(6)),
+                island_size = int(m.group(7)),
+                migrant_pool_size = int(m.group(8)),
+                generations = int(m.group(9)))
             topology,id = generator.find_in_database(
-                desc = m.group(9),
+                desc = m.group(10),
                 user = m.group(1),
                 host = m.group(2),
                 pw   = m.group(3),

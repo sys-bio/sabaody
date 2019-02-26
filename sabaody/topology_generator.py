@@ -56,13 +56,13 @@ class TopologyGenerator:
     def get_checksum(self):
         # from pickle import dumps
         # return hash(dumps(self.topologies)) % 16777216
-        return hash(self.get_version()) + hash(self.name) % 16777216
+        return (hash(self.get_version()) + hash(self.name)) % 16777216
 
 
     @classmethod
     def get_version(cls):
         # semantic version
-        return (0,2,2,)
+        return (0,2,3,)
 
 
     @classmethod
@@ -268,12 +268,18 @@ class TopologyGenerator:
         self.create_variants(n, 'One-way ring', 'rings', self.factory.createOneWayRing)
         self.create_variants(n, 'Bidirectional ring', 'rings', self.factory.createBidirRing)
         self.create_variants(n, 'Bidirectional chain', 'chain', self.factory.createBidirChain)
+        if n == 1:
+            # remaining topologies are degenerate
+            return self.topologies
         self.create_variants(n, 'Rim', 'rings', self.factory.createRim)
         self.create_variants(n, '1-2 Ring', 'rings', self.factory.create_12_Ring)
         self.create_variants(n, '1-2-3 Ring', 'rings', self.factory.create_123_Ring)
         self.create_variants(n, 'Fully Connected', 'clustered', self.factory.createFullyConnected)
         self.create_variants(n, 'Broadcast', 'clustered', self.factory.createBroadcast)
         self.create_variants(4, 'Hypercube', 'clustered', self.factory.createHypercube) # FIXME: hard-coded
+        if n <= 4:
+            # remaining topologies need at least 4 islands
+            return self.topologies
         self.create_variants(n, 'Watts-Strogatz', 'clustered', partial(self.factory.createWattsStrogatz, k=int(n/4)))
         self.create_variants(n, 'Erdos-Renyi', 'clustered', self.factory.createErdosRenyi)
         self.create_variants(n, 'Barabasi-Albert', 'clustered', partial(self.factory.createBarabasiAlbert, m=int(n/4)))
@@ -292,5 +298,6 @@ class BiopredynTopologyGenerator(TopologyGenerator):
     '''
     Generates fewer topologies per problem.
     '''
-    def __init__(self,name):
-        self.name = biopredyn
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.name = 'biopredyn'

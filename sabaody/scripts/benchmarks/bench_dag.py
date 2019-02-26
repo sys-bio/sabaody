@@ -27,21 +27,20 @@ all_benchmarks_dag = DAG(
 
 biopredyn_root_path = abspath(join(dirname(realpath(__file__)),'biopredyn'))
 
-# n_islands = 10
+from sabaody import TopologyGenerator, BiopredynTopologyGenerator
+
+pagmo_n_islands_values = (10,)
+biopredyn_n_islands_values = (1,2,4,8,16)
 island_size = 500
 migrant_pool_size = 4
 generations = 1000
 
-from sabaody import TopologyGenerator, BiopredynTopologyGenerator
-pagmo_generator = TopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
-biopredyn_generator = BiopredynTopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
-
-def topology_generator(n_islands, island_size, migrant_pool_size, generations):
+def topology_generator(name, n_islands, island_size, migrant_pool_size, generations):
     import MySQLdb
     if name == 'pagmo':
-        generator = pagmo_generator
+        generator = TopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
     elif name == 'biopredyn':
-        generator = biopredyn_generator
+        generator = BiopredynTopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
     else:
         raise RuntimeError('Unrecognized generator "{}"'.format(name))
 
@@ -50,9 +49,8 @@ def topology_generator(n_islands, island_size, migrant_pool_size, generations):
 
     checksum = generator.get_checksum()
     cursor.execute('SELECT COUNT(*) FROM topology_sets WHERE '+\
-        '(Name, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
+        '(Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations) = '+\
         "({checksum}, {n_islands}, {island_size}, {migrant_pool_size},{generations});".format(
-        name=generator.name,
         checksum=checksum,
         n_islands=n_islands,
         island_size=island_size,
@@ -65,13 +63,11 @@ def topology_generator(n_islands, island_size, migrant_pool_size, generations):
     # if this version is already stored, do nothing
     if n_matches == 0:
         serialized_topologies = generator.serialize()
-        # print(len(serialized_topologies))
-        # print(serialized_topologies.hex())
         # store in database
         cursor.execute('\n'.join([
             'INSERT INTO topology_sets (Name, TopologySetID, Checksum, NumIslands, IslandSize, MigrantPoolSize, Generations, Content)',
             'VALUES ({name},{id},{checksum},{n_islands},{island_size},{migrant_pool_size},{generations},{content});'.format(
-                name=name,
+                name="'{}'".format(name),
                 id="'topology_set({})'".format(generator.get_version_string()),
                 checksum=checksum,
                 n_islands=n_islands,
@@ -98,10 +94,11 @@ def legalize_name(name):
     return result
 
 class TaskGenerator():
-
-    def __init__(self, dag, rounds):
+    def __init__(self, dag, rounds, n_islands_values, topology_set_name):
         self.dag = dag
         self.rounds = rounds
+        self.n_islands_values = n_islands_values
+        self.topology_set_name = topology_set_name
         # first, make sure the SQL tables exist
         self.setup_topology_sets_table = MySqlOperator(
             task_id='.'.join((self.dag.dag_id, 'setup_topology_sets_table')),
@@ -145,29 +142,25 @@ class TaskGenerator():
             dag=self.dag)
 
         # store the topologies in the table
-        for name in ('pagmo','biopredyn'):
-            if name == 'pagmo':
-                n_islands_values = (10,)
-            else:
-                n_islands_values = (2,4,8,16)
-            for n_islands in n_islands_values:
-                self.generate_topologies = PythonOperator(
-                    task_id='.'.join((self.dag.dag_id, 'generate_topologies')),
-                    python_callable=topology_generator,
-                    op_kwargs={
-                        'name': name,
-                        'n_islands': n_islands,
-                        'island_size': island_size,
-                        'migrant_pool_size': migrant_pool_size,
-                        'generations': generations},
-                    dag=self.dag)
+        for n_islands in self.n_islands_values:
+            self.generate_topologies = PythonOperator(
+                task_id='.'.join((self.dag.dag_id, 'generate_topologies')),
+                python_callable=topology_generator,
+                op_kwargs={
+                    'name': self.topology_set_name,
+                    'n_islands': n_islands,
+                    'island_size': island_size,
+                    'migrant_pool_size': migrant_pool_size,
+                    'generations': generations},
+                dag=self.dag)
 
         self.setup_topology_sets_table >> self.generate_topologies
         self.setup_benchmark_results_table >> self.generate_topologies
 
-    def get_application_args(self, topology):
+    def get_application_args(self, topology, n_islands):
         return [ # FIXME: hardcoded
-            '--topology',  'sql:sabaody@luna,pw=w00t,db=sabaody(n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):{desc}'.format(
+            '--topology',  'sql:sabaody@luna,pw=w00t,db=sabaody(name={name},n_islands={n_islands},island_size={island_size},migrant_pool_size={migrant_pool_size},generations={generations}):{desc}'.format(
+                name=self.topology_set_name,
                 n_islands=n_islands,
                 island_size=island_size,
                 migrant_pool_size=migrant_pool_size,
@@ -188,35 +181,47 @@ class TaskGenerator():
             # '--deploy-mode', 'client',
             ]
 
+    def make_topology_generator(self, n_islands):
+        if self.topology_set_name == 'pagmo':
+            return TopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
+        elif self.topology_set_name == 'biopredyn':
+            return BiopredynTopologyGenerator(n_islands=n_islands,  island_size=island_size, migrant_pool_size=migrant_pool_size, generations=generations)
+        else:
+            raise RuntimeError('Unrecognized generator "{}"'.format(self.topology_set_name))
+
     def generate(self, benchmark, application):
         # for each topology, create a benchmark task
         self.benchmarks = []
 
-        for topology in generator.topologies:
-            # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param
-            self.benchmarks.append(SparkSubmitOperator(
-                task_id='.'.join((self.dag.dag_id, benchmark, legalize_name(topology['description']))),
-                conf={
-                    'spark.cores.max': 10,
-                    'spark.executor.cores': 1,
-                },
-                application=application,
-                application_args=self.get_application_args(topology),
-                dag=self.dag,
-            ))
-            self.generate_topologies >> self.benchmarks[-1]
+        for n_islands in self.n_islands_values:
+            for topology in self.make_topology_generator(n_islands=n_islands).topologies:
+                # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param
+                self.benchmarks.append(SparkSubmitOperator(
+                    task_id='.'.join((self.dag.dag_id, benchmark, 'n_islands_{}'.format(n_islands), legalize_name(topology['description']))),
+                    conf={
+                        'spark.cores.max': 10,
+                        'spark.executor.cores': 1,
+                    },
+                    application=application,
+                    application_args=self.get_application_args(topology, n_islands),
+                    dag=self.dag,
+                ))
+                self.generate_topologies >> self.benchmarks[-1]
 
 
-biopredyn_rounds = 1000
+biopredyn_rounds = 4000
 
-all_bench_generator = TaskGenerator(all_benchmarks_dag, biopredyn_rounds)
+def make_biopredyn_task_generator(dag):
+    return TaskGenerator(dag, rounds=biopredyn_rounds, n_islands_values=biopredyn_n_islands_values, topology_set_name='biopredyn')
+
+all_bench_generator = make_biopredyn_task_generator(all_benchmarks_dag)
 
 b1_dag = DAG(
   'b1_benchmark',
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b1_dag, biopredyn_rounds).generate('b1', join(biopredyn_root_path,'b1','b1-driver.py'))
+make_biopredyn_task_generator(b1_dag).generate('b1', join(biopredyn_root_path,'b1','b1-driver.py'))
 all_bench_generator.generate('b1', join(biopredyn_root_path,'b1','b1-driver.py'))
 
 b2_dag = DAG(
@@ -224,7 +229,7 @@ b2_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b2_dag, biopredyn_rounds).generate('b2', join(biopredyn_root_path,'b2','b2-driver.py'))
+make_biopredyn_task_generator(b2_dag).generate('b2', join(biopredyn_root_path,'b2','b2-driver.py'))
 all_bench_generator.generate('b2', join(biopredyn_root_path,'b2','b2-driver.py'))
 
 b3_dag = DAG(
@@ -232,7 +237,7 @@ b3_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b3_dag, biopredyn_rounds).generate('b3', join(biopredyn_root_path,'b3','b3-driver.py'))
+make_biopredyn_task_generator(b3_dag).generate('b3', join(biopredyn_root_path,'b3','b3-driver.py'))
 all_bench_generator.generate('b3', join(biopredyn_root_path,'b3','b3-driver.py'))
 
 b4_dag = DAG(
@@ -240,7 +245,7 @@ b4_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b4_dag, biopredyn_rounds).generate('b4', join(biopredyn_root_path,'b4','b4-driver.py'))
+make_biopredyn_task_generator(b4_dag).generate('b4', join(biopredyn_root_path,'b4','b4-driver.py'))
 all_bench_generator.generate('b4', join(biopredyn_root_path,'b4','b4-driver.py'))
 
 b5_dag = DAG(
@@ -248,7 +253,7 @@ b5_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-TaskGenerator(b5_dag, biopredyn_rounds).generate('b5', join(biopredyn_root_path,'b5','b5-driver.py'))
+make_biopredyn_task_generator(b5_dag).generate('b5', join(biopredyn_root_path,'b5','b5-driver.py'))
 all_bench_generator.generate('b5', join(biopredyn_root_path,'b5','b5-driver.py'))
 
 
@@ -256,25 +261,26 @@ all_bench_generator.generate('b5', join(biopredyn_root_path,'b5','b5-driver.py')
 # pagmo test problems
 
 class PagmoTaskGenerator(TaskGenerator):
-    def get_application_args(self, topology, dimension, cutoff):
-        return super().get_application_args(topology)+[
+    def get_application_args(self, topology, n_islands, dimension, cutoff):
+        return super().get_application_args(topology=topology, n_islands=n_islands)+[
             '--dimension', str(dimension),
             '--cutoff', str(cutoff),
             ]
     def generate(self, benchmark, application, dimension, cutoff):
         self.benchmarks = []
-        for topology in generator.topologies:
-            self.benchmarks.append(SparkSubmitOperator(
-                task_id='.'.join((self.dag.dag_id, benchmark, legalize_name(topology['description']))),
-                conf={
-                    'spark.cores.max': 10,
-                    'spark.executor.cores': 1,
-                },
-                application=application,
-                application_args=self.get_application_args(topology, dimension, cutoff),
-                dag=self.dag,
-            ))
-            self.generate_topologies >> self.benchmarks[-1]
+        for n_islands in self.n_islands_values:
+            for topology in self.make_topology_generator(n_islands=n_islands).topologies:
+                self.benchmarks.append(SparkSubmitOperator(
+                    task_id='.'.join((self.dag.dag_id, benchmark, legalize_name(topology['description']))),
+                    conf={
+                        'spark.cores.max': 10,
+                        'spark.executor.cores': 1,
+                    },
+                    application=application,
+                    application_args=self.get_application_args(topology, n_islands, dimension, cutoff),
+                    dag=self.dag,
+                ))
+                self.generate_topologies >> self.benchmarks[-1]
 
 pagmo_benchmarks_dag = DAG(
   'pagmo_benchmarks',
@@ -287,14 +293,17 @@ pagmo_rounds = 2000
 pagmo_dimension = 16
 pagmo_cutoff = 0.01
 
-pagmo_bench_generator = PagmoTaskGenerator(pagmo_benchmarks_dag, rounds=pagmo_rounds)
+def make_pagmo_task_generator(dag):
+    return PagmoTaskGenerator(dag, rounds=pagmo_rounds, n_islands_values=pagmo_n_islands_values, topology_set_name='pagmo')
+
+pagmo_bench_generator = make_pagmo_task_generator(pagmo_benchmarks_dag)
 
 ackley_dag = DAG(
   'ackley_benchmark',
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(ackley_dag, rounds=pagmo_rounds).generate(
+make_pagmo_task_generator(ackley_dag).generate(
     'ackley', join(pagmo_root_path,'ackley','ak-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
 pagmo_bench_generator.generate('ackley', join(pagmo_root_path,'ackley','ak-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
 
@@ -303,7 +312,7 @@ griewank_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(griewank_dag, rounds=pagmo_rounds).generate(
+make_pagmo_task_generator(griewank_dag).generate(
     'griewank', join(pagmo_root_path,'griewank','gr-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
 pagmo_bench_generator.generate('griewank', join(pagmo_root_path,'griewank','gr-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
 
@@ -312,7 +321,7 @@ rastrigin_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(rastrigin_dag, rounds=pagmo_rounds).generate(
+make_pagmo_task_generator(rastrigin_dag).generate(
     'rastrigin', join(pagmo_root_path,'rastrigin','ra-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
 pagmo_bench_generator.generate('rastrigin', join(pagmo_root_path,'rastrigin','ra-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
 
@@ -321,7 +330,7 @@ rosenbrock_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(rosenbrock_dag, rounds=pagmo_rounds).generate(
+make_pagmo_task_generator(rosenbrock_dag).generate(
     'rosenbrock', join(pagmo_root_path,'rosenbrock','rb-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
 pagmo_bench_generator.generate('rosenbrock', join(pagmo_root_path,'rosenbrock','rb-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
 
@@ -330,6 +339,6 @@ schwefel_dag = DAG(
   default_args=default_args,
   concurrency=1,
   schedule_interval=timedelta(10000))
-PagmoTaskGenerator(schwefel_dag, rounds=pagmo_rounds).generate(
+make_pagmo_task_generator(schwefel_dag).generate(
     'schwefel', join(pagmo_root_path,'schwefel','sw-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
 pagmo_bench_generator.generate('schwefel', join(pagmo_root_path,'schwefel','sw-driver.py'), dimension=pagmo_dimension, cutoff=pagmo_cutoff)
