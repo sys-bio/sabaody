@@ -157,8 +157,11 @@ class TimecourseSimIrreg(TimecourseSimBase):
         except (RuntimeError, StalledSimulation):
             # if convergence fails, use a penalty score
             return 1e9*self.penalty_scale
+        print('evaluate')
+        # for quantity,residuals in self.quantity_residuals.items():
+            # print(quantity,mean(array(residuals)**2.),self.mean_measurement_map[quantity])
         return sqrt(mean(array([
-            mean(array(residuals))**2./self.mean_measurement_map[quantity]**2. \
+            mean(array(residuals)**2.)/self.mean_measurement_map[quantity]**2. \
             for quantity,residuals in self.quantity_residuals.items() \
             ])))
 

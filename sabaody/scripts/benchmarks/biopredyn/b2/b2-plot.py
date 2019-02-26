@@ -8,7 +8,7 @@ from params import getDefaultParamValues, getBestKnownValues
 with open('../../../../../sbml/b2.xml') as f:
     sbml = f.read()
 m = B2Problem(sbml)
-# m.evaluate(getBestKnownValues())
+print('obj value', m.evaluate(getBestKnownValues()))
 for q in ['cpep', 'cg6p', 'cpyr', 'cf6p', 'cglcex', 'cg1p', 'cpg', 'cfdp', 'cgap']:
     m.plotQuantity(q, param_values=getBestKnownValues())
     print('MSE for {}: {:.3}'.format(q,m.RMSE_quantity(q)))
