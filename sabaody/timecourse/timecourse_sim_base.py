@@ -82,7 +82,7 @@ class TimecourseSimBase(Evaluator):
         from sabaody.utils import divergent
         reaction_rates = self.r.getReactionRates()
         if divergent(reaction_rates):
-            return true
+            return True
 
 
     def setParameterVector(self, x, exponential=True):

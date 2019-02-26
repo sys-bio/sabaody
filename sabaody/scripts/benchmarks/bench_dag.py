@@ -199,7 +199,7 @@ class TaskGenerator():
                 self.benchmarks.append(SparkSubmitOperator(
                     task_id='.'.join((self.dag.dag_id, benchmark, 'n_islands_{}'.format(n_islands), legalize_name(topology['description']))),
                     conf={
-                        'spark.cores.max': 10,
+                        'spark.cores.max': 16,
                         'spark.executor.cores': 1,
                     },
                     application=application,
@@ -209,7 +209,7 @@ class TaskGenerator():
                 self.generate_topologies >> self.benchmarks[-1]
 
 
-biopredyn_rounds = 4000
+biopredyn_rounds = 1000
 
 def make_biopredyn_task_generator(dag):
     return TaskGenerator(dag, rounds=biopredyn_rounds, n_islands_values=biopredyn_n_islands_values, topology_set_name='biopredyn')
@@ -273,7 +273,7 @@ class PagmoTaskGenerator(TaskGenerator):
                 self.benchmarks.append(SparkSubmitOperator(
                     task_id='.'.join((self.dag.dag_id, benchmark, legalize_name(topology['description']))),
                     conf={
-                        'spark.cores.max': 10,
+                        'spark.cores.max': 16,
                         'spark.executor.cores': 1,
                     },
                     application=application,
