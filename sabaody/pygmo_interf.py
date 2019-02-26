@@ -48,13 +48,13 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
     if hasattr(island.algorithm, 'maxtime'):
         # print('maxtime ', island.algorithm.maxt.ime)
         island.algorithm.maxtime = 1
-    # i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size, udi=pg.mp_island(use_pool=False))
-    if problem is None:
-        problem = pg.problem(udp)
-    if use_pool:
-        i = pg.island(algo=island.algorithm, prob=problem, size=island.size, udi=pg.mp_island(use_pool=False))
-    else:
-        i = pg.island(algo=island.algorithm, prob=problem, size=island.size)
+    i = pg.island(algo=island.algorithm, prob=pg.problem(udp), size=island.size, udi=pg.mp_island(use_pool=False))
+    # if problem is None:
+    #     problem = pg.problem(udp)
+    # if use_pool:
+    #     i = pg.island(algo=island.algorithm, prob=problem, size=island.size, udi=pg.mp_island(use_pool=False))
+    # else:
+    #     i = pg.island(algo=island.algorithm, prob=problem, size=island.size)
 
     if monitor is not None:
         monitor.update('Running', 'island', island.id, 'status')
