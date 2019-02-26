@@ -2,4 +2,6 @@
 PYSPARK_PYTHON={{pythonexe}}
 {% endif %}
 # per-machine core limit
+# have to start worker manually per machine for this to take effect
+# use "start-slave.sh spark://spark.master.ip:7077", not "start-slaves.sh"
 # export SPARK_WORKER_CORES=6
