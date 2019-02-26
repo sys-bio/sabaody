@@ -55,8 +55,11 @@ class TopologyGenerator:
 
     def get_checksum(self):
         # from pickle import dumps
+        from hashlib import md5
         # return hash(dumps(self.topologies)) % 16777216
-        return (hash(self.get_version()) + hash(self.name)) % 16777216
+        # print('hash version {} = {}'.format(self.get_version(), hash(self.get_version())))
+        # print('hash name {} = {}'.format(self.name, int(md5(self.name.encode('utf8')).hexdigest(),16)))
+        return (hash(self.get_version()) + int(md5(self.name.encode('utf8')).hexdigest(),16)) % 16777216
 
 
     @classmethod

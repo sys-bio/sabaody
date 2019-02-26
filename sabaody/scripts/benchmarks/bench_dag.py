@@ -144,7 +144,7 @@ class TaskGenerator():
         # store the topologies in the table
         for n_islands in self.n_islands_values:
             self.generate_topologies = PythonOperator(
-                task_id='.'.join((self.dag.dag_id, 'generate_topologies')),
+                task_id='.'.join((self.dag.dag_id, self.topology_set_name, 'n_islands_{}'.format(n_islands), 'generate_topologies')),
                 python_callable=topology_generator,
                 op_kwargs={
                     'name': self.topology_set_name,

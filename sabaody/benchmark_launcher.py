@@ -318,7 +318,7 @@ class BenchmarkLauncherBase:
                 return pickle.load(f)['archipelago']
         elif db_regex.match(topology_name) is not None:
             m = db_regex.match(topology_name)
-            from sabaody import TopologyGenerator
+            from sabaody import TopologyGenerator, BiopredynTopologyGenerator
             name = m.group(5)
             if name == 'pagmo':
                 generator_class = TopologyGenerator
