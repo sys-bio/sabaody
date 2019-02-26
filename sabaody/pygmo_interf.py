@@ -93,7 +93,7 @@ def run_island(island, topology, migrator, udp, rounds, metric=None, monitor=Non
             metric.process_deltas(deltas,src_ids, round)
         migration_log.append((float(i.get_population().champion_f[0]),deltas,src_ids))
 
-        if terminator.should_stop(i, monitor):
+        if terminator is not None and terminator.should_stop(i, monitor):
             break
 
     #import socket

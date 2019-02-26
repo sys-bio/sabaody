@@ -32,6 +32,7 @@ class BiopredynConfiguration(BenchmarkLauncherBase):
         result.sbmlfile = sbmlfile
         result.udp_constructor = udp_constructor
         result.getDefaultParamValues = getDefaultParamValues
+        result.terminator = None
         return result
 
 
