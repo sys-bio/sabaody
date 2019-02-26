@@ -3,6 +3,7 @@
 from __future__ import print_function, division, absolute_import
 
 from influxdb import InfluxDBClient
+from influxdb.exceptions import InfluxDBServerError
 import arrow
 
 from uuid import uuid4
@@ -35,29 +36,35 @@ class InfluxDBMetric(Metric):
 
 
     def process_deltas(self, deltas, src_ids, round):
-        self.getClient().write_points([
-            { 'measurement': 'delta',
-              'time': arrow.utcnow().isoformat(),
-              'fields': {
-                  'abs_delta': float(delta),
-                  # 'delta_rel_to_champ': float(delta)/current_champ_score,
-                  'src_id': src_id,
-                  'round': round,
-              }
-            } for delta,src_id in zip(deltas,src_ids)], database=self.database)
+        try:
+            self.getClient().write_points([
+                { 'measurement': 'delta',
+                  'time': arrow.utcnow().isoformat(),
+                  'fields': {
+                      'abs_delta': float(delta),
+                      # 'delta_rel_to_champ': float(delta)/current_champ_score,
+                      'src_id': src_id,
+                      'round': round,
+                  }
+                } for delta,src_id in zip(deltas,src_ids)], database=self.database)
+        except InfluxDBServerError:
+            pass
 
 
     def process_champion(self, island_id, best_f, best_x, round):
-        self.getClient().write_points([
-            { 'measurement': 'champion',
-              'time': arrow.utcnow().isoformat(),
-              'fields': {
-                  'island_id': island_id,
-                  'best_f': repr(best_f.tolist()),
-                  'best_x': repr(best_x.tolist()),
-                  'round': round,
-              }
-            }], database=self.database)
+        try:
+            self.getClient().write_points([
+                { 'measurement': 'champion',
+                  'time': arrow.utcnow().isoformat(),
+                  'fields': {
+                      'island_id': island_id,
+                      'best_f': repr(best_f.tolist()),
+                      'best_x': repr(best_x.tolist()),
+                      'round': round,
+                  }
+                }], database=self.database)
+        except InfluxDBServerError:
+            pass
 
 
     def __enter__(self):
