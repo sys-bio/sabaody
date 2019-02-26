@@ -20,12 +20,6 @@ class StalledSimulation(RuntimeError):
 
 class TimecourseSimBase(Evaluator):
     ''' Base class for timecourse simulations.'''
-
-
-    # def RMSE_quantity(self, identifier):
-    #     ''' Calc the RMSE of a quantity.'''
-    #     from math import sqrt
-    #     return sqrt(float((array(self.quantity_residuals[identifier])**2).mean()))
     #
     #
     # def MSE(self):

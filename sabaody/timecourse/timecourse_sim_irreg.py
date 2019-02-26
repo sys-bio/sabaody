@@ -50,7 +50,7 @@ class TimecourseSimIrreg(TimecourseSimBase):
 
         self.measurement_map = measurement_map
         # map a quantity to its mean measured value
-        self.mean_measurement_map = {quantity: mean(values) for quantity,values in self.measurement_map.items()}
+        self.mean_measurement_map = {quantity: mean(values[:,1]) for quantity,values in self.measurement_map.items()}
 
         # keep track of the number of times a measurement is used
         # (check correct number of residuals)
@@ -193,3 +193,9 @@ class TimecourseSimIrreg(TimecourseSimBase):
             n = a.shape[0]
             print('Usage for {}: {}/{}'.format(q,used,n))
         print('*** Total usage: {}/{} ({:.1f}%)'.format(total_used,total,100.*total_used/total))
+
+
+    def RMSE_quantity(self, identifier):
+        ''' Calc the RMSE of a quantity.'''
+        from math import sqrt
+        return sqrt(float((array(self.quantity_residuals[identifier])**2).mean()))/self.mean_measurement_map[identifier]
