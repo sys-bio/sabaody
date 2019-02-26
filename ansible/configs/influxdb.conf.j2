@@ -492,7 +492,7 @@
 ###
 
 [[udp]]
-  enabled = true
+  # enabled = false
   # bind-address = ":8089"
   # database = "udp"
   # retention-policy = ""
@@ -505,16 +505,16 @@
   # will buffer points in memory if you have many coming in.
 
   # Flush if this many points get buffered
-  batch-size = 5000
+  # batch-size = 5000
 
   # Number of batches that may be pending in memory
-  batch-pending = 10
+  # batch-pending = 10
 
   # Will flush at least this often even if we haven't hit buffer limit
-  batch-timeout = "5s"
+  # batch-timeout = "1s"
 
   # UDP Read buffer size, 0 means OS default. UDP listener will fail if set above OS max.
-  read-buffer = 0
+  # read-buffer = 0
 
 ###
 ### [continuous_queries]

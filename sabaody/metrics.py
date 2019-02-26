@@ -24,14 +24,14 @@ class InfluxDBMetric(Metric):
         super().__init__(database)
         # self.database = database.replace('.','_').replace('-','_')
 
-        self.client_opts = dict(host=host, port=port, username=username, password=password, database=database, ssl=ssl, verify_ssl=verify_ssl, timeout=10, retries=retries, use_udp=True, udp_port=udp_port, proxies=proxies)
+        self.client_opts = dict(host=host, port=port, username=username, password=password, database=database, ssl=ssl, verify_ssl=verify_ssl, timeout=timeout, retries=retries, use_udp=use_udp, udp_port=udp_port, proxies=proxies)
 
-        # self.client = InfluxDBClient(**self.client_opts)
+        self.client = InfluxDBClient(**self.client_opts)
 
 
     def getClient(self):
-        # return self.client
-        return InfluxDBClient(**self.client_opts)
+        return self.client
+        # return InfluxDBClient(**self.client_opts)
 
 
     def process_deltas(self, deltas, src_ids, round):
