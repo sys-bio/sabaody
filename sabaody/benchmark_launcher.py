@@ -105,6 +105,14 @@ class MemcachedMonitor:
         return best_x
 
 
+    def get_best_f(self):
+        best_f = self.mc_client.get(self.getNameQualifier()('global', 'best_f'))
+        if best_f is not None:
+            from json import loads
+            best_f = array(loads(best_f))
+        return best_f
+
+
 def print_out_status(client, domainJoin, base_domain_qualifier, screen):
     from asciimatics.screen import Screen
     from toolz import partial

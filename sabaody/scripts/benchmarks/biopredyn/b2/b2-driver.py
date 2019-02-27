@@ -14,6 +14,15 @@ def get_udp(validation_mode,n):
     else:
         return B2Validator_UDP(getLowerBound(),getUpperBound(),n=n)
 
+class B2Terminator(TerminatorBase):
+    def should_stop(self, pg_island, monitor):
+        from numpy import mean
+        best_f = monitor.get_best_f()
+        if best_f is None:
+            return False
+        else:
+            return mean(best_f) < 0.27
+
 sbmlfile = join('..','..','..','..','..','sbml','b2.xml')
 script_dir = dirname(realpath(__file__))
 spark_files = ','.join(join(script_dir,p) for p in [
@@ -26,6 +35,6 @@ py_files = ','.join(join(script_dir,p) for p in [
     'params.py',
     '../launcher.py',
     ])
-config = BiopredynConfiguration.from_cmdline_args('b2-driver', get_udp, getDefaultParamValues, sbmlfile=sbmlfile, spark_files=spark_files, py_files=py_files)
+config = BiopredynConfiguration.from_cmdline_args('b2-driver', get_udp, getDefaultParamValues, sbmlfile=sbmlfile, spark_files=spark_files, py_files=py_files, terminator=B2Terminator())
 
 config.run_command(config.command)
