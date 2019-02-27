@@ -25,14 +25,14 @@ class BiopredynMCMonitor(MemcachedMonitor):
 
 class BiopredynConfiguration(BenchmarkLauncherBase):
     @classmethod
-    def from_cmdline_args(cls, app_name, udp_constructor, getDefaultParamValues, sbmlfile, spark_files, py_files):
+    def from_cmdline_args(cls, app_name, udp_constructor, getDefaultParamValues, sbmlfile, spark_files, py_files, terminator):
         from os.path import join
         result = super(BiopredynConfiguration,cls).from_cmdline_args(app_name, spark_files, py_files)
         result.app_name = app_name
         result.sbmlfile = sbmlfile
         result.udp_constructor = udp_constructor
         result.getDefaultParamValues = getDefaultParamValues
-        result.terminator = None
+        result.terminator = terminator
         return result
 
 

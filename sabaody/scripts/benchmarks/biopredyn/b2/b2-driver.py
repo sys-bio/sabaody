@@ -3,6 +3,7 @@ from __future__ import print_function, division, absolute_import
 
 from sabaody.scripts.benchmarks.biopredyn.launcher import BiopredynConfiguration
 from params import getDefaultParamValues, getUpperBound, getLowerBound
+from sabaody.terminator import TerminatorBase
 from b2problem import B2_UDP
 from b2problem_validator import B2Validator_UDP
 
