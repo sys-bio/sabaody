@@ -84,7 +84,7 @@ class MemcachedMonitor:
 
 
     def update(self, value, *key):
-        self.mc_client.set(self.getNameQualifier()(*list(str(k) for k in key)), str(value), 10000)
+        self.mc_client.set(self.getNameQualifier()(*list(str(k) for k in key)), str(value), 604800)
 
 
     def best_score_candidate(self, best_f, best_x):
