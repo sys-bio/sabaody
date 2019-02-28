@@ -119,7 +119,7 @@ class Archipelago:
         self.domain_qualifier = domain_qualifier
         if self.mc_host:
             mc_client = Client((self.mc_host,self.mc_port))
-            mc_client.set(self.domain_qualifier('islandIds'), dumps(self.topology.island_ids), 10000)
+            mc_client.set(self.domain_qualifier('islandIds'), dumps(self.topology.island_ids), 604800)
 
     def run(self, sc, migrator, udp, rounds, use_pool=False, problem=None, terminator=None):
         assert self.metric is not None
