@@ -22,7 +22,7 @@ class B2Terminator(TerminatorBase):
         if best_f is None:
             return False
         else:
-            return mean(best_f) < 0.27
+            return mean(best_f) < 1.1*(0.2530801448126069+0.24730614493051514+0.24460544824403804)/3.
 
 sbmlfile = join('..','..','..','..','..','sbml','b2.xml')
 script_dir = dirname(realpath(__file__))
