@@ -329,6 +329,11 @@ class BiopredynTopologyGenerator(TopologyGenerator):
         g = self.generations
 
         self.new_topology(
+          desc='{}, de'.format(desc),
+          category=category,
+          algorithms=['de'],
+          archipelago=Archipelago(constructor(de(gen=g),n)))
+        self.new_topology(
           desc='{}, de1220'.format(desc),
           category=category,
           algorithms=['de1220'],
