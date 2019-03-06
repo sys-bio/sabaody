@@ -53,6 +53,25 @@ def test_selection_replacement_policies():
         [5.],
         [6.]]))
 
+def test_weighted_selection():
+    '''
+    Test the replacement and selection policies.
+    '''
+    from sabaody.migration import BestSPolicy, FairRPolicy, sort_by_fitness
+    from pygmo import population, rosenbrock
+    # rosenbrock with dim 3 is just to suppress errors from pagmo, never evaluated
+    p = population(prob=rosenbrock(3), size=0, seed=0)
+    # create a fake population
+    p.push_back(array([10.,11., 12.]), array([4.]))
+    p.push_back(array([1.,  2.,  3.]), array([1.]))
+    p.push_back(array([7.,  8.,  9.]), array([3.]))
+    p.push_back(array([4.,  5.,  6.]), array([2.]))
+
+    # test selection
+    s = WeightedSPolicy(2)
+    print(array(p.get_f()[:,0]))
+    print(s.compute_weights())
+
 def test_uniform_migration_policy():
     '''
     Test the uniform migration policy.

@@ -195,6 +195,52 @@ class BestSPolicy(SelectionPolicyBase):
         return (population.get_x()[indices[:n_migrants,0]],
                 population.get_f()[indices[:n_migrants,0]])
 
+
+class WeightedSPolicy(BestSPolicy):
+    '''
+    Selection policy.
+    Selects the best N individuals from a population.
+    '''
+    def __init__(self, migration_rate=None, pop_fraction=None):
+        if migration_rate is None and pop_fraction is None:
+            raise RuntimeError('Must specify migration as a rate or fraction.')
+        elif migration_rate is not None and pop_fraction is not None:
+            raise RuntimeError('Cannot specify both migration rate and fraction.')
+        self.migration_rate = migration_rate
+        self.pop_fraction = pop_fraction
+
+    def compute_weights(self, population, n_migrants):
+        # indices = argsort(population.get_f(), axis=0)
+        import numpy
+        # choices = array(indices[:,0])
+        weights = p=numpy.reciprocal(population.get_f()[:,0])
+        return weights
+
+    def select(self, population):
+        '''
+        Selects the top pop_fraction*population_size
+        individuals and returns them as a 2D array
+        (different vectors are in different rows).
+        Cannot be used with multiple objectives - partial
+        order is requred.
+
+        The returned array of candidates should be sorted descending
+        according to best fitness value.
+        '''
+        import numpy
+        n_migrants = self.migration_rate or int(indices.size*self.pop_fraction)
+        weights = self.compute_choices_and_weights(population, n_migrants)
+        migrant_indices = numpy.random.choice(
+            array(population.get_f()[:,0]),
+            size=n_migrants,
+            replace=False,
+            p=weights,
+            )
+        # WARNING: single objective only
+        assert False
+        return (population.get_x()[migrant_indices],
+                population.get_f()[migrant_indices])
+
 # ** Replacement Policies **
 class FairRPolicy(ReplacementPolicyBase):
     '''
