@@ -42,7 +42,7 @@ class B3Problem(TimecourseSimBiopredyn):
         self.setParameterVector(x)
         self.r.reset()
         def worker():
-            sim = self.r.simulate(0., time_end, n_points, self.measured_quantity_ids)
+            sim = array(self.r.simulate(0., time_end, n_points, self.measured_quantity_ids))
             residuals = sim-self.reference_values
             normalized_mse_per_quantity = mean(residuals**2,axis=0)/self.reference_value_means_squared
             return sqrt(mean(normalized_mse_per_quantity))
@@ -101,12 +101,12 @@ class B3Problem(TimecourseSimBiopredyn):
             raise KeyError('No such parameter for index {}, must be 0-1758 inclusive'.format(param_index))
 
 
-class B4_UDP(BioPreDynUDP):
-    def __init__(self, lb, ub, sbml_file='b4.xml'):
+class B3_UDP(BioPreDynUDP):
+    def __init__(self, lb, ub, sbml_file='b3.xml'):
         super().__init__(lb=lb, ub=ub, sbml_file=sbml_file)
 
     def fitness(self, x):
         if self.evaluator is None:
-            from b1problem import B1Problem
-            self.evaluator = B1Problem(self.sbml_file)
+            from b3problem import B3Problem
+            self.evaluator = B3Problem(self.sbml_file)
         return (self.evaluator.evaluate(x),)
