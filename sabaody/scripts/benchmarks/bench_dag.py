@@ -32,7 +32,7 @@ from sabaody import TopologyGenerator, BiopredynTopologyGenerator
 
 pagmo_n_islands_values = (10,)
 biopredyn_n_islands_values = (1,2,4,8,16)
-island_size = 500
+island_size = 100
 migrant_pool_size = 4
 generations = 1000
 
