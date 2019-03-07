@@ -6,12 +6,12 @@ from __future__ import print_function, division, absolute_import
 # run this in a notebook to plot
 
 from b3problem import B3Problem
-from params import getDefaultParamValues
+from params import getDefaultParamValues, getBestKnownValues
 from data import measured_quantity_ids
 
 # print(getDefaultParamValues())
 
-with open('../../../../../sbml/b3.xml') as f:
+with open('../../../../../sbml/b3.xml', encoding='utf-8') as f:
     sbml = f.read()
 m = B3Problem(sbml)
 print(m.evaluate(getDefaultParamValues()))
