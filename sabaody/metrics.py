@@ -25,7 +25,7 @@ class InfluxDBMetric(Metric):
         super().__init__(database)
         # self.database = database.replace('.','_').replace('-','_')
 
-        self.client_opts = dict(host=host, port=port, username=username, password=password, database=database, ssl=ssl, verify_ssl=verify_ssl, timeout=timeout, retries=retries, use_udp=use_udp, udp_port=udp_port, proxies=proxies)
+        self.client_opts = dict(host=host, port=port, username=username, password=password, database=self.database, ssl=ssl, verify_ssl=verify_ssl, timeout=timeout, retries=retries, use_udp=use_udp, udp_port=udp_port, proxies=proxies)
 
         self.client = InfluxDBClient(**self.client_opts)
 
