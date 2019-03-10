@@ -266,8 +266,40 @@ class FairRPolicy(ReplacementPolicyBase):
         deltas = []
         for i,k,f in zip(indices[:,0],range(len(candidate_f)),candidate_f):
             if f < pop_f[i,0]:
+            # if f < pop_f[i,0] and random.random() < 0.5:
                 #print('candidates {}'.format(candidates[k,:]))
                 #print('f {}'.format(f))
+                population.set_xf(int(i),candidates[k,:],f)
+                deltas.append(float(f - pop_f[i,0]))
+            else:
+                pass
+                # break
+        return deltas
+
+class RandomFairRPolicy(ReplacementPolicyBase):
+    '''
+    Fair replacement policy.
+    Replaces the worst N individuals in the population if the
+    candidates are better.
+    '''
+
+    def replace(self, population, candidates, candidate_f):
+        '''
+        Replaces the worst N individuals in the population if the
+        candidates are better.
+
+        :return: The deltas of the replacements made
+        :param candidates: Numpy 2D array with candidates in rows.
+        '''
+        import random
+        # sort candidates
+        candidates,candidate_f = sort_candidates_by_fitness(candidates,candidate_f)
+        assert len(candidates.shape) == len(candidate_f.shape)
+        indices = flipud(argsort(population.get_f(), axis=0))
+        pop_f = population.get_f()
+        deltas = []
+        for i,k,f in zip(indices[:,0],range(len(candidate_f)),candidate_f):
+            if f < pop_f[i,0] and random.random() < 0.5:
                 population.set_xf(int(i),candidates[k,:],f)
                 deltas.append(float(f - pop_f[i,0]))
             else:
