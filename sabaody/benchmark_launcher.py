@@ -234,6 +234,8 @@ class BenchmarkLauncherBase:
                               'kafka', 'kafka-migrator',
                             ],
                             help='The migration scheme to use.')
+        parser.add_argument('--migration-host', required=True,
+                            help='The migration host.')
         parser.add_argument('--migration-policy', required=True,
                             choices = [
                               'none', 'null',
@@ -294,6 +296,7 @@ class BenchmarkLauncherBase:
             config.metric_host,config.metric_port = args.metric_port.split(':')
         config.topology_name = args.topology
         config.migrator_name = args.migration
+        config.migration_host = args.migration_host
         config.migration_policy = cls.select_migration_policy(args.migration_policy)
         if args.selection_rate is not None and args.selection_fraction is not None:
             raise RuntimeError('Specify either --selection-rate or --selection-fraction, not both')
