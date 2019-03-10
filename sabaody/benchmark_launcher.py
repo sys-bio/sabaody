@@ -71,6 +71,7 @@ class MemcachedMonitor:
         return {
           'name': self.name,
           'run': self.run,
+          'run_id': self.run_id,
           'mc_host': self.mc_host,
           'mc_port': self.mc_port}
 
@@ -78,6 +79,7 @@ class MemcachedMonitor:
     def __setstate__(self, state):
         self.name = state['name']
         self.run = state['run']
+        self.run_id = state['run_id']
         self.mc_host = state['mc_host']
         self.mc_port = state['mc_port']
         self.mc_client = Client((self.mc_host,self.mc_port))
@@ -403,7 +405,7 @@ class BenchmarkLauncherBase:
         if migrator_name == 'central' or migrator_name == 'central-migrator':
             from sabaody.migration_central import CentralMigrator
             # central migrator process must be running
-            return CentralMigrator(migration_policy, selection_policy, replacement_policy, 'http://luna:10100') # FIXME: hardcoded
+            return CentralMigrator(migration_policy, selection_policy, replacement_policy, self.migration_host)
         elif migrator_name == 'kafka' or migrator_name == 'kafka-migrator':
             from sabaody.kafka_migration_service import KafkaMigrator, KafkaBuilder
             # Kafka must be running

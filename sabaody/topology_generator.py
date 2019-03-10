@@ -378,7 +378,8 @@ class BiopredynTopologyGenerator(TopologyGenerator):
 
         if n == 1:
             self.create_variants(n, 'Bidirectional chain', 'chain', self.factory.createBidirChain)
-        self.create_variants(n, 'Rim', 'rings', self.factory.createRim)
-        self.create_variants(round(log(n,2)), 'Hypercube', 'clustered', self.factory.createHypercube)
+        else:
+            self.create_variants(n, 'Rim', 'rings', self.factory.createRim)
+            # self.create_variants(round(log(n,2)), 'Hypercube', 'clustered', self.factory.createHypercube)
 
         return self.topologies

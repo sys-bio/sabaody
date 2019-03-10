@@ -177,7 +177,6 @@ class TaskGenerator():
             '--selection-policy', 'best',
             '--selection-rate', '4',
             '--replacement-policy', 'fair',
-            '--suite-run-id', '1',
             'run',
             # '--deploy-mode', 'client',
             ]
@@ -196,18 +195,25 @@ class TaskGenerator():
 
         for n_islands in self.n_islands_values:
             for topology in self.make_topology_generator(n_islands=n_islands).topologies:
-                # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param
-                self.benchmarks.append(SparkSubmitOperator(
-                    task_id='.'.join((self.dag.dag_id, benchmark, 'n_islands_{}'.format(n_islands), legalize_name(topology['description']))),
-                    conf={
-                        'spark.cores.max': 16,
-                        'spark.executor.cores': 1,
-                    },
-                    application=application,
-                    application_args=self.get_application_args(topology, n_islands),
-                    dag=self.dag,
-                ))
-                self.generate_topologies >> self.benchmarks[-1]
+                for replicate in range(3):
+                    port_base = 10100
+                    if n_islands == 2:
+                        port_base = 10100+3
+                    # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param
+                    self.benchmarks.append(SparkSubmitOperator(
+                        task_id='.'.join((self.dag.dag_id, benchmark, 'n_islands_{}'.format(n_islands), legalize_name(topology['description']), 'r{}'.format(replicate+1))),
+                        conf={
+                            'spark.cores.max': 16,
+                            'spark.executor.cores': 1,
+                        },
+                        application=application,
+                        application_args=self.get_application_args(topology, n_islands)+[
+                            '--suite-run-id', str(replicate),
+                            '--migration-host', 'http://luna:{}'.format(port_base+replicate),
+                        ],
+                        dag=self.dag,
+                    ))
+                    self.generate_topologies >> self.benchmarks[-1]
 
 
 biopredyn_rounds = 1000
@@ -262,8 +268,8 @@ all_bench_generator.generate('b5', join(biopredyn_root_path,'b5','b5-driver.py')
 # pagmo test problems
 
 class PagmoTaskGenerator(TaskGenerator):
-    def get_application_args(self, topology, n_islands, dimension, cutoff):
-        return super().get_application_args(topology=topology, n_islands=n_islands)+[
+    def get_application_args(self, topology, n_islands, dimension, cutoff, replicate):
+        return super().get_application_args(topology=topology, n_islands=n_islands, replicate=replicate)+[
             '--dimension', str(dimension),
             '--cutoff', str(cutoff),
             ]
@@ -271,17 +277,18 @@ class PagmoTaskGenerator(TaskGenerator):
         self.benchmarks = []
         for n_islands in self.n_islands_values:
             for topology in self.make_topology_generator(n_islands=n_islands).topologies:
-                self.benchmarks.append(SparkSubmitOperator(
-                    task_id='.'.join((self.dag.dag_id, benchmark, legalize_name(topology['description']))),
-                    conf={
-                        'spark.cores.max': 16,
-                        'spark.executor.cores': 1,
-                    },
-                    application=application,
-                    application_args=self.get_application_args(topology, n_islands, dimension, cutoff),
-                    dag=self.dag,
-                ))
-                self.generate_topologies >> self.benchmarks[-1]
+                for replicate in range(3):
+                    self.benchmarks.append(SparkSubmitOperator(
+                        task_id='.'.join((self.dag.dag_id, benchmark, legalize_name(topology['description']), 'r{}'.format(replicate+1))),
+                        conf={
+                            'spark.cores.max': 16,
+                            'spark.executor.cores': 1,
+                        },
+                        application=application,
+                        application_args=self.get_application_args(topology, n_islands, dimension, cutoff),
+                        dag=self.dag,
+                    ))
+                    self.generate_topologies >> self.benchmarks[-1]
 
 pagmo_benchmarks_dag = DAG(
   'pagmo_benchmarks',
