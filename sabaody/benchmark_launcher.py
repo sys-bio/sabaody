@@ -90,7 +90,7 @@ class MemcachedMonitor:
 
 
     def update(self, value, *key):
-        print('update {}'.format(self.getNameQualifier()(*list(str(k) for k in key))))
+        # print('update {}'.format(self.getNameQualifier()(*list(str(k) for k in key))))
         self.mc_client.set(self.getNameQualifier()(*list(str(k) for k in key)), str(value), 604800)
 
 
