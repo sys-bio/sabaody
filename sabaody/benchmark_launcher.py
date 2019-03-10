@@ -44,21 +44,25 @@ class MemcachedMonitor:
 
 
     def __exit__(self, exception_type, exception_val, trace):
-        self.mc_client.set(self.domainAppend('run.status'), 'finished', 604800)
-        self.mc_client.set(self.domainAppend('run.endTime'), str(time()), 604800)
+        self.update('finished', self.run, 'status')
+        self.update(str(time()), self.run, 'endTime')
 
 
     def setupMonitoringVariables(self):
         if self.run is None:
-            self.run = int(self.mc_client.get(self.domainAppend('run')) or 0)
-            self.run += 1
-        self.mc_client.set(self.domainAppend('run'), self.run, 604800)
+            # self.run = int(self.mc_client.get(self.domainAppend('run')) or 0)
+            # self.run += 1
+            self.run = 0
+        self.update(self.run, 'run')
 
         if self.run_id is None:
             self.run_id = str(uuid4())
-        # self.mc_client.set(self.domainAppend('runId'), self.run_id, 604800)
-        self.mc_client.set(self.domainAppend('run.startTime'), str(time()), 604800)
-        self.mc_client.set(self.domainAppend('run.status'), 'active', 604800)
+        self.update(self.run_id, 'runId')
+
+        print('monitor at {}'.format(self.getNameQualifier()()))
+
+        self.update(str(time()), 'startTime')
+        self.update('active', 'status')
 
         # print('Starting run {} of {} with id {}...'.format(self.run, self.getName(), self.run_id))
 
@@ -86,6 +90,7 @@ class MemcachedMonitor:
 
 
     def update(self, value, *key):
+        print('update {}'.format(self.getNameQualifier()(*list(str(k) for k in key))))
         self.mc_client.set(self.getNameQualifier()(*list(str(k) for k in key)), str(value), 604800)
 
 
@@ -115,7 +120,7 @@ class MemcachedMonitor:
         return best_f
 
 
-def print_out_status(client, domainJoin, base_domain_qualifier, screen):
+def print_out_status(client, domainJoin, screen):
     from asciimatics.screen import Screen
     from toolz import partial
 
@@ -124,26 +129,25 @@ def print_out_status(client, domainJoin, base_domain_qualifier, screen):
     from pprint import PrettyPrinter
     from time import time
     while True:
-        run = int(client.get(domainJoin('run')))
+        run = client.get(domainJoin('run')).decode('utf8')
         # run_id = client.get(domainJoin('runId')).decode('utf8')
-        status = client.get(domainJoin('run.status')).decode('utf8').lower()
-        started = float((client.get(domainJoin('run.startTime')) or b'0').decode('utf8'))
-        stopped = float((client.get(domainJoin('run.endTime')) or b'0').decode('utf8'))
+        status = client.get(domainJoin('status')).decode('utf8').lower()
+        started = float((client.get(domainJoin('startTime')) or b'0').decode('utf8'))
+        stopped = float((client.get(domainJoin('endTime')) or b'0').decode('utf8'))
         active = bool(status == 'active')
         if active:
             runtime = time()-started
         else:
             runtime = stopped-started
         if run:
-            domain_qualifier = partial(base_domain_qualifier, run)
             def get(*args):
-                return client.get(domain_qualifier(*args))
+                return client.get(domainJoin(*args))
             island_ids = [i for i in loads(get('islandIds') or '[]')]
 
             pp = PrettyPrinter(indent=2)
 
             v = int(screen.height/2)-10
-            screen.print_at('Run {}   /   {}    '.format(run, run),
+            screen.print_at('Run {}    '.format(run),
                             int(screen.width/2)-65, v,
                             Screen.COLOUR_WHITE)
             v += 1
@@ -161,11 +165,11 @@ def print_out_status(client, domainJoin, base_domain_qualifier, screen):
             v += 1
             for i in island_ids:
                 screen.print_at(i, int(screen.width/2)-55, v, Screen.COLOUR_WHITE)
-                round = (client.get(domainJoin(run,'island',i,'round')) or b'?').decode('utf8')
+                round = (client.get(domainJoin('island',i,'round')) or b'?').decode('utf8')
                 screen.print_at('    ', int(screen.width/2)+15, v, Screen.COLOUR_WHITE)
                 screen.print_at(round, int(screen.width/2)+15, v, Screen.COLOUR_WHITE)\
                 # best score
-                best_f = (client.get(domainJoin(run,'island',i,'best_f')) or b'?').decode('utf8')
+                best_f = (client.get(domainJoin('island',i,'best_f')) or b'?').decode('utf8')
                 screen.print_at(' '*6, int(screen.width/2)+21, v, Screen.COLOUR_WHITE)
                 screen.print_at(best_f, int(screen.width/2)+21, v, Screen.COLOUR_WHITE)
                 v+=1
@@ -257,7 +261,7 @@ class BenchmarkLauncherBase:
                               'fair-r-policy', 'fair',
                             ],
                             help='The replacement policy to use.')
-        parser.add_argument('--suite-run-id', required=True, type=int,
+        parser.add_argument('--suite-run-id', required=True,
                             help='The id of this run, used for indexing. Shared with rest of suite.')
         parser.add_argument('--rounds', type=int, default=10,
                             help='The number of rounds of migrations to perform.')
@@ -408,6 +412,7 @@ class BenchmarkLauncherBase:
         if migrator_name == 'central' or migrator_name == 'central-migrator':
             from sabaody.migration_central import CentralMigrator
             # central migrator process must be running
+            print('using central migrator at {}'.format(self.migration_host))
             return CentralMigrator(migration_policy, selection_policy, replacement_policy, self.migration_host)
         elif migrator_name == 'kafka' or migrator_name == 'kafka-migrator':
             from sabaody.kafka_migration_service import KafkaMigrator, KafkaBuilder
@@ -449,7 +454,12 @@ class BenchmarkLauncherBase:
 
 
     def run_islands(self):
-        with self.monitor(self.app_name, 'luna', 11211, self.suite_run_id) as monitor: # FIXME: hard-coded
+        with self.monitor(
+            name=self.app_name,
+            host='luna',
+            port=11211,
+            run=self.suite_run_id,
+            ) as monitor: # FIXME: hard-coded
             with self.create_metric(monitor.getDomain()+'.') as metric:
                 import arrow
                 time_start = arrow.utcnow()
@@ -474,9 +484,9 @@ class BenchmarkLauncherBase:
                         l = len(self.problem.get_bounds()[0])
                     migrator.defineMigrantPools(a.topology, l)
 
-                a.set_mc_server(monitor.mc_host, monitor.mc_port, monitor.getNameQualifier())
                 a.monitor = monitor
                 a.metric = metric
+                a.monitor_island_ids()
                 results = a.run(sc=self.spark_context, migrator=migrator, udp=self.udp, rounds=self.rounds, use_pool=self.use_pool, problem=self.problem, terminator=self.terminator)
                 champions = sorted([(f[0],x) for f,x,r in results], key=lambda t: t[0])
                 champion_scores = [f for f,x in champions]

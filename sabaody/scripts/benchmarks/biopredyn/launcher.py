@@ -36,8 +36,8 @@ class BiopredynConfiguration(BenchmarkLauncherBase):
         return result
 
 
-    def monitor(self, name, host, port, run=None):
-        return BiopredynMCMonitor(name, host, port, run=None)
+    def monitor(self, name, host, port, run=None, run_id=None):
+        return BiopredynMCMonitor(name, host, port, run=run, run_id=None)
 
 
 

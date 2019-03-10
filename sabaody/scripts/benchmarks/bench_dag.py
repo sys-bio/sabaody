@@ -196,20 +196,22 @@ class TaskGenerator():
         for n_islands in self.n_islands_values:
             for topology in self.make_topology_generator(n_islands=n_islands).topologies:
                 for replicate in range(3):
-                    port_base = 10100
+                    port_offset = replicate
                     if n_islands == 2:
-                        port_base = 10100+3
+                        port_offset += 3
+                    task_id = '.'.join((self.dag.dag_id, benchmark, 'n_islands_{}'.format(n_islands), legalize_name(topology['description']), 'r{}'.format(replicate+1)))
                     # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param
                     self.benchmarks.append(SparkSubmitOperator(
-                        task_id='.'.join((self.dag.dag_id, benchmark, 'n_islands_{}'.format(n_islands), legalize_name(topology['description']), 'r{}'.format(replicate+1))),
+                        task_id=task_id,
                         conf={
-                            'spark.cores.max': 16,
+                            'spark.cores.max': n_islands,
                             'spark.executor.cores': 1,
+                            # 'spark.ui.port': 4040+port_offset,
                         },
                         application=application,
                         application_args=self.get_application_args(topology, n_islands)+[
-                            '--suite-run-id', str(replicate),
-                            '--migration-host', 'http://luna:{}'.format(port_base+replicate),
+                            '--suite-run-id', task_id,
+                            '--migration-host', 'http://luna:{}'.format(10100+port_offset),
                         ],
                         dag=self.dag,
                     ))
@@ -234,7 +236,7 @@ all_bench_generator.generate('b1', join(biopredyn_root_path,'b1','b1-driver.py')
 b2_dag = DAG(
   'b2_benchmark',
   default_args=default_args,
-  concurrency=1,
+  concurrency=10,
   schedule_interval=timedelta(10000))
 make_biopredyn_task_generator(b2_dag).generate('b2', join(biopredyn_root_path,'b2','b2-driver.py'))
 all_bench_generator.generate('b2', join(biopredyn_root_path,'b2','b2-driver.py'))

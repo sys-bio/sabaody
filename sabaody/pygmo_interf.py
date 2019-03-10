@@ -109,18 +109,9 @@ class Archipelago:
         # self.metric = metric
         self.monitor=monitor
 
-        self.mc_host = None
-        self.mc_port = None
-        self.domain_qualifier = None
-
-    def set_mc_server(self, mc_host, mc_port, domain_qualifier):
-        from pymemcache.client.base import Client
-        self.mc_host = mc_host
-        self.mc_port = mc_port
-        self.domain_qualifier = domain_qualifier
-        if self.mc_host:
-            mc_client = Client((self.mc_host,self.mc_port))
-            mc_client.set(self.domain_qualifier('islandIds'), dumps(self.topology.island_ids), 604800)
+    def monitor_island_ids(self):
+        if self.monitor is not None:
+            self.monitor.update(dumps(self.topology.island_ids), 'islandIds')
 
     def run(self, sc, migrator, udp, rounds, use_pool=False, problem=None, terminator=None):
         assert self.metric is not None
