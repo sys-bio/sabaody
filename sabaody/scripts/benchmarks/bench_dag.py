@@ -268,8 +268,8 @@ all_bench_generator.generate('b5', join(biopredyn_root_path,'b5','b5-driver.py')
 # pagmo test problems
 
 class PagmoTaskGenerator(TaskGenerator):
-    def get_application_args(self, topology, n_islands, dimension, cutoff, replicate):
-        return super().get_application_args(topology=topology, n_islands=n_islands, replicate=replicate)+[
+    def get_application_args(self, topology, n_islands, dimension, cutoff):
+        return super().get_application_args(topology=topology, n_islands=n_islands)+[
             '--dimension', str(dimension),
             '--cutoff', str(cutoff),
             ]
