@@ -1,0 +1,43 @@
+Benchmark	MetricId	NumIslands	Description	ActualAvgRounds	MinScore	Hours
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.3884cc5c-952e-4a5c-b13f-25d92ba8f2a8	16	Rim, bee_colony	999	0.3320989050269061	4.3186
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.637a961b-a04b-4e16-aaed-c14078170543	16	Rim, de+sade	999	0.2946433953420389	2.8244
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.261acf9d-b8bb-4d06-8c13-c1bfd510b173	16	Rim, sade	999	0.28007208925026833	2.7278
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.8a4553b8-5c4a-4e4c-ac97-627d9f3b8c0c	16	Rim, de1220	339.75	0.27313446951148057	0.8097
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.4e5df6b1-51b9-4ac8-9f90-7dcd205aad3e	16	Rim, de+praxis	999	0.30612198913031696	2.7264
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.6ed2a79c-4487-4396-a236-de7c4417e22e	16	Rim, de+nelder mead	999	0.2934590170883264	2.5869
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.dd9c5148-8423-46d1-9ae8-685a2808e459	16	Rim, de	212.9375	0.27307640244247167	0.5258
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.4478c780-f66d-40ac-9119-e8f208f893a4	16	Rim, bee_colony	999	0.35245039306957543	7.4667
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.5cfcf0ec-52aa-49b4-8697-a401532397a0	16	Rim, de+sade	572.8125	0.2731597624081081	1.7533
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.ac2887f8-e7fe-4f65-bb02-ec7c8cfcd0fc	16	Rim, de+nelder mead	780.75	0.27300353815771666	4.1269
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.c6aab9b4-1107-4762-a8c4-dc5d3da63e66	16	Rim, sade	999	0.2782085243885901	4.4881
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.4fbe1a0b-a2ba-4d64-a510-11b2f6dc0ca0	16	Rim, de+praxis	314.25	0.27279764581076477	0.6008
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.3a1ec2b5-8af7-4222-ab6c-353ee9435a07	16	Rim, de1220	108.625	0.2934462258706427	0.6042
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.925980aa-7979-489e-b6f2-d9a9be0afb6a	16	Rim, de	999	0.2782615642056252	2.6594
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.32dc8595-7bcd-4129-821a-47644d5e99df	16	Rim, de+sade	419.875	0.27312145150137	1.0731
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.fd5789b2-5f3c-4523-a433-8afb96263ff0	16	Rim, de+praxis	999	0.30397520665294	2.6453
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.165cac7e-597e-4f73-b31a-366ff8c1e43b	16	Rim, de1220	160.9375	0.27308142532406154	0.4361
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.79545b1c-3a1e-4fdd-b159-22122543e929	16	Rim, sade	999	0.2800853273197967	2.7331
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.587b83c8-10d9-4865-9db5-5d0f36d69af2	16	Rim, de+nelder mead	999	0.30537594589887257	2.6781
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.64e1d315-c7e2-4b9d-9c92-65728a711d2a	16	Rim, bee_colony	999	0.32863665349258186	4.5256
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.01fa764d-7923-44ad-964d-e06a3334bac7	16	Rim, de	999	0.2809451462535482	2.6981
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.6c24013f-efe7-4985-8217-0b22ed68c2ed	1	Bidirectional chain, de	999	0.3065020439921941	1.9558
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.0b003267-4fdd-401d-8a6b-1cf5a004e2ed	1	Bidirectional chain, de	999	0.30529155954894244	1.9608
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.8be746bc-7a00-456b-b7d8-86e3a44657d0	1	Bidirectional chain, de	999	0.3256305139221757	1.9642
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.25a20042-f360-4efd-b233-a34af07e742b	1	Bidirectional chain, bee_colony	999	0.30884305679183705	3.2453
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.e3c8e508-847e-4e28-8184-b3ce3f70f192	1	Bidirectional chain, bee_colony	999	0.2996930228275996	3.0289
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.b9452a21-4ed6-4e73-8359-bb0518e3c24c	1	Bidirectional chain, bee_colony	999	0.2907360492755104	3.0753
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.1ff56edc-7fe5-4c7b-bfbc-bef885cb8ef4	1	Bidirectional chain, de1220	999	0.30862038590420315	1.9572
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.2e4bdc52-4647-44f2-b5c4-548e133e6425	1	Bidirectional chain, de1220	999	0.286439829126988	1.9594
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.37ca5409-dcce-491b-9503-39c51757f2a5	1	Bidirectional chain, de+nelder mead	999	0.31691912212137624	1.9639
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.c030f743-94ea-416b-9bb0-30df01533237	1	Bidirectional chain, de+nelder mead	999	0.3282041489776103	1.9789
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.c43764c3-5556-4bc4-84e0-be13bd0a1ab5	1	Bidirectional chain, de1220	999	0.3047498136128391	2.0428
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.3805b8be-fb17-4115-b735-89e4592ebc65	1	Bidirectional chain, de+nelder mead	999	0.3140828225577013	2.0153
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.ab2fbabc-3759-4bec-a44a-5a628deb5cd2	1	Bidirectional chain, de+sade	999	0.3178585812646966	2.2258
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.9af239bd-ff0a-4ee4-be70-69062b29719a	1	Bidirectional chain, de+sade	999	0.3111883342686684	2.2344
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.a57e14de-981b-4313-98b5-03da718aead1	1	Bidirectional chain, de+praxis	999	0.3203525545088811	2.2489
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.1e090923-1386-4cb3-bc23-8187d52b359f	1	Bidirectional chain, de+praxis	999	0.3103175226617915	2.2517
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.ed029ae6-852a-43b6-a275-46aa69fd7b7f	1	Bidirectional chain, de+praxis	999	0.33314636014444265	2.2550
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.a62ec602-39d6-4283-96ab-694da405b743	1	Bidirectional chain, de+sade	999	0.3217156606231515	2.2511
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.090cb0be-64b6-4a38-9508-cac0157681e5	1	Bidirectional chain, sade	999	0.3138872199020321	2.2669
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.2eeaa7f3-604c-4730-b476-3fc85fa6b1b7	1	Bidirectional chain, sade	999	0.3040767511220377	2.2764
+b2-driver	com.how2cell.sabaody.biopredyn.b2-driver.8aff43d4-e3f5-447b-b1a3-5c08a3e1ca7f	1	Bidirectional chain, sade	999	0.30073010373047754	2.3189
