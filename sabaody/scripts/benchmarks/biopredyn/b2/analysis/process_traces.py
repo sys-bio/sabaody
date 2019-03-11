@@ -48,6 +48,11 @@ if __name__ == '__main__':
         from scipy.stats import ttest_ind
         tval,pval = ttest_ind(group['Hours'], fastest_hours)
 
+        # https://stackoverflow.com/questions/3410976/how-to-round-a-number-to-significant-figures-in-python
+        def round_to_x(value, x):
+            from math import floor, log10
+            return round(value, -int(floor(log10(abs(value))))+x-1)
+
         summary = summary.append({
             'Number of Islands': n_islands,
             'Connectivity': topology,
@@ -58,7 +63,7 @@ if __name__ == '__main__':
             'Min. Score (SD)': std_min_score,
             'Ratio vs. Fastest': ratio_vs_fastest,
             'Converged?': 'Yes' if converged else 'No',
-            'p-value (If Converged)': pval[0] if converged else None,
+            'p-value (If Converged)': round_to_x(pval[0], 2) if converged else None,
         }, ignore_index=True)
 
     print(summary)
