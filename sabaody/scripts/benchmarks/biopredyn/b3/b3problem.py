@@ -37,14 +37,23 @@ class B3Problem(TimecourseSimBiopredyn):
         Evaluate and return the objective function.
         """
         from interruptingcow import timeout
-        from data import time_end, n_points
+        # from data import time_end, n_points
+        from data import t1, t2, time_end, n1, n2, n3
         self.reset()
         self.setParameterVector(x)
         self.r.reset()
         def worker():
-            sim = array(self.r.simulate(0., time_end, n_points, self.measured_quantity_ids))
+            # sim = array(self.r.simulate(0., time_end, n_points, self.measured_quantity_ids))
+            sim = vstack((
+                self.r.simulate(0., t1, n1, self.measured_quantity_ids),
+                self.r.simulate(t1, t2, n2, self.measured_quantity_ids),
+                self.r.simulate(t2, time_end, n3, self.measured_quantity_ids),
+                ))
             residuals = sim-self.reference_values
+            from pprint import pprint
+            print('residuals:')
             normalized_mse_per_quantity = mean(residuals**2,axis=0)/self.reference_value_means_squared
+            pprint({id: value for id,value in zip(self.measured_quantity_ids, normalized_mse_per_quantity)})
             return sqrt(mean(normalized_mse_per_quantity))
         try:
             with timeout(10, StalledSimulation):
@@ -69,10 +78,15 @@ class B3Problem(TimecourseSimBiopredyn):
         self._setParameterVector(param_values, self.param_list, r)
         # r.oneStep(0., 10)
         # print('plotQuantity OAA\' = {}'.format(r["OAA'"]))
+        s1 = r.simulate(0., t1, n1, ['time', quantity_id])
+        r.simulate(t1, t1+t1/n1, 10, ['time', quantity_id])
+        s2 = r.simulate(t1, t2, n2, ['time', quantity_id])
+        r.simulate(t2, t2+(t2-t1)/n2, n2, ['time', quantity_id])
+        s3 = r.simulate(t2, time_end, n3, ['time', quantity_id])
         sim = vstack((
-            r.simulate(0., t1, n1, ['time', quantity_id]),
-            r.simulate(t1, t2, n2, ['time', quantity_id]),
-            r.simulate(t2, time_end, n3, ['time', quantity_id]),
+            s1,
+            s2,
+            s3,
             ))
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
