@@ -56,10 +56,10 @@ class B3Problem(TimecourseSimBiopredyn):
                 s3,
                 ))
             residuals = sim-self.reference_values
-            from pprint import pprint
-            print('residuals:')
             normalized_mse_per_quantity = mean(residuals**2,axis=0)/self.reference_value_means_squared
-            pprint({id: value for id,value in zip(self.measured_quantity_ids, normalized_mse_per_quantity)})
+            # from pprint import pprint
+            # print('residuals:')
+            # pprint({id: value for id,value in zip(self.measured_quantity_ids, normalized_mse_per_quantity)})
             return sqrt(mean(normalized_mse_per_quantity))
         try:
             with timeout(10, StalledSimulation):
@@ -111,7 +111,7 @@ class B3Problem(TimecourseSimBiopredyn):
             error_y_pos=maximum(residuals,0),
             error_y_neg=-minimum(residuals,0))
         te.plot(s[:,0], s[:,1], name=quantity_name+' sim')
-        print('deviation for {}: {}'.format(quantity_id, mean(residuals**2)/self.reference_value_means_squared[iq]))
+        # print('deviation for {}: {}'.format(quantity_id, mean(residuals**2)/self.reference_value_means_squared[iq]))
 
 
     def getParameterValue(self,param_index):
