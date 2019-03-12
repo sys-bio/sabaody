@@ -3,13 +3,11 @@
 
 from __future__ import print_function, division, absolute_import
 
+from sabaody.timecourse.timecourse_sim_base import StalledSimulation
 from sabaody.timecourse.timecourse_sim_biopredyn import TimecourseSimBiopredyn
 from sabaody.scripts.benchmarks.biopredyn.launcher import BioPreDynUDP
 
-from params import getUpperBound, getLowerBound, param_ids
-from data import time_values, conc_ids, scaled_data, scaled_error
-
-from numpy import array, zeros, maximum, minimum
+from numpy import array, zeros, maximum, minimum, mean, sqrt
 
 import tellurium as te # used to patch roadrunner
 from roadrunner import RoadRunner
@@ -18,7 +16,7 @@ class B4Problem(TimecourseSimBiopredyn):
     ''' Class that performs a timecourse simulation
     and calculates the residuals for b4.'''
 
-    def __init__(self, sbml, time_values, measured_quantities, param_ids, scaled_data, scaled_error):
+    def __init__(self, sbml):
         '''
         Constructor.
 
@@ -26,14 +24,17 @@ class B4Problem(TimecourseSimBiopredyn):
         :param scaled_data: The scaled reference data.
         :param scaled_error: The scaled reference error.
         '''
+        from params import param_ids
+        from data import time_values, conc_ids, scaled_data, scaled_error
         self.sbml = sbml
         self.r = RoadRunner(sbml)
-        self.r.selections = ['time'] + measured_quantities
+        self.r.selections = ['time'] + conc_ids
         self.time_values = time_values
         assert self.time_values[0] == 0.
-        self.measured_quantities = measured_quantities
+        self.measured_quantities = conc_ids
         self.param_list = param_ids
-        self.reference_values = reference_values
+        self.reference_values = scaled_data
+        self.reference_value_means = mean(self.reference_values, axis=0)
         self.scaled_data = scaled_data
         self.scaled_error = scaled_error
 
@@ -70,11 +71,39 @@ class B4Problem(TimecourseSimBiopredyn):
             return 1e9*self.penalty_scale
 
 
+    def evaluate(self, x):
+        # type: (array) -> SupportsFloat
+        """
+        Evaluate the objective function and return the result.
+        """
+        from interruptingcow import timeout
+        self.reset()
+        self.setParameterVector(x)
+        self.r.reset()
+        def worker():
+            t_now = 0.
+            scaled_residuals = zeros((len(self.time_values), len(self.measured_quantities)))
+            for it_next in range(1, len(self.time_values)):
+                t_now = self.r.simulate(t_now, self.time_values[it_next], 100)
+                t_now = self.time_values[it_next]
+                if self.divergent():
+                    return 1e9*self.penalty_scale
+                for iq,q in enumerate(self.measured_quantities):
+                    scaled_residuals[it_next-1,iq] = (self.r[q]-self.scaled_data[it_next-1,iq])/self.reference_value_means[iq]
+            return sqrt(mean(scaled_residuals**2.))
+        try:
+            with timeout(10, StalledSimulation):
+                return worker()
+        except (RuntimeError, StalledSimulation):
+            # if convergence fails, use a penalty score
+            return 1e9*self.penalty_scale
+
+
     def plotQuantity(self, quantity, param_values):
         ''' Plot a simulated quantity vs its data points using Tellurium.'''
         from data import name_to_id_map, conc_indices
         quantity_id = name_to_id_map[quantity]
-        iq = conc_ids.index(quantity_id)
+        iq = self.measured_quantities.index(quantity_id)
         reference_data = array(self.scaled_data[:,iq])
 
         r = RoadRunner(self.sbml)
