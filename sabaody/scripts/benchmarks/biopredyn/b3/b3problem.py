@@ -48,11 +48,7 @@ class B3Problem(TimecourseSimBiopredyn):
             # sim = array(self.r.simulate(0., time_end, n_points, self.measured_quantity_ids))
 
             s1 = self.r.simulate(0., t1, n1, self.measured_quantity_ids)
-            self.r.simulate(t1, t1+t1/n1/50, 10, self.measured_quantity_ids)
             s2 = self.r.simulate(t1, t2, n2, self.measured_quantity_ids)
-            t2d = (t2-t1)/n2/50*2
-            t2p = t2 + t2d
-            self.r.simulate(t2, t2p, 10, self.measured_quantity_ids)
             s3 = self.r.simulate(t2, time_end, n3, self.measured_quantity_ids)
             sim = vstack((
                 s1,
@@ -61,9 +57,9 @@ class B3Problem(TimecourseSimBiopredyn):
                 ))
             residuals = sim-self.reference_values
             normalized_mse_per_quantity = mean(residuals**2,axis=0)/self.reference_value_means_squared
-            from pprint import pprint
-            print('residuals:')
-            pprint({id: value for id,value in zip(self.measured_quantity_ids, sqrt(normalized_mse_per_quantity))})
+            # from pprint import pprint
+            # print('residuals:')
+            # pprint({id: value for id,value in zip(self.measured_quantity_ids, sqrt(normalized_mse_per_quantity))})
             return sqrt(mean(normalized_mse_per_quantity))
         try:
             with timeout(10, StalledSimulation):
@@ -89,16 +85,12 @@ class B3Problem(TimecourseSimBiopredyn):
         # r.oneStep(0., 10)
         # print('plotQuantity OAA\' = {}'.format(r["OAA'"]))
         s1 = r.simulate(0., t1, n1, ['time', quantity_id])
-        r.simulate(t1, t1+t1/n1/50, 10, ['time', quantity_id])
         s2 = r.simulate(t1, t2, n2, ['time', quantity_id])
         # print(quantity_id)
-        # if quantity_id == 'BM':
+        # if quantity_id == 'GLC':
             # print('BM before {}'.format(r['[BM]']))
-        t2d = (t2-t1)/n2/50*2
-        t2p = t2 + t2d
-        r.simulate(t2, t2p, 10, ['time', quantity_id])
-        # if quantity_id == 'BM':
-            # print('BM afterZ {}'.format(r['[BM]']))
+            # print(iq)
+            # print(reference_data)
         s3 = r.simulate(t2, time_end, n3, ['time', quantity_id])
         sim = vstack((
             s1,
@@ -122,7 +114,7 @@ class B3Problem(TimecourseSimBiopredyn):
             error_y_pos=maximum(residuals,0),
             error_y_neg=-minimum(residuals,0))
         te.plot(s[:,0], s[:,1], name=quantity_name+' sim')
-        print('deviation for {}: {}/{} = {}'.format(quantity_id, sqrt(mean(residuals**2)), sqrt(self.reference_value_means_squared[iq]),  sqrt(mean(residuals**2)/self.reference_value_means_squared[iq])))
+        # print('deviation for {}: {}/{} = {}'.format(quantity_id, sqrt(mean(residuals**2)), sqrt(self.reference_value_means_squared[iq]),  sqrt(mean(residuals**2)/self.reference_value_means_squared[iq])))
 
 
     def getParameterValue(self,param_index):
