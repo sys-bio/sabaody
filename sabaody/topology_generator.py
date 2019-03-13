@@ -65,7 +65,7 @@ class TopologyGenerator:
     @classmethod
     def get_version(cls):
         # semantic version
-        return (0,2,4,)
+        return (0,2,5,)
 
 
     @classmethod

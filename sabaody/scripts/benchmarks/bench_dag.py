@@ -32,7 +32,7 @@ from sabaody import TopologyGenerator, BiopredynTopologyGenerator
 
 pagmo_n_islands_values = (10,)
 biopredyn_n_islands_values = (1,2,4,8,16)
-island_size = 200
+island_size = 300
 migrant_pool_size = 4
 generations = 1000
 
@@ -219,7 +219,7 @@ class TaskGenerator():
                     self.generate_topologies >> self.benchmarks[-1]
 
 
-biopredyn_rounds = 1000
+biopredyn_rounds = 2000
 
 def make_biopredyn_task_generator(dag):
     return TaskGenerator(dag, rounds=biopredyn_rounds, n_islands_values=biopredyn_n_islands_values, topology_set_name='biopredyn')
