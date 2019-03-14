@@ -132,6 +132,7 @@ class TaskGenerator():
                     MaxRounds INT NOT NULL,
                     Generations INT NOT NULL,
                     NumIslands INT NOT NULL,
+                    IslandSize INT NOT NULL,
                     Champions BLOB NOT NULL,
                     MinScore DOUBLE NOT NULL,
                     AverageScore DOUBLE NOT NULL,

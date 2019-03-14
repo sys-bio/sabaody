@@ -504,6 +504,7 @@ class BenchmarkLauncherBase:
                     max_rounds=self.rounds,
                     generations=self.generations,
                     n_islands=len(a.topology.islands),
+                    island_size=a.topology.islands[0].size,
                     champions=champions,
                     min_score=best_score,
                     average_score=average_score,
@@ -520,7 +521,7 @@ class BenchmarkLauncherBase:
                 print('Rounds: {}'.format(rounds))
 
 
-    def commit_results_to_database(self, host, user, database, password, max_rounds, generations, n_islands, champions, min_score, average_score, actual_rounds, validation_mode, validation_points, time_start, time_end, metric_id):
+    def commit_results_to_database(self, host, user, database, password, max_rounds, generations, n_islands, island_size, champions, min_score, average_score, actual_rounds, validation_mode, validation_points, time_start, time_end, metric_id):
         import MySQLdb
         mariadb_connection = MySQLdb.connect(host,user,password,database)
         cursor = mariadb_connection.cursor()
@@ -534,8 +535,8 @@ class BenchmarkLauncherBase:
         #     ))
         # mariadb_connection.commit()
         query = '\n'.join([
-            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, MaxRounds, Generations, NumIslands, Champions, MinScore, AverageScore, ActualRounds, ActualAvgRounds, ValidationMode, ValidationPoints, TimeStart, TimeEnd)',
-            "VALUES ('{benchmark}','{run_id}','{metric_id}','{description}','{topologyid}',{max_rounds},{generations},{n_islands},{champions},{min_score},{average_score},'{actual_rounds}',{actual_avg_rounds},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
+            'INSERT INTO benchmark_runs (Benchmark, RunID, MetricID, Description, TopologyID, MaxRounds, Generations, NumIslands, IslandSize, Champions, MinScore, AverageScore, ActualRounds, ActualAvgRounds, ValidationMode, ValidationPoints, TimeStart, TimeEnd)',
+            "VALUES ('{benchmark}','{run_id}','{metric_id}','{description}','{topologyid}',{max_rounds},{generations},{n_islands},{island_size},{champions},{min_score},{average_score},'{actual_rounds}',{actual_avg_rounds},{validation_mode},{validation_points},'{time_start}','{time_end}');".format(
                 benchmark=self.app_name,
                 run_id=self.run_id,
                 metric_id=metric_id,
@@ -544,6 +545,7 @@ class BenchmarkLauncherBase:
                 max_rounds=max_rounds,
                 generations=generations,
                 n_islands=n_islands,
+                island_size=island_size,
                 champions='0x{}'.format(dumps(champions).hex()),
                 min_score=min_score,
                 average_score=average_score,
