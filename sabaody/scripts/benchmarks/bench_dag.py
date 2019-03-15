@@ -199,8 +199,8 @@ class TaskGenerator():
             for topology in self.make_topology_generator(n_islands=n_islands).topologies:
                 for replicate in range(3):
                     port_offset = replicate
-                    if n_islands == 2:
-                        port_offset += 3
+                    # if n_islands == 2:
+                        # port_offset += 3
                     task_id = '.'.join((self.dag.dag_id, benchmark, 'n_islands_{}'.format(n_islands), legalize_name(topology['description']), 'r{}'.format(replicate+1)))
                     # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param
                     self.benchmarks.append(SparkSubmitOperator(
