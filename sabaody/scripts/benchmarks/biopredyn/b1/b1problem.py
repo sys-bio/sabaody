@@ -21,6 +21,10 @@ class B1Problem(TimecourseSimBiopredyn):
     def __init__(self, sbml):
         self.sbml = sbml
         self.r = RoadRunner(sbml)
+        # self.r.integrator = 'rk4'
+        # print(self.r.integrator)
+        self.r.integrator.absolute_tolerance = 1e-10
+        self.r.integrator.relative_tolerance = 1e-4
         from data import measured_quantity_ids, exp_data, norm_data
         self.measured_quantity_ids = measured_quantity_ids
         self.reference_values = exp_data
@@ -65,6 +69,7 @@ class B1Problem(TimecourseSimBiopredyn):
             # skip the first timepoint
             # self.r.simulate(0., 1., 10, self.measured_quantity_ids)
             sim = self.r.simulate(0., 119., 120, self.measured_quantity_ids)
+            # sim = array(sim[0:-1:10,:])
             residuals = (sim-self.reference_values)/self.reference_norms
             normalized_mse_per_quantity = mean(residuals**2,axis=0)
             # print('sqrt(normalized_mse_per_quantity) = ', sqrt(normalized_mse_per_quantity))
@@ -90,6 +95,15 @@ class B1Problem(TimecourseSimBiopredyn):
         r.reset()
         r.resetAll()
         r.resetToOrigin()
+        r.integrator = 'euler'
+        # r.integrator = 'rk4'
+        r.integrator.subdivision_steps = 1000
+        # r.integrator.absolute_tolerance = 1e-10
+        # r.integrator.relative_tolerance = 1e-4
+        # r.integrator.initial_time_step = 0.001
+        # r.integrator.minimum_time_step = 0.0001
+        # r.integrator.maximum_time_step = 0.1
+        # print(r.integrator)
         sim = r.simulate(0., 119., 120, ['time', quantity_id])
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
