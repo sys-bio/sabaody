@@ -83,13 +83,15 @@ class B4Problem(TimecourseSimBiopredyn):
         def worker():
             t_now = 0.
             scaled_residuals = zeros((len(self.time_values), len(self.measured_quantities)))
-            for it_next in range(1, len(self.time_values)):
-                t_now = self.r.simulate(t_now, self.time_values[it_next], 100)
-                t_now = self.time_values[it_next]
+            for it_next in range(0, len(self.time_values)):
+                for iq,q in enumerate(self.measured_quantities):
+                    scaled_residuals[it_next,iq] = (self.r[q]-self.scaled_data[it_next,iq])/self.reference_value_means[iq]
+                if it_next+1 < len(self.time_values):
+                    self.r.simulate(t_now, self.time_values[it_next+1], 100)
+                    t_now = self.time_values[it_next+1]
                 if self.divergent():
                     return 1e9*self.penalty_scale
-                for iq,q in enumerate(self.measured_quantities):
-                    scaled_residuals[it_next-1,iq] = (self.r[q]-self.scaled_data[it_next-1,iq])/self.reference_value_means[iq]
+            print('normalized errors: ', sqrt(mean(scaled_residuals**2, axis=0)))
             return sqrt(mean(scaled_residuals**2.))
         try:
             with timeout(10, StalledSimulation):
@@ -109,9 +111,7 @@ class B4Problem(TimecourseSimBiopredyn):
         r = RoadRunner(self.sbml)
         self._setParameterVector(param_values, self.param_list, r)
         r.reset()
-        # r.selections = ['time', quantity_id]
         t_now = 0.
-        simulated_quantity = zeros((len(self.time_values),))
         residuals = zeros((len(self.time_values),))
         residuals[0] = r[quantity_id]-reference_data[0]
 
@@ -119,11 +119,11 @@ class B4Problem(TimecourseSimBiopredyn):
             self._setParameterVector(param_values, self.param_list, r)
             r.simulate(t_now, self.time_values[it_next], 100)
             t_now = self.time_values[it_next]
-            simulated_quantity[it_next-1] = r[quantity_id]
             residuals[it_next] = r[quantity_id]-reference_data[it_next]
         r.reset()
-        # self._setParameterVector(param_values, self.param_list, r)
         s = r.simulate(0,float(self.time_values[-1]),1000,['time',quantity_id])
+
+        print(quantity, sqrt(mean(residuals**2))/self.reference_value_means[iq])
 
         import tellurium as te
         te.plot(self.time_values, reference_data, scatter=True,
