@@ -67,10 +67,8 @@ class B1Problem(TimecourseSimBiopredyn):
             sim = self.r.simulate(0., 119., 120, self.measured_quantity_ids)
             residuals = (sim-self.reference_values)/self.reference_norms
             normalized_mse_per_quantity = mean(residuals**2,axis=0)
-            print('sqrt(normalized_mse_per_quantity) = ', sqrt(normalized_mse_per_quantity))
-            print('normed residuals', normalized_mse_per_quantity/self.quantity_norms)
-            # return sqrt(mean((residuals**2)/self.reference_norms_squared))
-            # return sqrt(mean(residuals**2))
+            # print('sqrt(normalized_mse_per_quantity) = ', sqrt(normalized_mse_per_quantity))
+            # print('normed residuals', normalized_mse_per_quantity/self.quantity_norms)
             return float(sqrt(mean(normalized_mse_per_quantity/self.quantity_norms)))*self.overall_norm
         try:
             with timeout(10, StalledSimulation):
@@ -92,8 +90,6 @@ class B1Problem(TimecourseSimBiopredyn):
         r.reset()
         r.resetAll()
         r.resetToOrigin()
-        print('simmy1')
-        # r.simulate(0., 10., 100, ['time', quantity_id])
         sim = r.simulate(0., 119., 120, ['time', quantity_id])
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
@@ -103,7 +99,7 @@ class B1Problem(TimecourseSimBiopredyn):
         r.resetToOrigin()
         s = r.simulate(0,float(time_values[-1]),121,['time',quantity_id])
 
-        print('mse for {}: '.format(quantity_name), sqrt(mean((residuals**2)/(self.reference_norms[:,iq]**2))))
+        # print('mse for {}: '.format(quantity_name), sqrt(mean((residuals**2)/(self.reference_norms[:,iq]**2))))
 
         import tellurium as te
         te.plot(time_values, reference_data, scatter=True,
