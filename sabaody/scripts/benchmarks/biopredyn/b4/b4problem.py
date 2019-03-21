@@ -91,7 +91,7 @@ class B4Problem(TimecourseSimBiopredyn):
                     t_now = self.time_values[it_next+1]
                 if self.divergent():
                     return 1e9*self.penalty_scale
-            print('normalized errors: ', sqrt(mean(scaled_residuals**2, axis=0)))
+            # print('normalized errors: ', sqrt(mean(scaled_residuals**2, axis=0)))
             return sqrt(mean(scaled_residuals**2.))
         try:
             with timeout(10, StalledSimulation):
@@ -123,7 +123,7 @@ class B4Problem(TimecourseSimBiopredyn):
         r.reset()
         s = r.simulate(0,float(self.time_values[-1]),1000,['time',quantity_id])
 
-        print(quantity, sqrt(mean(residuals**2))/self.reference_value_means[iq])
+        # print(quantity, sqrt(mean(residuals**2))/self.reference_value_means[iq])
 
         import tellurium as te
         te.plot(self.time_values, reference_data, scatter=True,
