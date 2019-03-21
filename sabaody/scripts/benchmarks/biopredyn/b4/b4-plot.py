@@ -6,7 +6,7 @@ from __future__ import print_function, division, absolute_import
 # run this in a notebook to plot
 
 from b4problem import B4Problem
-from params import getDefaultParamValues
+from params import getDefaultParamValues, getBestKnownValues
 from data import quantity_names
 
 # print(getDefaultParamValues())
@@ -14,6 +14,6 @@ from data import quantity_names
 with open('../../../../../sbml/b4.xml') as f:
     sbml = f.read()
 m = B4Problem(sbml)
-print(m.evaluate(getDefaultParamValues()))
+print(m.evaluate(getBestKnownValues()))
 for q in quantity_names:
-    m.plotQuantity(quantity=q, param_values=getDefaultParamValues())
+    m.plotQuantity(quantity=q, param_values=getBestKnownValues())
