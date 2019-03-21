@@ -18,7 +18,7 @@ database = args.database
 if __name__ == '__main__':
     tstart = None
     client = InfluxDBClient('luna')
-    results = client.query('SELECT island_id,best_f,best_x FROM champion', database=database)
+    results = client.query('SELECT island_id,best_f,round,best_x FROM champion', database=database)
     for result in results:
         for point in result:
             t = arrow.get(point['time'])
@@ -32,12 +32,13 @@ if __name__ == '__main__':
     for result in results:
         for point in result:
             t = arrow.get(point['time'])-tstart
+            round = point['round']
             island_id = point['island_id']
             best_f = literal_eval(point['best_f'])[0]
             if min_f is None or best_f < min_f:
                 min_f = best_f
                 best_x = literal_eval(point['best_x'])
-            timepoints_by_island.setdefault(island_id, []).append((t.days*24. + t.seconds/3600.,best_f))
+            timepoints_by_island.setdefault(island_id, []).append((t.days*24. + t.seconds/3600.,best_f,round))
 
     traces = {}
     for island_id,series in timepoints_by_island.items():
