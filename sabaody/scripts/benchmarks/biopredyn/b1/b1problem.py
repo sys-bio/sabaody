@@ -27,6 +27,25 @@ class B1Problem(TimecourseSimBiopredyn):
         # self.reference_value_means_squared = mean(self.reference_values, axis=0)**2
         self.reference_norms = maximum(norm_data, 0.0005)
         # self.reference_norms_squared = maximum(norm_data, 0.0005)**2
+        self.quantity_norms = array(
+            [0.0466906, 0.1666200, 0.1325631, 0.0757189, 0.1266561, 0.11634345,
+             0.1143341, 0.1104889, 0.2808254, 0.1275417, 0.1163108, 0.26822369,
+             0.1866278, 0.1555892, 0.4453806, 0.1598696, 0.1222940, 0.14366202,
+             0.1259413, 0.1473395, 0.1407897, 0.1246730, 0.1153060, 0.12375571,
+             0.1814630, 0.2199502, 0.1608888, 0.1903940, 0.1242392, 0.11704526,
+             0.1287076, 0.1319431, 0.1324937, 0.0690382, 0.1316586, 2.15109423,
+             0.1215476, 0.1414125, 0.1112873, 0.1297432, 0.1288462, 0.1155096,
+             0.1203922, 0.18807463])**2
+        # UDP-D-glucose excluded because it has buggy errors
+        self.overall_norm = float(mean(array(
+            [0.0466906, 0.1666200, 0.1325631, 0.0757189, 0.1266561, 0.11634345,
+             0.1143341, 0.1104889, 0.2808254, 0.1275417, 0.1163108, 0.26822369,
+             0.1866278, 0.1555892, 0.4453806, 0.1598696, 0.1222940, 0.14366202,
+             0.1259413, 0.1473395, 0.1407897, 0.1246730, 0.1153060, 0.12375571,
+             0.1814630, 0.2199502, 0.1608888, 0.1903940, 0.1242392, 0.11704526,
+             0.1287076, 0.1319431, 0.1324937, 0.0690382, 0.1316586,
+             0.1215476, 0.1414125, 0.1112873, 0.1297432, 0.1288462, 0.1155096,
+             0.1203922, 0.18807463])))
         from params import param_ids
         self.param_list = param_ids
 
@@ -49,8 +68,10 @@ class B1Problem(TimecourseSimBiopredyn):
             residuals = (sim-self.reference_values)/self.reference_norms
             normalized_mse_per_quantity = mean(residuals**2,axis=0)
             print('sqrt(normalized_mse_per_quantity) = ', sqrt(normalized_mse_per_quantity))
+            print('normed residuals', normalized_mse_per_quantity/self.quantity_norms)
             # return sqrt(mean((residuals**2)/self.reference_norms_squared))
-            return sqrt(mean(residuals**2))
+            # return sqrt(mean(residuals**2))
+            return sqrt(mean(normalized_mse_per_quantity/self.quantity_norms))*self.overall_norm
         try:
             with timeout(10, StalledSimulation):
                 return worker()

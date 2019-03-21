@@ -16,4 +16,5 @@ with open('../../../../../sbml/b1-copasi.xml') as f:
 m = B1Problem(sbml)
 print(m.evaluate(getDefaultParamValues()))
 for q in measured_quantity_ids:
+# for q in ['s_1543','r_1166']:
     m.plotQuantity(quantity_id=q, param_values=getDefaultParamValues())
