@@ -21,9 +21,12 @@ class B1Problem(TimecourseSimBiopredyn):
     def __init__(self, sbml):
         self.sbml = sbml
         self.r = RoadRunner(sbml)
-        from data import measured_quantity_ids, exp_data
+        from data import measured_quantity_ids, exp_data, norm_data
         self.measured_quantity_ids = measured_quantity_ids
         self.reference_values = exp_data
+        # self.reference_value_means_squared = mean(self.reference_values, axis=0)**2
+        self.reference_norms = maximum(norm_data, 0.0005)
+        # self.reference_norms_squared = maximum(norm_data, 0.0005)**2
         from params import param_ids
         self.param_list = param_ids
 
@@ -41,9 +44,13 @@ class B1Problem(TimecourseSimBiopredyn):
         self.r.reset()
         def worker():
             # skip the first timepoint
-            self.r.simulate(0., 1., 10, self.measured_quantity_ids)
-            sim = self.r.simulate(1., 120., 120, self.measured_quantity_ids)
-            return sqrt(mean((sim-self.reference_values)**2.))
+            # self.r.simulate(0., 1., 10, self.measured_quantity_ids)
+            sim = self.r.simulate(0., 119., 120, self.measured_quantity_ids)
+            residuals = (sim-self.reference_values)/self.reference_norms
+            normalized_mse_per_quantity = mean(residuals**2,axis=0)
+            print('sqrt(normalized_mse_per_quantity) = ', sqrt(normalized_mse_per_quantity))
+            # return sqrt(mean((residuals**2)/self.reference_norms_squared))
+            return sqrt(mean(residuals**2))
         try:
             with timeout(10, StalledSimulation):
                 return worker()
@@ -64,8 +71,9 @@ class B1Problem(TimecourseSimBiopredyn):
         r.reset()
         r.resetAll()
         r.resetToOrigin()
-        r.simulate(0., 1., 10, ['time', quantity_id])
-        sim = r.simulate(1., 120., 120, ['time', quantity_id])
+        print('simmy1')
+        # r.simulate(0., 10., 100, ['time', quantity_id])
+        sim = r.simulate(0., 119., 120, ['time', quantity_id])
         assert sim.shape[0] == reference_data.shape[0]
         residuals = sim[:,1] - reference_data
 
@@ -73,6 +81,8 @@ class B1Problem(TimecourseSimBiopredyn):
         r.resetAll()
         r.resetToOrigin()
         s = r.simulate(0,float(time_values[-1]),121,['time',quantity_id])
+
+        print('mse for {}: '.format(quantity_name), sqrt(mean((residuals**2)/(self.reference_norms[:,iq]**2))))
 
         import tellurium as te
         te.plot(time_values, reference_data, scatter=True,
