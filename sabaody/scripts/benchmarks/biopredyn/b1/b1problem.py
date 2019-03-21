@@ -71,7 +71,7 @@ class B1Problem(TimecourseSimBiopredyn):
             print('normed residuals', normalized_mse_per_quantity/self.quantity_norms)
             # return sqrt(mean((residuals**2)/self.reference_norms_squared))
             # return sqrt(mean(residuals**2))
-            return sqrt(mean(normalized_mse_per_quantity/self.quantity_norms))*self.overall_norm
+            return float(sqrt(mean(normalized_mse_per_quantity/self.quantity_norms)))*self.overall_norm
         try:
             with timeout(10, StalledSimulation):
                 return worker()
@@ -220,8 +220,8 @@ class B1Problem(TimecourseSimBiopredyn):
             ])
 
 
-class B4_UDP(BioPreDynUDP):
-    def __init__(self, lb, ub, sbml_file='b4.xml'):
+class B1_UDP(BioPreDynUDP):
+    def __init__(self, lb, ub, sbml_file='b1-copasi.xml'):
         super().__init__(lb=lb, ub=ub, sbml_file=sbml_file)
 
     def fitness(self, x):
