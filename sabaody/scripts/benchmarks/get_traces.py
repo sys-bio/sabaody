@@ -37,7 +37,7 @@ if __name__ == '__main__':
             if min_f is None or best_f < min_f:
                 min_f = best_f
                 best_x = literal_eval(point['best_x'])
-            timepoints_by_island.setdefault(island_id, []).append((t.seconds,best_f))
+            timepoints_by_island.setdefault(island_id, []).append((t.days*24. + t.seconds/3600.,best_f))
 
     traces = {}
     for island_id,series in timepoints_by_island.items():
