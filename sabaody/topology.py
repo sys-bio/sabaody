@@ -201,6 +201,22 @@ class TopologyFactory:
             g.every_other_id = tuple(m[k].id for k in every_other_id)
         return g
 
+
+    @classmethod
+    def prefixIds(self,topology,prefix):
+        topology_class = topology.__class__
+        m = {id: topology.nodes[id]['island'] for id in topology.nodes}
+        g = topology_class()
+        g.add_nodes_from(prefix+island.id for island in m.values())
+        for k,i in m.items():
+            g.nodes[prefix+m[k].id]['island'] = m[k]
+        g.add_edges_from((prefix+m[u].id, prefix+m[v].id)
+                         for u, nbrs in topology._adj.items()
+                         for v, data in nbrs.items())
+        g.island_ids = tuple(id for id in g.nodes)
+        g.islands = tuple(g.nodes[i]['island'] for i in g.nodes)
+        return g
+
     def _assignHub(self,t):
         t.hub = list(sorted(t.islands, key = lambda i: len(tuple(t.neighbors(i.id)))))[0]
         return t

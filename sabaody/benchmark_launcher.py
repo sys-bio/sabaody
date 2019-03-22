@@ -4,6 +4,7 @@
 from __future__ import print_function, division, absolute_import
 
 from sabaody import getQualifiedName, Archipelago
+from sabaody.topology import TopologyFactory
 
 from pymemcache.client.base import Client
 from sabaody.metrics import InfluxDBMetric
@@ -355,7 +356,7 @@ class BenchmarkLauncherBase:
             self.topology_set_id = id
             self.topology_id = topology['id']
             self.generations = topology['generations']
-            return topology['archipelago']
+            return Archipelago(TopologyFactory.prefixIds(topology['archipelago'].topology, prefix=self.run_id+'-'))
         else:
             # generate the topology from available presets via command line arguments
             topology_factory = TopologyFactory(problem=self.make_problem(),
