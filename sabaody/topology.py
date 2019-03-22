@@ -215,6 +215,8 @@ class TopologyFactory:
                          for v, data in nbrs.items())
         g.island_ids = tuple(id for id in g.nodes)
         g.islands = tuple(g.nodes[i]['island'] for i in g.nodes)
+        for i in g.islands:
+            i.id = prefix+i.id
         return g
 
     def _assignHub(self,t):
