@@ -196,11 +196,9 @@ class TaskGenerator():
         self.benchmarks = []
 
         for n_islands in self.n_islands_values:
+            migration_port = 10100
             for topology in self.make_topology_generator(n_islands=n_islands).topologies:
                 for replicate in range(3):
-                    port_offset = replicate
-                    # if n_islands == 2:
-                        # port_offset += 3
                     task_id = '.'.join((self.dag.dag_id, benchmark, 'n_islands_{}'.format(n_islands), legalize_name(topology['description']), 'r{}'.format(replicate+1)))
                     # https://stackoverflow.com/questions/49957464/apache-airflow-automation-how-to-run-spark-submit-job-with-param
                     self.benchmarks.append(SparkSubmitOperator(
@@ -208,16 +206,16 @@ class TaskGenerator():
                         conf={
                             'spark.cores.max': n_islands,
                             'spark.executor.cores': 1,
-                            # 'spark.ui.port': 4040+port_offset,
                         },
                         application=application,
                         application_args=self.get_application_args(topology, n_islands)+[
                             '--suite-run-id', task_id,
-                            '--migration-host', 'http://luna:{}'.format(10100+port_offset),
+                            '--migration-host', 'http://luna:{}'.format(10100),
                         ],
                         dag=self.dag,
                     ))
                     self.generate_topologies >> self.benchmarks[-1]
+                    migration_port += 1
 
 
 biopredyn_rounds = 500
@@ -238,7 +236,7 @@ all_bench_generator.generate('b1', join(biopredyn_root_path,'b1','b1-driver.py')
 b2_dag = DAG(
   'b2_benchmark',
   default_args=default_args,
-  concurrency=10,
+  concurrency=1,
   schedule_interval=timedelta(10000))
 make_biopredyn_task_generator(b2_dag).generate('b2', join(biopredyn_root_path,'b2','b2-driver.py'))
 all_bench_generator.generate('b2', join(biopredyn_root_path,'b2','b2-driver.py'))
