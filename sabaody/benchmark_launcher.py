@@ -37,6 +37,7 @@ class MemcachedMonitor:
         from sabaody.diagnostics import test_memcached
         test_memcached(self.mc_host, self.mc_port)
         self.setupMonitoringVariables()
+        self.reset_best_score()
         return self
 
 
@@ -119,6 +120,10 @@ class MemcachedMonitor:
             from json import loads
             best_f = array(loads(best_f))
         return best_f
+
+    def reset_best_score(self):
+        self.mc_client.delete(self.getNameQualifier()('global', 'best_x'))
+        self.mc_client.delete(self.getNameQualifier()('global', 'best_f'))
 
 
 def print_out_status(client, domainJoin, screen):
