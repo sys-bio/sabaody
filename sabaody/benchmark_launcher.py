@@ -167,12 +167,12 @@ def print_out_status(client, domainJoin, screen):
             for i in island_ids:
                 screen.print_at(i, int(screen.width/2)-55, v, Screen.COLOUR_WHITE)
                 round = (client.get(domainJoin('island',i,'round')) or b'?').decode('utf8')
-                screen.print_at('    ', int(screen.width/2)+15, v, Screen.COLOUR_WHITE)
-                screen.print_at(round, int(screen.width/2)+15, v, Screen.COLOUR_WHITE)\
+                screen.print_at('    ', int(screen.width/2)+20, v, Screen.COLOUR_WHITE)
+                screen.print_at(round, int(screen.width/2)+20, v, Screen.COLOUR_WHITE)\
                 # best score
                 best_f = (client.get(domainJoin('island',i,'best_f')) or b'?').decode('utf8')
-                screen.print_at(' '*6, int(screen.width/2)+21, v, Screen.COLOUR_WHITE)
-                screen.print_at(best_f, int(screen.width/2)+21, v, Screen.COLOUR_WHITE)
+                screen.print_at(' '*6, int(screen.width/2)+30, v, Screen.COLOUR_WHITE)
+                screen.print_at(best_f, int(screen.width/2)+30, v, Screen.COLOUR_WHITE)
                 v+=1
         else:
             screen.print_at('No run id'.format(run),
