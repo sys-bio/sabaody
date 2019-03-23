@@ -196,7 +196,6 @@ class TaskGenerator():
         self.benchmarks = []
 
         for n_islands in self.n_islands_values:
-            migration_port = 10100
             for topology in self.make_topology_generator(n_islands=n_islands).topologies:
                 for replicate in range(3):
                     task_id = '.'.join((self.dag.dag_id, benchmark, 'n_islands_{}'.format(n_islands), legalize_name(topology['description']), 'r{}'.format(replicate+1)))
@@ -215,7 +214,6 @@ class TaskGenerator():
                         dag=self.dag,
                     ))
                     self.generate_topologies >> self.benchmarks[-1]
-                    migration_port += 1
 
 
 biopredyn_rounds = 500
