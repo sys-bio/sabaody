@@ -23,8 +23,8 @@ class B1Problem(TimecourseSimBiopredyn):
         self.r = RoadRunner(sbml)
         # self.r.integrator = 'rk4'
         # print(self.r.integrator)
-        self.r.integrator.absolute_tolerance = 1e-10
-        self.r.integrator.relative_tolerance = 1e-4
+        # self.r.integrator.absolute_tolerance = 1e-10
+        # self.r.integrator.relative_tolerance = 1e-4
         from data import measured_quantity_ids, exp_data, norm_data
         self.measured_quantity_ids = measured_quantity_ids
         self.reference_values = exp_data
