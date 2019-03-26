@@ -1,3 +1,8 @@
+
+# include <math.h>
+# include <stdlib.h>
+# include <stdio.h>
+
 static double ydot[26];
 
 #define Ith(a,k) a[k]
@@ -243,7 +248,7 @@ double OR(double x1,double x2,double x3){
 
 
 
-int evaluate() {
+void evaluate() {
 
     map3k7_fhill_nik=(pow(map3k7,map3k7_n_nik)/(pow(map3k7_k_nik,map3k7_n_nik)+pow(map3k7,map3k7_n_nik)))*(1+pow(map3k7_k_nik,map3k7_n_nik));
 
@@ -529,5 +534,10 @@ int evaluate() {
             0 * (1-cjun_fhill_ap1)+
             cjun_ap1_w * cjun_fhill_ap1
             -ap1) * tau_ap1;
-    printf("'dap1': %f", dap1);
+    printf("'dap1': %f\n", dap1);
+}
+
+int main() {
+  evaluate();
+  return 0;
 }
