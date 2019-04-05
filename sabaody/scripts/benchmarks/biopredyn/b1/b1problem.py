@@ -93,11 +93,11 @@ class B1Problem(TimecourseSimBiopredyn):
         r = RoadRunner(self.sbml)
         self._setParameterVector(param_values, self.param_list, r)
         r.reset()
-        r.resetAll()
-        r.resetToOrigin()
-        r.integrator = 'euler'
+        # r.resetAll()
+        # r.resetToOrigin()
+        # r.integrator = 'euler'
         # r.integrator = 'rk4'
-        r.integrator.subdivision_steps = 1000
+        # r.integrator.subdivision_steps = 1000
         # r.integrator.absolute_tolerance = 1e-10
         # r.integrator.relative_tolerance = 1e-4
         # r.integrator.initial_time_step = 0.001
@@ -109,8 +109,8 @@ class B1Problem(TimecourseSimBiopredyn):
         residuals = sim[:,1] - reference_data
 
         r.reset()
-        r.resetAll()
-        r.resetToOrigin()
+        # r.resetAll()
+        # r.resetToOrigin()
         s = r.simulate(0,float(time_values[-1]),121,['time',quantity_id])
 
         # print('mse for {}: '.format(quantity_name), sqrt(mean((residuals**2)/(self.reference_norms[:,iq]**2))))
