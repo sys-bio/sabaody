@@ -22,7 +22,9 @@ class B5Problem(TimecourseSimBiopredyn):
     def __init__(self, sbml):
         self.sbml = sbml
         self.r = RoadRunner(sbml)
-        self.r.integrator.stiff = False
+        self.r.integrator.absolute_tolerance = 1e-15
+        self.r.integrator.relative_tolerance = 1e-9
+        self.r.integrator.stiff = True
         from observables import observables
         self.measured_quantity_ids = observables
         from json import load
@@ -55,6 +57,7 @@ class B5Problem(TimecourseSimBiopredyn):
             self.r.setValue('init({})'.format(s), float(self.exp_y0[k]))
         self.stimuli = self.stimuli_collection[n]
         for s,b in self.stimuli.items():
+            print('{} = {}'.format(s, b*1.))
             self.r[s] = b*1.
 
 
@@ -89,27 +92,28 @@ class B5Problem(TimecourseSimBiopredyn):
         iq = self.measured_quantity_ids.index(quantity_id)
         reference_data = array(self.reference_values[:,iq])
 
-        self.r.reset()
-        self.r.resetAll()
-        # r.resetToOrigin()
-        self.setParameterVector(param_values, exponential=False)
-        sim = self.r.simulate(0., 30., 16, ['time', quantity_id])
-        # print(self.r.getReactionRates())
-        assert sim.shape[0] == reference_data.shape[0]
-        residuals = sim[:,1] - reference_data
+        # self.r.reset()
+        # self.r.resetAll()
+        # # r.resetToOrigin()
+        # self.setParameterVector(param_values, exponential=False)
+        # sim = self.r.simulate(0., 30., 16, ['time', quantity_id])
+        # # print(self.r.getReactionRates())
+        # assert sim.shape[0] == reference_data.shape[0]
+        # residuals = sim[:,1] - reference_data
 
         self.r.reset()
         self.r.resetAll()
         # r.resetToOrigin()
         self.setParameterVector(param_values, exponential=False)
-        s = self.r.simulate(0, 30. ,1000, ['time',quantity_id])
+        s = self.r.simulate(0, 25. ,100, ['time',quantity_id])
 
         import tellurium as te
-        te.plot(sim[:,0], reference_data, scatter=True,
-            name=quantity_id+' data', show=False,
-            title=quantity_id,
-            error_y_pos=maximum(residuals,0),
-            error_y_neg=-minimum(residuals,0))
+        # te.plot(sim[:,0], reference_data, scatter=True,
+        #     name=quantity_id+' data', show=False,
+        #     title=quantity_id,
+        #     error_y_pos=maximum(residuals,0),
+        #     error_y_neg=-minimum(residuals,0))
+        print(quantity_id+' sim')
         te.plot(s[:,0], s[:,1], name=quantity_id+' sim')
 
 

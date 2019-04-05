@@ -61,8 +61,8 @@ sb_src = t.render(
 )
 print(sb_src)
 
-import antimony
-antimony.loadAntimonyString(sb_src)
-sbml_str = antimony.getSBMLString('b5model')
-with open(abspath(join(dirname(realpath(__file__)), '..','..','..','..','..','sbml','b5.xml')), 'w') as f:
-    f.write(sbml_str)
+# import antimony
+# antimony.loadAntimonyString(sb_src)
+# sbml_str = antimony.getSBMLString('b5model')
+# with open(abspath(join(dirname(realpath(__file__)), '..','..','..','..','..','sbml','b5.xml')), 'w') as f:
+#     f.write(sbml_str)
