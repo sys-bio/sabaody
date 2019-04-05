@@ -19,8 +19,8 @@ if __name__ == '__main__':
     for i in topology_rank_median.sort_values(by='ActualAvgRounds').index:
         print('  ', i, '{}-{}'.format(
             int(topology_rank_min['ActualAvgRounds'][i]), int(topology_rank_max['ActualAvgRounds'][i])))
-    mean_range = float(topology_rank_range.mean())
-    print('Average range: {}'.format(mean_range))
+    topology_mean_range = float(topology_rank_range.mean())
+    print('Average range: {}'.format(topology_mean_range))
     print('\n\n\n')
 
     algorithm_mean = DataFrame(d.groupby(('Benchmark','Algorithm'))['ActualAvgRounds'].mean())
@@ -34,5 +34,15 @@ if __name__ == '__main__':
     for i in algorithm_rank_median.sort_values(by='ActualAvgRounds').index:
         print('  ', i, '{}-{}'.format(
             int(algorithm_rank_min['ActualAvgRounds'][i]), int(algorithm_rank_max['ActualAvgRounds'][i])))
-    mean_range = float(algorithm_rank_range.mean())
-    print('Average range: {}'.format(mean_range))
+    algorithm_mean_range = float(algorithm_rank_range.mean())
+    print('Average range: {}'.format(algorithm_mean_range))
+
+    # print latex table
+    print('\nLatex:\n')
+    for i,j in zip(topology_rank_median.sort_values(by='ActualAvgRounds').index, algorithm_rank_median.sort_values(by='ActualAvgRounds').index):
+        print(i.replace('-','--'), '&', '{}--{}'.format(
+            int(topology_rank_min['ActualAvgRounds'][i]), int(topology_rank_max['ActualAvgRounds'][i])),
+            '&', j.replace('_',' '), '&', '{}--{}'.format(
+            int(algorithm_rank_min['ActualAvgRounds'][j]), int(algorithm_rank_max['ActualAvgRounds'][j])),
+            r'\\')
+    print('Avg. diff.', '&', '{:.2f}'.format(topology_mean_range), '&', 'Avg. diff.', '&', '{:.2f}'.format(algorithm_mean_range))
