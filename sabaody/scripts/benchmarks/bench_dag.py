@@ -216,7 +216,7 @@ class TaskGenerator():
                     self.generate_topologies >> self.benchmarks[-1]
 
 
-biopredyn_rounds = 100
+biopredyn_rounds = 2000
 
 def make_biopredyn_task_generator(dag):
     return TaskGenerator(dag, rounds=biopredyn_rounds, n_islands_values=biopredyn_n_islands_values, topology_set_name='biopredyn')
