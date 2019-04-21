@@ -435,13 +435,13 @@ def getUpperBound():
     '''
     10x original value.
     '''
-    return getDefaultParamValues()+1
+    return getDefaultParamValues()+0.1
 
 def getLowerBound():
     '''
     1/10 original value.
     '''
-    return getDefaultParamValues()-1
+    return getDefaultParamValues()-0.1
 
 def getBestKnownValues():
     # com.how2cell.sabaody.biopredyn.b3-driver.f397d243-ede8-49b6-aa41-9e4ab0ebd629

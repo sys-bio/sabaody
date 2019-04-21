@@ -21,7 +21,7 @@ class B3Terminator(TerminatorBase):
         if best_f is None:
             return False
         else:
-            return False # put criterion here
+            return mean(best_f) < 0.02
 
 sbmlfile = join('..','..','..','..','..','sbml','b3.xml')
 script_dir = dirname(realpath(__file__))
