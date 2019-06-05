@@ -39,3 +39,7 @@ See [this page](https://docs.ansible.com/ansible/latest/user_guide/intro_invento
 ```
 ansible-playbook -i my_inventory --connection=local /path/to/sabaody/ansible/playbooks/setup-deps.yaml
 ```
+
+# Running
+
+Each BioPreDyn bench model (B1-B4) can be run from the command line driver program (e.g. b2-driver). For example, the instructions for running the B2 problem are in [sabaody/scripts/benchmarks/biopredyn/b2](https://github.com/sys-bio/sabaody/tree/master/sabaody/scripts/benchmarks/biopredyn/b2)
